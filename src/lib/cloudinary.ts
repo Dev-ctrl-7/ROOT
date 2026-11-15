@@ -255,7 +255,19 @@ export function buildCloudinaryUrl(options: CloudinaryTransformOptions): string 
     return `https://res.cloudinary.com/${cloudName}/image/upload/${transformString}/${options.publicId}`;
   }
 
-  const source = options.publicId || options.sourceUrl;
+  let source = options.publicId || options.sourceUrl;
+  if (source && source.includes("res.cloudinary.com")) {
+    const fetchMatch = source.match(/\/image\/fetch\/.*?(https?:\/\/.+)$/);
+    if (fetchMatch) {
+      source = fetchMatch[1].replace(/\?_a=[^&]+/, "");
+    } else {
+      const uploadMatch = source.match(/\/image\/upload\/(?:[^\/]+\/)*(?:v\d+\/)?(roots\/.+)$/);
+      if (uploadMatch) {
+        return `https://res.cloudinary.com/${cloudName}/image/upload/${transformString}/${uploadMatch[1]}`;
+      }
+    }
+  }
+
   if (source && source.startsWith("http")) {
     return `https://res.cloudinary.com/${cloudName}/image/fetch/${transformString}/${source}`;
   }
