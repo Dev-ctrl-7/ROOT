@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { ALL_INDIAN_STATES } from "@/lib/states-data";
-import { Award, RotateCcw, Printer, Pencil } from "lucide-react";
+import { Award, RotateCcw, Printer, Pencil, ShieldCheck } from "lucide-react";
 import { STATE_ICON_MAP } from "@/components/MotifIcon";
 import confetti from "canvas-confetti";
 
@@ -92,211 +92,416 @@ export function CulturalPassport({ onSelectState }: CulturalPassportProps) {
   const stampedCount = stampedStateIds.length;
   const percentage = Math.round((stampedCount / totalCount) * 100);
 
+  // Generate authentic ICAO 9303 style Machine Readable Zone (MRZ)
+  const formatMrz = (name: string) => {
+    const clean = name.trim().toUpperCase().replace(/[^A-Z]/g, "<");
+    const line1 = `P<IND${clean}`.padEnd(44, "<").slice(0, 44);
+    const line2 = "RT20268IND0001018M3611151<<<<<<<<<<<<<<04";
+    return { line1, line2 };
+  };
+
+  const mrz = formatMrz(bearerName);
+
   return (
     <section id="cultural-passport" className="py-24 px-4 sm:px-8 lg:px-12 max-w-7xl mx-auto space-y-12 border-t border-[#C59B27]/25">
-      {/* Header */}
-      <div className="text-center max-w-3xl mx-auto space-y-3 print:hidden">
-        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-[#C59B27]/40 bg-[#FAF8F5] dark:bg-[#1A1613] text-[#5B0E1B] dark:text-[#E5C378] text-[10px] uppercase tracking-[0.25em] font-mono shadow-xs">
-          <Award className="w-3.5 h-3.5 text-[#C59B27] dark:text-[#D4AF37]" />
-          Visitor Living Archive Journal
+      {/* ─────────────────────────────────────────────────────────────
+          1. INTERACTIVE ON-SCREEN PASSPORT VIEW (Hidden during print)
+          ───────────────────────────────────────────────────────────── */}
+      <div className="space-y-12 print:hidden">
+        {/* Header */}
+        <div className="text-center max-w-3xl mx-auto space-y-3">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-[#C59B27]/40 bg-[#FAF8F5] dark:bg-[#1A1613] text-[#5B0E1B] dark:text-[#E5C378] text-[10px] uppercase tracking-[0.25em] font-mono shadow-xs">
+            <Award className="w-3.5 h-3.5 text-[#C59B27] dark:text-[#D4AF37]" />
+            Visitor Living Archive Journal
+          </div>
+          <h2 className="font-serif text-4xl sm:text-5xl text-[#1C1814] dark:text-[#F5EFEB] font-normal tracking-tight">
+            My Cultural Passport
+          </h2>
+          <p className="font-sans text-xs sm:text-sm text-[#6E6255] dark:text-[#A89886] max-w-xl mx-auto leading-relaxed font-light">
+            Collect digital consular stamps for every region you explore across the museum. Stored securely in your browser.
+          </p>
         </div>
-        <h2 className="font-serif text-4xl sm:text-5xl text-[#1C1814] dark:text-[#F5EFEB] font-normal tracking-tight">
-          My Cultural Passport
-        </h2>
-        <p className="font-sans text-xs sm:text-sm text-[#6E6255] dark:text-[#A89886] max-w-xl mx-auto leading-relaxed font-light">
-          Collect digital consular stamps for every region you explore across the museum. Stored securely in your browser.
-        </p>
+
+        {/* Passport Credential Card */}
+        <div className="max-w-4xl mx-auto rounded-3xl bg-gradient-to-br from-[#1C1412] via-[#2A1D1A] to-[#1C1412] p-6 sm:p-10 lg:p-12 text-[#FAF5EE] border-2 border-[#C59B27]/40 shadow-2xl relative overflow-hidden passport-credential-card">
+          {/* Background Emblem */}
+          <div className="absolute right-0 top-0 w-80 h-80 opacity-[0.06] pointer-events-none select-none">
+            <svg viewBox="0 0 200 200" fill="currentColor">
+              <circle cx="100" cy="100" r="90" stroke="currentColor" strokeWidth="4" fill="none" />
+              <path d="M100 20 L 120 70 L 180 80 L 135 120 L 150 180 L 100 150 L 50 180 L 65 120 L 20 80 L 80 70 Z" />
+            </svg>
+          </div>
+
+          <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6 pb-8 border-b border-[#C59B27]/25">
+            <div className="space-y-3">
+              <span className="text-[10px] font-mono uppercase tracking-[0.3em] text-[#D4AF37] block">
+                Official Cultural Passbook &bull; Republic of India
+              </span>
+              <h3 className="font-serif text-3xl font-normal text-[#FAF5EE] mt-1">
+                National Digital Heritage Passport
+              </h3>
+
+              {/* Editable Bearer Name Input */}
+              <div className="flex flex-wrap items-center gap-2 pt-1 text-xs font-mono text-[#E7DDCC]/80">
+                <span className="text-[#D4AF37] font-semibold">Bearer:</span>
+                <div className="inline-flex items-center gap-1.5 bg-black/40 hover:bg-black/60 focus-within:bg-black/60 border border-[#D4AF37]/50 focus-within:border-[#D4AF37] rounded-lg px-2.5 py-1 transition-all shadow-inner">
+                  <input
+                    type="text"
+                    value={bearerName}
+                    onChange={(e) => handleBearerNameChange(e.target.value)}
+                    placeholder="Enter your name..."
+                    className="bg-transparent text-[#FAF5EE] font-serif font-bold text-sm focus:outline-none placeholder:text-[#E7DDCC]/40 w-44 sm:w-56"
+                    aria-label="Enter your name on the passport"
+                  />
+                  <Pencil className="w-3 h-3 text-[#D4AF37] opacity-80" />
+                </div>
+                <span className="text-[#D4AF37] hidden sm:inline">&bull;</span>
+                <span className="text-[11px] text-[#E7DDCC]/70 block sm:inline">
+                  Issued at: ROOTS Museum, 2026
+                </span>
+              </div>
+            </div>
+
+            <div className="flex flex-col items-center sm:items-end gap-3 shrink-0">
+              {/* Progress Gauge */}
+              <div className="bg-[#FAF5EE]/10 backdrop-blur-xs p-4 rounded-2xl border border-[#C59B27]/30 flex flex-col items-center min-w-[170px] w-full sm:w-auto">
+                <span className="text-[10px] font-mono uppercase tracking-widest text-[#D4AF37]">
+                  Exploration Progress
+                </span>
+                <span className="font-serif text-3xl font-bold text-white mt-1">
+                  {stampedCount} / {totalCount}
+                </span>
+                <div className="w-full h-2 rounded-full bg-white/20 mt-2 overflow-hidden">
+                  <div
+                    className="h-full bg-gradient-to-r from-[#C59B27] to-[#D4AF37] rounded-full transition-all duration-500"
+                    style={{ width: `${percentage}%` }}
+                  />
+                </div>
+                <span className="text-[10px] font-mono text-[#D4AF37] mt-1">{percentage}% Discovered</span>
+              </div>
+
+              {/* Print & Save Passport Button */}
+              <button
+                onClick={handlePrintPassport}
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-4 py-2 rounded-xl border border-[#D4AF37] bg-[#D4AF37]/20 hover:bg-[#D4AF37]/35 text-[#D4AF37] hover:text-white text-xs font-mono uppercase tracking-wider transition-all duration-200 cursor-pointer shadow-md hover:shadow-[0_0_15px_rgba(212,175,55,0.4)] select-none"
+                title="Print or Save Official Passport (1 Sheet)"
+              >
+                <Printer className="w-3.5 h-3.5" />
+                <span>Print / Save Passport</span>
+              </button>
+            </div>
+          </div>
+
+          {/* 36 Stamps Matrix Grid */}
+          <div className="pt-8">
+            <div className="flex items-center justify-between mb-4">
+              <span className="text-xs font-mono uppercase tracking-widest text-[#D4AF37]">
+                Territorial Stamps ({stampedCount} Stamped &bull; Click to Flip)
+              </span>
+              {stampedCount > 0 && (
+                <button
+                  onClick={handleResetPassport}
+                  className="text-[11px] font-mono text-[#E7DDCC]/60 hover:text-white flex items-center gap-1 transition-colors cursor-pointer"
+                >
+                  <RotateCcw className="w-3 h-3" />
+                  Reset Passport
+                </button>
+              )}
+            </div>
+
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 sm:gap-3.5">
+              {ALL_INDIAN_STATES.map((state) => {
+                const isStamped = stampedStateIds.includes(state.id);
+                const StateIcon = STATE_ICON_MAP[state.id] || Award;
+                const isLongTitle = state.name.length > 20;
+
+                return (
+                  <div
+                    key={state.id}
+                    className="group relative h-[134px] w-full"
+                    style={{ perspective: "1000px" }}
+                  >
+                    <div
+                      onClick={() => toggleStamp(state.id)}
+                      className="relative w-full h-full rounded-2xl cursor-pointer select-none"
+                      style={{
+                        transformStyle: "preserve-3d",
+                        transform: isStamped ? "rotateY(180deg)" : "rotateY(0deg)",
+                        transition: "transform 0.5s cubic-bezier(0.4, 0, 0.2, 1)",
+                      }}
+                      title={`${state.name} — Click to ${isStamped ? "Unstamp" : "Stamp"}`}
+                    >
+                      {/* FRONT FACE (Unstamped) */}
+                      <div
+                        className="absolute inset-0 w-full h-full rounded-2xl border border-white/10 bg-white/[0.04] hover:bg-white/[0.08] hover:border-[#C59B27]/50 transition-all p-3 flex flex-col justify-between items-center text-center overflow-hidden shadow-xs"
+                        style={{
+                          backfaceVisibility: "hidden",
+                          WebkitBackfaceVisibility: "hidden",
+                        }}
+                      >
+                        <span className="text-[9px] font-mono uppercase tracking-wider text-[#E7DDCC]/60 truncate w-full">
+                          {state.zone}
+                        </span>
+
+                        <div className="my-auto w-full px-0.5">
+                          <span
+                            className={`font-serif font-medium text-white block ${
+                              isLongTitle
+                                ? "text-[10px] leading-tight line-clamp-2"
+                                : "text-xs leading-snug truncate"
+                            }`}
+                          >
+                            {state.name}
+                          </span>
+                          <span className="font-serif text-[10px] text-[#D4AF37] block truncate opacity-85 mt-0.5">
+                            {state.nativeName}
+                          </span>
+                        </div>
+
+                        <span className="text-[9px] font-mono px-2.5 py-0.5 rounded-full uppercase tracking-wider text-[#E7DDCC]/45 border border-white/10 bg-white/5 group-hover:border-[#C59B27]/40 group-hover:text-[#D4AF37] transition-colors">
+                          + Stamp
+                        </span>
+                      </div>
+
+                      {/* BACK FACE (Stamped — Consular Seal with Distinct Non-Repeating Icon) */}
+                      <div
+                        className="absolute inset-0 w-full h-full rounded-2xl border-2 border-[#D4AF37] bg-gradient-to-br from-[#261B15] via-[#332219] to-[#1C1410] p-2.5 flex flex-col items-center justify-between text-center overflow-hidden shadow-[0_0_15px_rgba(212,175,55,0.25)]"
+                        style={{
+                          backfaceVisibility: "hidden",
+                          WebkitBackfaceVisibility: "hidden",
+                          transform: "rotateY(180deg)",
+                        }}
+                      >
+                        {/* Decorative vintage postal stamp border */}
+                        <div className="absolute inset-1 border border-dashed border-[#D4AF37]/35 rounded-xl pointer-events-none" />
+
+                        {/* Header Micro-banner */}
+                        <div className="relative z-10 flex items-center justify-between w-full px-1 text-[8px] font-mono tracking-widest text-[#D4AF37]">
+                          <span>OFFICIAL</span>
+                          <span>2026</span>
+                        </div>
+
+                        {/* Center: Unique Cultural State Icon Seal */}
+                        <div className="relative z-10 my-auto flex flex-col items-center justify-center w-full px-0.5">
+                          <div className="w-8 h-8 rounded-full border border-[#D4AF37] bg-[#D4AF37]/15 flex items-center justify-center text-[#D4AF37] shadow-sm mb-1">
+                            <StateIcon className="w-4 h-4" />
+                          </div>
+                          <span
+                            className={`font-serif font-bold text-white block truncate w-full ${
+                              isLongTitle ? "text-[10px] leading-tight" : "text-[11px] leading-snug"
+                            }`}
+                          >
+                            {state.name}
+                          </span>
+                          <span className="font-serif text-[9px] text-[#D4AF37] block truncate w-full opacity-90">
+                            {state.nativeName}
+                          </span>
+                        </div>
+
+                        {/* Bottom Stamped Badge */}
+                        <div className="relative z-10 pb-0.5">
+                          <span className="text-[8px] font-mono px-2 py-0.5 rounded-full uppercase tracking-wider bg-[#D4AF37] text-[#1C1412] font-extrabold flex items-center gap-1 shadow-xs">
+                            <span>✓</span> STAMPED
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </div>
       </div>
 
-      {/* Passport Credential Card */}
-      <div className="max-w-4xl mx-auto rounded-3xl bg-gradient-to-br from-[#1C1412] via-[#2A1D1A] to-[#1C1412] p-6 sm:p-10 lg:p-12 text-[#FAF5EE] border-2 border-[#C59B27]/40 shadow-2xl relative overflow-hidden passport-credential-card">
-        {/* Background Emblem */}
-        <div className="absolute right-0 top-0 w-80 h-80 opacity-[0.06] pointer-events-none select-none">
-          <svg viewBox="0 0 200 200" fill="currentColor">
-            <circle cx="100" cy="100" r="90" stroke="currentColor" strokeWidth="4" fill="none" />
+      {/* ─────────────────────────────────────────────────────────────
+          2. OFFICIAL ONE-SHEET PASSPORT (Visible ONLY when Printing)
+          Fits on exactly ONE A4 sheet with Republic of India formatting,
+          Identity Bio-data, MRZ zone, and all 36 Territorial Consular Visas.
+          ───────────────────────────────────────────────────────────── */}
+      <div className="hidden print:flex flex-col justify-between w-full h-[272mm] max-h-[272mm] p-4 bg-[#120D0B] text-[#FAF5EE] border-2 border-[#C59B27] rounded-xl relative overflow-hidden printable-passport-sheet box-border">
+        {/* Subtle Watermark Emblem */}
+        <div className="absolute inset-0 flex items-center justify-center opacity-[0.035] pointer-events-none select-none">
+          <svg viewBox="0 0 200 200" className="w-[180mm] h-[180mm]" fill="currentColor">
+            <circle cx="100" cy="100" r="90" stroke="currentColor" strokeWidth="3" fill="none" />
+            <circle cx="100" cy="100" r="30" stroke="currentColor" strokeWidth="2" fill="none" />
             <path d="M100 20 L 120 70 L 180 80 L 135 120 L 150 180 L 100 150 L 50 180 L 65 120 L 20 80 L 80 70 Z" />
           </svg>
         </div>
 
-        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6 pb-8 border-b border-[#C59B27]/25">
-          <div className="space-y-3">
-            <span className="text-[10px] font-mono uppercase tracking-[0.3em] text-[#D4AF37] block">
-              Official Cultural Passbook &bull; Republic of India
-            </span>
-            <h3 className="font-serif text-3xl font-normal text-[#FAF5EE] mt-1">
-              National Digital Heritage Passport
-            </h3>
-
-            {/* Editable Bearer Name Input */}
-            <div className="flex flex-wrap items-center gap-2 pt-1 text-xs font-mono text-[#E7DDCC]/80">
-              <span className="text-[#D4AF37] font-semibold">Bearer:</span>
-              <div className="inline-flex items-center gap-1.5 bg-black/40 hover:bg-black/60 focus-within:bg-black/60 border border-[#D4AF37]/50 focus-within:border-[#D4AF37] rounded-lg px-2.5 py-1 transition-all shadow-inner">
-                <input
-                  type="text"
-                  value={bearerName}
-                  onChange={(e) => handleBearerNameChange(e.target.value)}
-                  placeholder="Enter your name..."
-                  className="bg-transparent text-[#FAF5EE] font-serif font-bold text-sm focus:outline-none placeholder:text-[#E7DDCC]/40 w-44 sm:w-56"
-                  aria-label="Enter your name on the passport"
-                />
-                <Pencil className="w-3 h-3 text-[#D4AF37] opacity-80 print:hidden" />
+        {/* ── TOP SECTION: OFFICIAL PASSPORT HEAD & BIO-DATA ── */}
+        <div className="relative z-10 space-y-2 border-b-2 border-[#C59B27]/40 pb-2.5">
+          {/* Header Banner */}
+          <div className="flex items-center justify-between border-b border-[#C59B27]/20 pb-1.5">
+            <div className="flex items-center gap-2.5">
+              {/* Ashoka Emblem Silhouette SVG */}
+              <div className="w-9 h-9 rounded-full border border-[#D4AF37] bg-[#D4AF37]/10 flex items-center justify-center text-[#D4AF37] shrink-0">
+                <svg viewBox="0 0 48 48" className="w-6 h-6" fill="currentColor">
+                  <path d="M24 4 L28 14 L38 16 L30 24 L32 34 L24 28 L16 34 L18 24 L10 16 L20 14 Z" />
+                  <circle cx="24" cy="38" r="3" />
+                </svg>
               </div>
-              <span className="text-[#D4AF37] hidden sm:inline">&bull;</span>
-              <span className="text-[11px] text-[#E7DDCC]/70 block sm:inline">
-                Issued at: ROOTS Museum, 2026
-              </span>
+              <div>
+                <div className="font-serif text-xs font-bold tracking-[0.25em] text-[#D4AF37] uppercase">
+                  भारत गणराज्य &bull; REPUBLIC OF INDIA
+                </div>
+                <div className="font-serif text-sm font-bold text-white tracking-wider">
+                  राष्ट्रीय सांस्कृतिक पारपत्र &bull; NATIONAL DIGITAL HERITAGE PASSPORT
+                </div>
+              </div>
+            </div>
+
+            <div className="text-right font-mono text-[9px] text-[#D4AF37] border border-[#D4AF37]/40 px-2.5 py-1 rounded-md bg-[#D4AF37]/10">
+              <span className="block font-bold">TYPE: P &bull; CODE: IND</span>
+              <span className="block text-white font-bold">NO: IN-ROOTS-2026</span>
             </div>
           </div>
 
-          <div className="flex flex-col items-center sm:items-end gap-3 shrink-0">
-            {/* Progress Gauge */}
-            <div className="bg-[#FAF5EE]/10 backdrop-blur-xs p-4 rounded-2xl border border-[#C59B27]/30 flex flex-col items-center min-w-[170px] w-full sm:w-auto">
-              <span className="text-[10px] font-mono uppercase tracking-widest text-[#D4AF37]">
-                Exploration Progress
+          {/* Bio-Data Spread */}
+          <div className="flex items-start gap-4 pt-1">
+            {/* Bearer Photo / Seal Box */}
+            <div className="w-24 h-28 rounded-lg border-2 border-[#D4AF37]/60 bg-gradient-to-b from-[#251A15] to-[#160F0C] p-1.5 flex flex-col items-center justify-between text-center shrink-0 shadow-inner">
+              <span className="text-[7px] font-mono uppercase text-[#D4AF37] tracking-wider">
+                PHOTOGRAPH
               </span>
-              <span className="font-serif text-3xl font-bold text-white mt-1">
-                {stampedCount} / {totalCount}
-              </span>
-              <div className="w-full h-2 rounded-full bg-white/20 mt-2 overflow-hidden">
-                <div
-                  className="h-full bg-gradient-to-r from-[#C59B27] to-[#D4AF37] rounded-full transition-all duration-500"
-                  style={{ width: `${percentage}%` }}
-                />
+              <div className="w-12 h-12 rounded-full border border-[#D4AF37]/50 bg-[#D4AF37]/15 flex items-center justify-center text-[#D4AF37]">
+                <ShieldCheck className="w-6 h-6" />
               </div>
-              <span className="text-[10px] font-mono text-[#D4AF37] mt-1">{percentage}% Discovered</span>
+              <div className="text-[7px] font-mono text-[#E7DDCC]/70 uppercase leading-none">
+                VERIFIED BEARER<br />ROOTS 2026
+              </div>
             </div>
 
-            {/* Print & Save Passport Button */}
-            <button
-              onClick={handlePrintPassport}
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-4 py-2 rounded-xl border border-[#D4AF37] bg-[#D4AF37]/20 hover:bg-[#D4AF37]/35 text-[#D4AF37] hover:text-white text-xs font-mono uppercase tracking-wider transition-all duration-200 cursor-pointer shadow-md hover:shadow-[0_0_15px_rgba(212,175,55,0.4)] select-none print:hidden"
-              title="Print or Save Cultural Passport as PDF"
-            >
-              <Printer className="w-3.5 h-3.5" />
-              <span>Print / Save Passport</span>
-            </button>
+            {/* Passport Fields Grid */}
+            <div className="flex-1 grid grid-cols-3 gap-x-3 gap-y-1 text-[9px] font-mono">
+              <div className="col-span-2">
+                <span className="text-[#D4AF37] text-[8px] uppercase block">
+                  Name of Bearer / धारक का नाम:
+                </span>
+                <span className="font-serif text-sm font-bold text-white uppercase tracking-wider block">
+                  {bearerName || "CULTURAL TRAVELER"}
+                </span>
+              </div>
+
+              <div>
+                <span className="text-[#D4AF37] text-[8px] uppercase block">
+                  Nationality / राष्ट्रीयता:
+                </span>
+                <span className="font-semibold text-white">INDIAN HERITAGE CITIZEN</span>
+              </div>
+
+              <div>
+                <span className="text-[#D4AF37] text-[8px] uppercase block">
+                  Date of Issue / जारी करने की तिथि:
+                </span>
+                <span className="text-white">15 NOV 2026</span>
+              </div>
+
+              <div>
+                <span className="text-[#D4AF37] text-[8px] uppercase block">
+                  Place of Issue / जारी स्थान:
+                </span>
+                <span className="text-white">ROOTS DIGITAL ARCHIVE</span>
+              </div>
+
+              <div>
+                <span className="text-[#D4AF37] text-[8px] uppercase block">
+                  Valid Until / वैधता:
+                </span>
+                <span className="text-[#D4AF37] font-bold">PERPETUAL MEMORY</span>
+              </div>
+
+              <div className="col-span-3 pt-0.5 flex items-center justify-between border-t border-[#C59B27]/20">
+                <span className="text-[#D4AF37] text-[8px]">
+                  Consular Endorsement: {stampedCount} of {totalCount} Territories Explored ({percentage}% Completed)
+                </span>
+                <span className="text-[8px] text-[#E7DDCC]/60 font-mono">
+                  Issuing Authority: ROOTS Consular Division
+                </span>
+              </div>
+            </div>
+          </div>
+
+          {/* Machine Readable Zone (MRZ) */}
+          <div className="bg-black/60 p-1.5 rounded border border-[#C59B27]/30 font-mono text-[9px] leading-tight text-[#E7DDCC] tracking-[0.22em] select-none text-center">
+            <div>{mrz.line1}</div>
+            <div>{mrz.line2}</div>
           </div>
         </div>
 
-        {/* 36 Stamps Matrix Grid */}
-        <div className="pt-8">
-          <div className="flex items-center justify-between mb-4">
-            <span className="text-xs font-mono uppercase tracking-widest text-[#D4AF37]">
-              Territorial Stamps ({stampedCount} Stamped &bull; Click to Flip)
-            </span>
-            {stampedCount > 0 && (
-              <button
-                onClick={handleResetPassport}
-                className="text-[11px] font-mono text-[#E7DDCC]/60 hover:text-white flex items-center gap-1 transition-colors cursor-pointer print:hidden"
-              >
-                <RotateCcw className="w-3 h-3" />
-                Reset Passport
-              </button>
-            )}
+        {/* ── BOTTOM SECTION: 36 TERRITORIAL VISAS & ENDORSEMENTS ── */}
+        <div className="relative z-10 flex-1 flex flex-col justify-between pt-2">
+          {/* Section Subhead */}
+          <div className="flex items-center justify-between border-b border-[#C59B27]/30 pb-1 mb-1.5">
+            <div className="font-serif text-xs font-bold text-[#D4AF37] tracking-wider uppercase">
+              वीज़ा एवं संप्रभु क्षेत्रीय मुहरें &bull; VISAS & TERRITORIAL ENDORSEMENTS
+            </div>
+            <div className="text-[8px] font-mono text-[#E7DDCC]/70">
+              Official Endorsements: {stampedCount} Stamped / 36 Sovereign Territories
+            </div>
           </div>
 
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 sm:gap-3.5">
+          {/* 6x6 Compact Visa Stamp Matrix */}
+          <div className="grid grid-cols-6 gap-1.5 flex-1 items-stretch">
             {ALL_INDIAN_STATES.map((state) => {
               const isStamped = stampedStateIds.includes(state.id);
               const StateIcon = STATE_ICON_MAP[state.id] || Award;
 
-              // Format clean display name for unusually long territory titles
-              const isLongTitle = state.name.length > 20;
-
               return (
                 <div
                   key={state.id}
-                  className="group relative h-[134px] w-full"
-                  style={{ perspective: "1000px" }}
+                  className={`rounded-lg p-1 flex flex-col items-center justify-between text-center border relative overflow-hidden h-[21.5mm] box-border ${
+                    isStamped
+                      ? "bg-[#D4AF37]/15 border-[#D4AF37] text-[#FAF5EE]"
+                      : "bg-white/[0.02] border-white/10 text-[#E7DDCC]/40"
+                  }`}
                 >
-                  <div
-                    onClick={() => toggleStamp(state.id)}
-                    className="relative w-full h-full rounded-2xl cursor-pointer select-none"
-                    style={{
-                      transformStyle: "preserve-3d",
-                      transform: isStamped ? "rotateY(180deg)" : "rotateY(0deg)",
-                      transition: "transform 0.5s cubic-bezier(0.4, 0, 0.2, 1)",
-                    }}
-                    title={`${state.name} — Click to ${isStamped ? "Unstamp" : "Stamp"}`}
-                  >
-                    {/* FRONT FACE (Unstamped) */}
-                    <div
-                      className="absolute inset-0 w-full h-full rounded-2xl border border-white/10 bg-white/[0.04] hover:bg-white/[0.08] hover:border-[#C59B27]/50 transition-all p-3 flex flex-col justify-between items-center text-center overflow-hidden shadow-xs"
-                      style={{
-                        backfaceVisibility: "hidden",
-                        WebkitBackfaceVisibility: "hidden",
-                      }}
-                    >
-                      <span className="text-[9px] font-mono uppercase tracking-wider text-[#E7DDCC]/60 truncate w-full">
-                        {state.zone}
-                      </span>
+                  {/* Micro Zone */}
+                  <span className="text-[6.5px] font-mono uppercase tracking-wider block opacity-75">
+                    {state.zone}
+                  </span>
 
-                      <div className="my-auto w-full px-0.5">
-                        <span
-                          className={`font-serif font-medium text-white block ${
-                            isLongTitle
-                              ? "text-[10px] leading-tight line-clamp-2"
-                              : "text-xs leading-snug truncate"
-                          }`}
-                        >
+                  {isStamped ? (
+                    <>
+                      {/* Consular Stamp Ring with State Unique Icon */}
+                      <div className="w-6 h-6 rounded-full border border-[#D4AF37] bg-[#D4AF37]/25 flex items-center justify-center text-[#D4AF37] shadow-2xs my-auto">
+                        <StateIcon className="w-3.5 h-3.5" />
+                      </div>
+                      <div className="w-full">
+                        <span className="font-serif text-[8px] font-bold text-white block truncate leading-none">
                           {state.name}
                         </span>
-                        <span className="font-serif text-[10px] text-[#D4AF37] block truncate opacity-85 mt-0.5">
-                          {state.nativeName}
+                        <span className="text-[6px] font-mono uppercase text-[#D4AF37] font-bold block mt-0.5">
+                          ✓ 15.11.26
                         </span>
                       </div>
-
-                      <span className="text-[9px] font-mono px-2.5 py-0.5 rounded-full uppercase tracking-wider text-[#E7DDCC]/45 border border-white/10 bg-white/5 group-hover:border-[#C59B27]/40 group-hover:text-[#D4AF37] transition-colors print:hidden">
-                        + Stamp
-                      </span>
-                    </div>
-
-                    {/* BACK FACE (Stamped — Consular Seal with Distinct Non-Repeating Icon) */}
-                    <div
-                      className="absolute inset-0 w-full h-full rounded-2xl border-2 border-[#D4AF37] bg-gradient-to-br from-[#261B15] via-[#332219] to-[#1C1410] p-2.5 flex flex-col items-center justify-between text-center overflow-hidden shadow-[0_0_15px_rgba(212,175,55,0.25)]"
-                      style={{
-                        backfaceVisibility: "hidden",
-                        WebkitBackfaceVisibility: "hidden",
-                        transform: "rotateY(180deg)",
-                      }}
-                    >
-                      {/* Decorative vintage postal stamp border */}
-                      <div className="absolute inset-1 border border-dashed border-[#D4AF37]/35 rounded-xl pointer-events-none" />
-
-                      {/* Header Micro-banner */}
-                      <div className="relative z-10 flex items-center justify-between w-full px-1 text-[8px] font-mono tracking-widest text-[#D4AF37]">
-                        <span>OFFICIAL</span>
-                        <span>2026</span>
+                    </>
+                  ) : (
+                    <>
+                      {/* Unstamped Placeholder Slot */}
+                      <div className="w-5 h-5 rounded-full border border-dashed border-white/20 flex items-center justify-center my-auto opacity-40">
+                        <span className="text-[7px] font-mono">•</span>
                       </div>
-
-                      {/* Center: Unique Cultural State Icon Seal */}
-                      <div className="relative z-10 my-auto flex flex-col items-center justify-center w-full px-0.5">
-                        <div className="w-8 h-8 rounded-full border border-[#D4AF37] bg-[#D4AF37]/15 flex items-center justify-center text-[#D4AF37] shadow-sm mb-1">
-                          <StateIcon className="w-4 h-4" />
-                        </div>
-                        <span
-                          className={`font-serif font-bold text-white block truncate w-full ${
-                            isLongTitle ? "text-[10px] leading-tight" : "text-[11px] leading-snug"
-                          }`}
-                        >
+                      <div className="w-full">
+                        <span className="font-serif text-[7.5px] text-[#E7DDCC]/60 block truncate leading-none">
                           {state.name}
                         </span>
-                        <span className="font-serif text-[9px] text-[#D4AF37] block truncate w-full opacity-90">
-                          {state.nativeName}
+                        <span className="text-[6px] font-mono uppercase text-[#E7DDCC]/35 block mt-0.5">
+                          PENDING
                         </span>
                       </div>
-
-                      {/* Bottom Stamped Badge */}
-                      <div className="relative z-10 pb-0.5">
-                        <span className="text-[8px] font-mono px-2 py-0.5 rounded-full uppercase tracking-wider bg-[#D4AF37] text-[#1C1412] font-extrabold flex items-center gap-1 shadow-xs">
-                          <span>✓</span> STAMPED
-                        </span>
-                      </div>
-                    </div>
-                  </div>
+                    </>
+                  )}
                 </div>
               );
             })}
+          </div>
+
+          {/* Official Document Footer */}
+          <div className="pt-2 mt-1 border-t border-[#C59B27]/30 flex items-center justify-between text-[7.5px] font-mono text-[#E7DDCC]/60">
+            <span>OFFICIAL HERITAGE RECORD &bull; CLOUDINARY MINI-HACKATHON 2026</span>
+            <span>ISSUED UNDER THE SOVEREIGN AUTHORITY OF ROOTS MUSEUM OF INDIA</span>
+            <span>PAGE 01 OF 01 (AUTHENTIC SINGLE SHEET)</span>
           </div>
         </div>
       </div>
