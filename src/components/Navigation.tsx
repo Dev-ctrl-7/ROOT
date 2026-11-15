@@ -42,14 +42,14 @@ export function Navigation({ onOpenInspector }: NavigationProps) {
   };
 
   const navLinks = [
-    { href: "/atlas", label: t.nav.atlas, icon: Compass, badge: "Surveyed" },
-    { href: "/exhibition", label: t.nav.exhibition, icon: BookOpen, badge: "36 Regions" },
-    { href: "/time-machine", label: t.nav.timeMachine, icon: Clock, badge: "5,000 Yrs" },
-    { href: "/cuisine", label: t.nav.cuisine, icon: Utensils, badge: "Flavors" },
-    { href: "/archive-lens", label: t.nav.archiveLens, icon: Award, badge: "1868—Now" },
-    { href: "/postcard", label: t.nav.postcard, icon: Mail, badge: "Atelier" },
-    { href: "/letter", label: t.nav.letter, icon: Sparkles, badge: "Wax Seal" },
-    { href: "/passport", label: t.nav.passport, icon: Award, badge: "Passport" },
+    { href: "/atlas", label: t.nav.atlas, icon: Compass },
+    { href: "/exhibition", label: t.nav.exhibition, icon: BookOpen },
+    { href: "/time-machine", label: t.nav.timeMachine, icon: Clock },
+    { href: "/cuisine", label: t.nav.cuisine, icon: Utensils },
+    { href: "/archive-lens", label: t.nav.archiveLens, icon: Award },
+    { href: "/postcard", label: t.nav.postcard, icon: Mail },
+    { href: "/letter", label: t.nav.letter, icon: Sparkles },
+    { href: "/passport", label: t.nav.passport, icon: Award },
   ];
 
   return (
@@ -133,7 +133,7 @@ export function Navigation({ onOpenInspector }: NavigationProps) {
               <Link
                 key={item.href}
                 href={item.href}
-                className={`group flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-sans tracking-wide transition-all duration-200 select-none ${
+                className={`group flex items-center px-3.5 py-2.5 rounded-xl text-xs font-sans tracking-wide transition-all duration-200 select-none ${
                   isActive
                     ? "bg-[#5B0E1B] text-white font-medium shadow-sm dark:bg-[#C59B27] dark:text-[#0C0A09]"
                     : "text-[#423A32] dark:text-[#D9CEBF] hover:text-[#5B0E1B] dark:hover:text-[#F5EFEB] hover:bg-[#5B0E1B]/8 dark:hover:bg-white/10"
@@ -149,16 +149,6 @@ export function Navigation({ onOpenInspector }: NavigationProps) {
                   />
                   <span className="truncate">{item.label}</span>
                 </div>
-
-                <span
-                  className={`text-[9px] font-mono px-1.5 py-0.5 rounded-full tracking-wider uppercase transition-colors shrink-0 ${
-                    isActive
-                      ? "bg-white/20 dark:bg-black/20 text-white dark:text-[#0C0A09]"
-                      : "text-[#8C7E72] dark:text-[#A89886] group-hover:text-[#5B0E1B] dark:group-hover:text-[#D4AF37]"
-                  }`}
-                >
-                  {item.badge}
-                </span>
               </Link>
             );
           })}
