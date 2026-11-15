@@ -1,0 +1,26 @@
+"use client";
+
+import { useState } from "react";
+import { Navigation } from "@/components/Navigation";
+import { CulturalTimeMachine } from "@/components/CulturalTimeMachine";
+import { Footer } from "@/components/Footer";
+import { TransformationInspectorModal } from "@/components/TransformationInspectorModal";
+
+export default function TimeMachinePage() {
+  const [inspectorOpen, setInspectorOpen] = useState<boolean>(false);
+
+  return (
+    <main className="min-h-screen bg-[#FAF8F5] dark:bg-[#0C0A09] text-[#1C1814] dark:text-[#F5EFEB] pt-16 lg:pt-8 transition-colors duration-300">
+      <Navigation onOpenInspector={() => setInspectorOpen(true)} />
+
+      <CulturalTimeMachine />
+
+      <Footer onOpenInspector={() => setInspectorOpen(true)} />
+
+      <TransformationInspectorModal
+        isOpen={inspectorOpen}
+        onClose={() => setInspectorOpen(false)}
+      />
+    </main>
+  );
+}
