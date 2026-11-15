@@ -123,69 +123,11 @@ export function DiwaliNightSky() {
   if (!isMounted || theme !== "dark") return null;
 
   return (
-    <>
-      {/* Background Night Sky Canvas: Firecrackers & Phuljhadi Embers */}
-      <canvas
-        ref={canvasRef}
-        className="fixed inset-0 pointer-events-none z-10 opacity-60 mix-blend-screen"
-        aria-hidden="true"
-      />
-
-      {/* Ambient Illuminated Earthen Diya Lamps (Bottom Corners) */}
-      <div
-        className="fixed bottom-4 left-6 pointer-events-none z-20 hidden md:flex items-center gap-2 select-none opacity-85 animate-fade-in"
-        aria-hidden="true"
-      >
-        <div className="relative">
-          {/* Diya Clay Bowl */}
-          <svg className="w-8 h-8 text-[#C59B27] drop-shadow-[0_0_12px_rgba(212,175,55,0.7)]" viewBox="0 0 64 64" fill="currentColor">
-            <ellipse cx="32" cy="46" rx="26" ry="12" fill="#8C4A1E" />
-            <ellipse cx="32" cy="43" rx="22" ry="7" fill="#C59B27" opacity="0.8" />
-            {/* Flickering Flame */}
-            <path
-              d="M32 14 C36 24 40 32 32 38 C24 32 28 24 32 14 Z"
-              fill="#FFB300"
-              className="animate-pulse origin-bottom"
-            />
-            <path
-              d="M32 20 C34 26 37 32 32 36 C27 32 30 26 32 20 Z"
-              fill="#FFF275"
-              className="animate-ping origin-bottom opacity-60"
-            />
-          </svg>
-          <div className="absolute -top-1 left-2.5 w-3 h-3 rounded-full bg-amber-400 blur-xs animate-pulse" />
-        </div>
-        <span className="text-[9px] font-mono tracking-widest uppercase text-[#D4AF37]/80">
-          दीपावली रात्रि • Festive Night
-        </span>
-      </div>
-
-      <div
-        className="fixed bottom-4 right-6 pointer-events-none z-20 hidden md:flex items-center gap-2 select-none opacity-85 animate-fade-in"
-        aria-hidden="true"
-      >
-        <span className="text-[9px] font-mono tracking-widest uppercase text-[#D4AF37]/80">
-          திவ்ய தீபம் • Sacred Diya
-        </span>
-        <div className="relative">
-          <svg className="w-8 h-8 text-[#C59B27] drop-shadow-[0_0_12px_rgba(212,175,55,0.7)]" viewBox="0 0 64 64" fill="currentColor">
-            <ellipse cx="32" cy="46" rx="26" ry="12" fill="#8C4A1E" />
-            <ellipse cx="32" cy="43" rx="22" ry="7" fill="#C59B27" opacity="0.8" />
-            <path
-              d="M32 14 C36 24 40 32 32 38 C24 32 28 24 32 14 Z"
-              fill="#FFB300"
-              className="animate-pulse origin-bottom"
-            />
-            <path
-              d="M32 20 C34 26 37 32 32 36 C27 32 30 26 32 20 Z"
-              fill="#FFF275"
-              className="animate-ping origin-bottom opacity-60"
-            />
-          </svg>
-          <div className="absolute -top-1 left-2.5 w-3 h-3 rounded-full bg-amber-400 blur-xs animate-pulse" />
-        </div>
-      </div>
-    </>
+    <canvas
+      ref={canvasRef}
+      className="fixed inset-0 pointer-events-none z-10 opacity-60 mix-blend-screen"
+      aria-hidden="true"
+    />
   );
 }
 

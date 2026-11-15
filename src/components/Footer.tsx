@@ -113,8 +113,7 @@ export function Footer({ onOpenInspector }: FooterProps) {
         </div>
 
         {/* Bottom Colophon */}
-        <div className="border-t border-[#C59B27]/20 pt-8 flex flex-col sm:flex-row items-center justify-between text-xs text-[#E7DDCC]/60 font-mono gap-4">
-          <p>{t.footer.copyright}</p>
+        <div className="border-t border-[#C59B27]/20 pt-8 flex items-center justify-center text-xs text-[#E7DDCC]/60 font-mono">
           <p className="flex items-center gap-1.5">
             <span>{t.footer.madeWithLove}</span>
             <Heart className="w-3.5 h-3.5 text-[#C59B27] fill-[#C59B27]" />
