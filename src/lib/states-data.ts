@@ -706,8 +706,8 @@ export const ALL_INDIAN_STATES: StateData[] = [
       iconicIngredients: ["Godaa Masala (Maharashtrian aromatic spice blend)", "Kokum", "Peanuts", "Jaggery", "Besan"],
       foodStory:
         "The food of the Sahyadri soldiers was built for stamina—roasted millet rotis (bhakri) paired with crushed peanut-garlic thecha that could be carried up cliff fortresses.",
-      heroImage: "https://images.unsplash.com/photo-1626777552726-4a6b54c97e46?q=85&w=1200&auto=format&fit=crop",
-      heroCaption: "Steamed Ukadiche Modak dripping with pure melted ghee."
+      heroImage: "https://res.cloudinary.com/tecwmb40/image/fetch/s--5VD54_W1--/c_fill,f_auto,g_auto,h_750,q_auto,w_1000/https://i.pinimg.com/736x/ee/87/c6/ee87c622879c76616cfe26ab46d8c2c7.jpg?_a=BAMAROWQ0",
+      heroCaption: "Authentic Maharashtrian Puran Poli served with pure ghee and katachi amti."
     },
     games: {
       name: "Vagh-Bakri & Atya Patya",
@@ -726,16 +726,16 @@ export const ALL_INDIAN_STATES: StateData[] = [
       heirloomJewelry: "Kolhapuri Saaj (Sacred amulet necklace), Maharashtrian Nath (Pearl and ruby nose ring) & Thushi choker",
       craftTechnique: "Tapestry weaving technique without any float threads on the reverse.",
       historicalOrigins: "Patronized by the Satavahana kings in 200 BCE in Paithan.",
-      heroImage: "https://images.unsplash.com/photo-1610030469983-98e550d6193c?q=85&w=1200&auto=format&fit=crop",
-      heroCaption: "Royal Paithani saree pallu woven with intricate golden mor (peacock) motifs."
+      heroImage: "https://res.cloudinary.com/tecwmb40/image/fetch/s--jqdiDKJy--/c_fill,f_auto,g_auto,h_750,q_auto,w_1000/https://i.pinimg.com/736x/1e/82/0a/1e820a12c53ff91b0435947a8ab5b262.jpg?_a=BAMAROWQ0",
+      heroCaption: "Traditional Maharashtrian Nauvari saree draped in authentic style with temple jewelry and Nath."
     },
     celebration: {
       majorFestival: "Ganesh Chaturthi (10-day festival of Lord Ganesha) & Gudi Padwa",
       danceForm: "Lavani (Expressive, rhythmic folk dance accompanied by the Dholki)",
       folkMusic: "Powada (Heroic ballads of Chhatrapati Shivaji) and Natya Sangeet",
       celebrationRitual: "Dhol-Tasha pathaks: Thousands of youth drumming massive thunderous kettle-drums in unison during Visarjan.",
-      heroImage: "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?q=85&w=1200&auto=format&fit=crop",
-      heroCaption: "Immense Ganesh idol immersed amidst rose petals and saffron flags."
+      heroImage: "https://res.cloudinary.com/tecwmb40/image/fetch/s--WtUEMMOx--/c_fill,f_auto,g_auto,h_750,q_auto,w_1000/https://i.pinimg.com/736x/b6/69/98/b66998a21705a183145be7deda0a0d75.jpg?_a=BAMAROWQ0",
+      heroCaption: "Grand Ganesh Chaturthi celebration featuring the iconic Lalbaugcha Raja idol in Mumbai."
     },
     places: {
       iconicMonument: "Ajanta & Ellora Caves (Kailash Temple carved from a single basalt mountain)",
