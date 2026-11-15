@@ -77,7 +77,7 @@ const MUSEUM_WINGS = [
     title: "Custom Postcard Atelier",
     subtitle: "Craft, Stamp & Send via Mail",
     description: "Snap or choose a photo, pick a postal stamp from all 36 territories, write a letter, and mail it via Cloudinary.",
-    image: "https://res.cloudinary.com/tecwmb40/image/fetch/s--tOZENoai--/c_fill,f_auto,g_auto,h_500,q_auto,w_800/https://i.pinimg.com/originals/94/2f/cb/942fcb3edb34bce390710a00f497e447.jpg?_a=BAMAROWQ0",
+    image: "https://res.cloudinary.com/tecwmb40/image/fetch/s---qHJZXIR--/c_fill,f_auto,g_auto,h_500,q_auto,w_800/https://i.pinimg.com/originals/c1/16/f8/c116f85d0a3c5b283e9576cb447983d7.jpg?_a=BAMAROWQ0",
     icon: Mail,
     badge: "Interactive Studio",
     accent: "#C59B27",
