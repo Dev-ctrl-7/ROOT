@@ -67,14 +67,14 @@ export function CulturalAtlasDashboard({
     <section id="atlas-dashboard" className="py-24 px-4 sm:px-8 lg:px-12 max-w-7xl mx-auto space-y-16">
       {/* Section Header */}
       <div className="text-center max-w-3xl mx-auto space-y-4">
-        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-[#C59B27]/40 bg-[#FAF8F5] text-[#8C5320] text-[10px] uppercase tracking-[0.25em] font-mono shadow-sm">
-          <Compass className="w-3.5 h-3.5 text-[#C59B27]" />
+        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-[#C59B27]/40 bg-[#FAF8F5] dark:bg-[#1A1613] text-[#8C5320] dark:text-[#E5C378] text-[10px] uppercase tracking-[0.25em] font-mono shadow-sm">
+          <Compass className="w-3.5 h-3.5 text-[#C59B27] dark:text-[#D4AF37]" />
           The Illustrated Indian Cultural Atlas
         </div>
-        <h2 className="font-serif text-4xl sm:text-6xl text-[#1C1814] font-normal tracking-tight">
+        <h2 className="font-serif text-4xl sm:text-6xl text-[#1C1814] dark:text-[#FAF5EE] font-normal tracking-tight">
           28 Living States, 8 Union Territories
         </h2>
-        <p className="font-sans text-xs sm:text-sm text-[#6E6255] max-w-2xl mx-auto leading-relaxed font-light">
+        <p className="font-sans text-xs sm:text-sm text-[#5C5042] dark:text-[#D9CEBF] max-w-2xl mx-auto leading-relaxed font-light">
           Explore the subcontinent through its monochromatic visual identities, culinary heirlooms,
           childhood games, and centuries of handloom mastery.
         </p>
@@ -190,10 +190,10 @@ export function CulturalAtlasDashboard({
       {/* DISCOVERY CARDS GRID */}
       <div className="space-y-8">
         <div className="flex items-center justify-between border-b border-[#C59B27]/30 pb-3">
-          <h3 className="font-serif text-2xl text-[#1C1814] font-normal">
+          <h3 className="font-serif text-2xl text-[#1C1814] dark:text-[#F5EFEB] font-normal">
             {selectedZone === "Union Territories" ? "Union Territories of India" : `${selectedZone} Indian States`}
           </h3>
-          <span className="text-xs text-[#8C5320] font-mono">
+          <span className="text-xs text-[#8C5320] dark:text-[#E5C378] font-mono">
             Showing {filteredStates.length} curated cultural entries
           </span>
         </div>
@@ -302,13 +302,13 @@ export function CulturalAtlasDashboard({
       {selectedZone !== "Union Territories" && (
         <div className="pt-12 border-t border-[#C59B27]/30 space-y-6">
           <div className="space-y-1">
-            <span className="text-[10px] uppercase tracking-[0.25em] text-[#8C5320] font-mono font-bold block">
+            <span className="text-[10px] uppercase tracking-[0.25em] text-[#8C5320] dark:text-[#E5C378] font-mono font-bold block">
               Administrative Classification
             </span>
-            <h3 className="font-serif text-3xl text-[#1C1814] font-normal">
+            <h3 className="font-serif text-3xl text-[#1C1814] dark:text-[#F5EFEB] font-normal">
               The 8 Union Territories of India
             </h3>
-            <p className="text-xs text-[#6E6255] font-light">
+            <p className="text-xs text-[#6E6255] dark:text-[#D9CEBF] font-light">
               Distinct cultural enclaves directly administered by the Central Government of India.
             </p>
           </div>
