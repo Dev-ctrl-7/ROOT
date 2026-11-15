@@ -286,7 +286,7 @@ export const ALL_INDIAN_STATES: StateData[] = [
       iconicIngredients: ["Fresh Coconut Oil", "Green Cardamom", "Malabar Black Pepper", "Curry Leaves", "Kodampuli (Garcinia cambogia)"],
       foodStory:
         "The ancient global spice route began here. Arab, Roman, and Chinese traders crossed oceans for Malabar pepper, giving birth to a culinary tradition steeped in coconut and roasted whole spices.",
-      heroImage: "https://images.unsplash.com/photo-1610192244261-3f33de3f55e4?q=85&w=1200&auto=format&fit=crop",
+      heroImage: "https://res.cloudinary.com/tecwmb40/image/fetch/s---UvqEqNJ--/c_fill,f_auto,g_auto,h_750,q_auto,w_1000/https://i.pinimg.com/736x/6d/ab/48/6dab48a83118d9953bb919c94d154558.jpg?_a=BAMAROWQ0",
       heroCaption: "The colorful feast of Onam Sadya served on a fresh plantain leaf."
     },
     games: {
@@ -306,7 +306,7 @@ export const ALL_INDIAN_STATES: StateData[] = [
       heirloomJewelry: "Nagapada Thali (Snake-hood necklace with cabochon stones), Palakka Mala & Mullamottu Mala (Jasmine bud necklace)",
       craftTechnique: "Balaramapuram and Chendamangalam pit-loom hand-weaving of natural undyed cotton yarns.",
       historicalOrigins: "Worn since the Chera era; celebrated for its pristine, minimalist elegance.",
-      heroImage: "https://images.unsplash.com/photo-1616046229478-9901c5536a45?q=85&w=1200&auto=format&fit=crop",
+      heroImage: "https://res.cloudinary.com/tecwmb40/image/fetch/s--0b9O-p4d--/c_fill,f_auto,g_auto,h_750,q_auto,w_1000/https://i.pinimg.com/736x/e1/18/b0/e118b02c63b1fd00649fb21b95e3440b.jpg?_a=BAMAROWQ0",
       heroCaption: "Traditional Kasavu saree with handwoven gold zari borders on pure cotton."
     },
     celebration: {
@@ -314,8 +314,8 @@ export const ALL_INDIAN_STATES: StateData[] = [
       danceForm: "Kathakali (Classical dance-drama with stylized makeup) & Mohiniyattam (Dance of the enchantress)",
       folkMusic: "Chenda Melam & Panchavadyam (Hypnotic temple drumming by 100+ percussionists)",
       celebrationRitual: "Theyyam: Shamans donning colossal headdresses embodying deities in sacred forest groves.",
-      heroImage: "https://images.unsplash.com/photo-1544735716-392fe2489ffa?q=85&w=1200&auto=format&fit=crop",
-      heroCaption: "Kathakali performer in elaborate green paccha makeup and gilded headdress."
+      heroImage: "https://res.cloudinary.com/tecwmb40/image/fetch/s--2nlP6dFQ--/c_fill,f_auto,g_auto,h_750,q_auto,w_1000/https://i.pinimg.com/736x/8f/df/3c/8fdf3c1f96d8166ab48e165867c0cf57.jpg?_a=BAMAROWQ0",
+      heroCaption: "Onam celebration with traditional vibrant flower carpet (Athapookkalam) and sacred brass lamp."
     },
     places: {
       iconicMonument: "Bekal Fort & Padmanabhaswamy Temple",
