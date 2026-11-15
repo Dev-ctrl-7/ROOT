@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { StateData } from "@/lib/states-data";
 import { buildCloudinaryUrl, buildStatePostcardUrl } from "@/lib/cloudinary";
+import { downloadImageReliably } from "@/lib/download";
 import { ImageWithFallback } from "./ImageWithFallback";
 import MotifIcon from "@/components/MotifIcon";
 import {
@@ -42,6 +43,16 @@ export function StateExhibitionView({ stateData, onOpenInspector }: StateExhibit
   const [sender, setSender] = useState<string>("With affection, A Traveler");
   const [postcardFilter, setPostcardFilter] = useState<"monochromatic" | "sepia" | "golden" | "natural">("monochromatic");
   const [sentPostcard, setSentPostcard] = useState<boolean>(false);
+  const [isDownloading, setIsDownloading] = useState<boolean>(false);
+  const [isEmailModalOpen, setIsEmailModalOpen] = useState<boolean>(false);
+  const [recipientEmail, setRecipientEmail] = useState<string>("friend@heritage.in");
+  const [isSendingEmail, setIsSendingEmail] = useState<boolean>(false);
+  const [emailStatus, setEmailStatus] = useState<{
+    success?: boolean;
+    configured?: boolean;
+    message: string;
+    details?: string;
+  } | null>(null);
 
   const theme = stateData.theme;
 
@@ -110,25 +121,72 @@ export function StateExhibitionView({ stateData, onOpenInspector }: StateExhibit
     filter: postcardFilter,
   });
 
-  const handleSendPostcard = () => {
-    confetti({
-      particleCount: 75,
-      spread: 70,
-      origin: { y: 0.6 },
-      colors: [theme.primary, theme.accent, "#FAF8F5", "#D4AF37"],
-    });
-    setSentPostcard(true);
-    setTimeout(() => setSentPostcard(false), 4000);
+  const handleSendPostcardSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!recipientEmail || !recipientEmail.includes("@")) {
+      setEmailStatus({
+        success: false,
+        message: "Please enter a valid recipient email address.",
+      });
+      return;
+    }
+
+    setIsSendingEmail(true);
+    setEmailStatus(null);
+
+    try {
+      const res = await fetch("/api/postcard/send", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          recipientEmail,
+          recipientName: recipient,
+          senderName: sender,
+          letterMessage: message,
+          stateId: stateData.id,
+          stateName: stateData.name,
+          postmarkCity: `${stateData.atlas.capital.toUpperCase()} • INDIA`,
+          imageUrl: stateData.places.heroImage,
+          filter: postcardFilter,
+        }),
+      });
+
+      const data = await res.json();
+      if (res.ok && data.success) {
+        setEmailStatus({
+          success: true,
+          configured: true,
+          message: data.message || `Postcard stamped with ${stateData.name}'s seal and dispatched!`,
+        });
+        confetti({
+          particleCount: 75,
+          spread: 70,
+          origin: { y: 0.6 },
+          colors: [theme.primary, theme.accent, "#FAF8F5", "#D4AF37"],
+        });
+      } else {
+        setEmailStatus({
+          success: false,
+          configured: data.configured !== false,
+          message: data.error || "Failed to dispatch postcard.",
+          details: data.details,
+        });
+      }
+    } catch {
+      setEmailStatus({
+        success: false,
+        message: "Network error while contacting postal dispatch service.",
+      });
+    } finally {
+      setIsSendingEmail(false);
+    }
   };
 
-  const handleDownloadPostcard = () => {
-    const link = document.createElement("a");
-    link.href = statePostcardUrl;
-    link.target = "_blank";
-    link.download = `roots-${stateData.id}-postcard.jpg`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+  const handleDownloadPostcard = async () => {
+    setIsDownloading(true);
+    const filename = `roots-${stateData.id}-postcard.jpg`;
+    await downloadImageReliably(statePostcardUrl, filename);
+    setIsDownloading(false);
   };
 
   return (
@@ -806,25 +864,39 @@ export function StateExhibitionView({ stateData, onOpenInspector }: StateExhibit
                 <div className="flex items-center gap-3 pt-2">
                   <button
                     onClick={handleDownloadPostcard}
-                    className="flex-1 py-2.5 px-4 rounded-xl text-xs uppercase tracking-wider font-semibold text-white shadow-md flex items-center justify-center gap-1.5 transition-transform hover:scale-[1.02]"
+                    disabled={isDownloading}
+                    className="flex-1 py-2.5 px-4 rounded-xl text-xs uppercase tracking-wider font-semibold text-white shadow-md flex items-center justify-center gap-1.5 transition-transform hover:scale-[1.02] cursor-pointer disabled:opacity-50"
                     style={{ backgroundColor: theme.primary }}
                   >
                     <Download className="w-3.5 h-3.5" />
-                    Download Postcard
+                    {isDownloading ? "Preparing..." : "Download Postcard"}
                   </button>
                   <button
-                    onClick={handleSendPostcard}
-                    className="py-2.5 px-4 rounded-xl text-xs uppercase tracking-wider font-semibold text-[#1C1814] border border-[#C59B27] bg-white hover:bg-[#FAF8F5] flex items-center gap-1.5"
+                    onClick={() => setIsEmailModalOpen(true)}
+                    className="py-2.5 px-4 rounded-xl text-xs uppercase tracking-wider font-semibold text-[#1C1814] border border-[#C59B27] bg-white hover:bg-[#FAF8F5] flex items-center gap-1.5 cursor-pointer"
                   >
                     <Send className="w-3.5 h-3.5" />
-                    Send
+                    Send via Email
                   </button>
                 </div>
 
-                {sentPostcard && (
-                  <div className="p-3 rounded-lg bg-emerald-50 border border-emerald-300 text-emerald-800 text-xs flex items-center gap-2">
-                    <Sparkles className="w-4 h-4 text-emerald-600" />
-                    Postcard stamped with {stateData.name}&apos;s seal of memory!
+                {emailStatus && (
+                  <div
+                    className={`p-3 rounded-lg border text-xs space-y-1 ${
+                      emailStatus.success
+                        ? "bg-emerald-50 border-emerald-300 text-emerald-800"
+                        : emailStatus.configured === false
+                        ? "bg-amber-50 border-amber-300 text-amber-900"
+                        : "bg-red-50 border-red-350 text-red-700"
+                    }`}
+                  >
+                    <p className="font-semibold flex items-center gap-1.5">
+                      <Sparkles className="w-4 h-4 text-emerald-600 shrink-0" />
+                      <span>{emailStatus.message}</span>
+                    </p>
+                    {emailStatus.details && (
+                      <p className="text-[11px] leading-relaxed font-sans">{emailStatus.details}</p>
+                    )}
                   </div>
                 )}
               </div>
@@ -891,6 +963,88 @@ export function StateExhibitionView({ stateData, onOpenInspector }: StateExhibit
           </div>
         )}
       </div>
+
+      {/* State Postcard Email Dispatch Modal */}
+      {isEmailModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md">
+          <div className="bg-[#FAF5EE] dark:bg-[#14110E] border border-[#C59B27]/40 rounded-2xl p-6 sm:p-8 max-w-lg w-full space-y-5 shadow-2xl">
+            <div className="flex items-center justify-between border-b border-[#C59B27]/20 pb-3">
+              <h3 className="font-serif text-xl text-[#1C1814] dark:text-[#F5EFEB] flex items-center gap-2">
+                <Send className="w-5 h-5 text-[#5B0E1B] dark:text-[#D4AF37]" />
+                Send {stateData.name} Postcard via Email
+              </h3>
+              <button
+                onClick={() => {
+                  setIsEmailModalOpen(false);
+                  setEmailStatus(null);
+                }}
+                className="text-[#6E6255] hover:text-[#1C1814] dark:text-[#A89886] dark:hover:text-white p-1 cursor-pointer"
+              >
+                &times;
+              </button>
+            </div>
+
+            <p className="text-xs text-[#6E6255] dark:text-[#A89886] leading-relaxed">
+              Dispatch this custom stamped postcard from <strong>{stateData.name}</strong> to your recipient&apos;s email address.
+            </p>
+
+            <form onSubmit={handleSendPostcardSubmit} className="space-y-4">
+              <div>
+                <label className="block text-[11px] font-mono text-[#8C5320] dark:text-[#E5C378] uppercase tracking-wider mb-1.5">
+                  Recipient Email
+                </label>
+                <input
+                  type="email"
+                  value={recipientEmail}
+                  onChange={(e) => setRecipientEmail(e.target.value)}
+                  placeholder="recipient@example.com"
+                  required
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-[#C59B27]/30 bg-white dark:bg-[#1A1613] text-[#1C1814] dark:text-[#F5EFEB] text-xs focus:outline-none"
+                />
+              </div>
+
+              {emailStatus && (
+                <div
+                  className={`p-3.5 rounded-xl border text-xs space-y-1 ${
+                    emailStatus.success
+                      ? "bg-emerald-50 border-emerald-300 text-emerald-800"
+                      : emailStatus.configured === false
+                      ? "bg-amber-50 border-amber-300 text-amber-900"
+                      : "bg-red-50 border-red-300 text-red-700"
+                  }`}
+                >
+                  <p className="font-semibold">{emailStatus.message}</p>
+                  {emailStatus.details && (
+                    <p className="text-[11px] opacity-90 leading-relaxed font-sans">{emailStatus.details}</p>
+                  )}
+                </div>
+              )}
+
+              <div className="flex items-center justify-end gap-3 pt-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setIsEmailModalOpen(false);
+                    setEmailStatus(null);
+                  }}
+                  className="px-4 py-2 rounded-lg border border-[#C59B27]/30 text-xs text-[#6E6255] dark:text-[#A89886] cursor-pointer"
+                >
+                  Close
+                </button>
+                <button
+                  type="submit"
+                  disabled={isSendingEmail}
+                  className="px-5 py-2 rounded-lg text-white text-xs uppercase tracking-wider font-semibold transition-colors flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
+                  style={{ backgroundColor: theme.primary }}
+                >
+                  <Send className="w-3.5 h-3.5" />
+                  {isSendingEmail ? "Dispatching..." : "Send Postcard"}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </section>
   );
 }

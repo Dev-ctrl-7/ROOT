@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import { ALL_INDIAN_STATES } from "@/lib/states-data";
 import { buildPostcardCloudinaryUrl } from "@/lib/cloudinary";
+import { downloadImageReliably } from "@/lib/download";
 import { useLanguage } from "@/lib/i18n/context";
 import {
   Sparkles,
@@ -136,10 +137,13 @@ export function CustomPostcardStudio({ onOpenInspector }: CustomPostcardStudioPr
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const streamRef = useRef<MediaStream | null>(null);
 
-  // Mail sending state
+  // Mail sending & download state
   const [isSending, setIsSending] = useState<boolean>(false);
   const [sendSuccess, setSendSuccess] = useState<boolean>(false);
   const [sendError, setSendError] = useState<string>("");
+  const [sendErrorDetails, setSendErrorDetails] = useState<string>("");
+  const [sendIsUnconfigured, setSendIsUnconfigured] = useState<boolean>(false);
+  const [isDownloading, setIsDownloading] = useState<boolean>(false);
   const [copiedLink, setCopiedLink] = useState<boolean>(false);
   const [isFlipped, setIsFlipped] = useState<boolean>(false);
 
@@ -227,6 +231,9 @@ export function CustomPostcardStudio({ onOpenInspector }: CustomPostcardStudioPr
 
     setIsSending(true);
     setSendError("");
+    setSendErrorDetails("");
+    setSendIsUnconfigured(false);
+    setSendSuccess(false);
 
     try {
       const res = await fetch("/api/postcard/send", {
@@ -246,7 +253,7 @@ export function CustomPostcardStudio({ onOpenInspector }: CustomPostcardStudioPr
       });
 
       const data = await res.json();
-      if (res.ok) {
+      if (res.ok && data.success) {
         setSendSuccess(true);
         confetti({
           particleCount: 80,
@@ -256,12 +263,21 @@ export function CustomPostcardStudio({ onOpenInspector }: CustomPostcardStudioPr
         });
       } else {
         setSendError(data.error || "Failed to dispatch postcard.");
+        if (data.details) setSendErrorDetails(data.details);
+        if (data.configured === false) setSendIsUnconfigured(true);
       }
     } catch {
       setSendError("Network error. Please try again.");
     } finally {
       setIsSending(false);
     }
+  };
+
+  const handleDownloadPostcard = async () => {
+    setIsDownloading(true);
+    const filename = `roots-postcard-${selectedState.id}.jpg`;
+    await downloadImageReliably(transformedUrl, filename);
+    setIsDownloading(false);
   };
 
   const handleCopyPostcardUrl = () => {
@@ -741,16 +757,18 @@ export function CustomPostcardStudio({ onOpenInspector }: CustomPostcardStudioPr
                 <span>{copiedLink ? "Copied!" : "Copy Link"}</span>
               </button>
 
-              <a
-                href={transformedUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                download="roots-cultural-postcard.jpg"
-                className="flex-1 py-1.5 px-2.5 rounded-xl bg-[#FAF8F5] dark:bg-[#14110E] hover:bg-[#5B0E1B] hover:text-white dark:hover:bg-[#5B0E1B] dark:hover:text-white text-[#5B0E1B] dark:text-[#E5C378] border border-[#C59B27]/30 text-xs font-serif flex items-center justify-center gap-1.5 shadow-2xs transition-all"
+              <button
+                onClick={handleDownloadPostcard}
+                disabled={isDownloading}
+                className="flex-1 py-1.5 px-2.5 rounded-xl bg-[#FAF8F5] dark:bg-[#14110E] hover:bg-[#5B0E1B] hover:text-white dark:hover:bg-[#5B0E1B] dark:hover:text-white text-[#5B0E1B] dark:text-[#E5C378] border border-[#C59B27]/30 text-xs font-serif flex items-center justify-center gap-1.5 shadow-2xs transition-all cursor-pointer disabled:opacity-50"
               >
-                <Download className="w-3.5 h-3.5" />
-                <span>Download</span>
-              </a>
+                {isDownloading ? (
+                  <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                ) : (
+                  <Download className="w-3.5 h-3.5" />
+                )}
+                <span>{isDownloading ? "Downloading..." : "Download"}</span>
+              </button>
 
               <button
                 onClick={onOpenInspector}
@@ -805,7 +823,21 @@ export function CustomPostcardStudio({ onOpenInspector }: CustomPostcardStudioPr
             </div>
 
             {sendError && (
-              <p className="text-xs text-red-600 dark:text-red-400 font-sans">{sendError}</p>
+              <div
+                className={`p-3 rounded-xl border text-xs space-y-1 ${
+                  sendIsUnconfigured
+                    ? "bg-amber-50 dark:bg-amber-950/40 border-amber-300 dark:border-amber-700 text-amber-900 dark:text-amber-200"
+                    : "bg-red-50 dark:bg-red-950/40 border-red-300 dark:border-red-850 text-red-700 dark:text-red-300"
+                }`}
+              >
+                <div className="font-semibold flex items-center gap-1.5">
+                  <AlertTriangle className="w-4 h-4 shrink-0" />
+                  <span>{sendError}</span>
+                </div>
+                {sendErrorDetails && (
+                  <p className="text-[11px] opacity-90 leading-relaxed font-sans">{sendErrorDetails}</p>
+                )}
+              </div>
             )}
 
             {sendSuccess && (

@@ -177,25 +177,6 @@ export function buildCloudinaryUrl(options: CloudinaryTransformOptions): string 
       return source;
     }
 
-    // If running in Node.js server context with API secret, generate signed fetch URL to bypass Cloudinary ACL restrictions
-    const apiSecret = typeof process !== "undefined" ? process.env?.CLOUDINARY_API_SECRET : undefined;
-    if (apiSecret) {
-      try {
-        const crypto = require("crypto");
-        const toSign = `${transformString}/${source}${apiSecret}`;
-        const hash = crypto
-          .createHash("sha1")
-          .update(toSign)
-          .digest("base64")
-          .slice(0, 8)
-          .replace(/\//g, "_")
-          .replace(/\+/g, "-");
-        return `https://res.cloudinary.com/${cloudName}/image/fetch/s--${hash}--/${transformString}/${source}`;
-      } catch {
-        // Fall back to unsigned fetch if crypto is unavailable
-      }
-    }
-
     return `https://res.cloudinary.com/${cloudName}/image/fetch/${transformString}/${source}`;
   }
 
@@ -323,7 +304,7 @@ export function buildPostcardCloudinaryUrl(options: PostcardCloudinaryOptions): 
     recipient: options.recipient || "To a kindred soul,",
     message: options.message || "A memory etched in time.",
     sender: options.sender || "A traveler",
-    filter: (options.filter as any) || "natural",
+    filter: (options.filter as "monochromatic" | "sepia" | "golden" | "natural") || "natural",
   });
 }
 

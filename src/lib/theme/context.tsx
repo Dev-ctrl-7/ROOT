@@ -15,39 +15,40 @@ const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 const THEME_STORAGE_KEY = "roots_museum_theme_mode";
 
+function applyThemeClass(target: ThemeMode) {
+  if (typeof document === "undefined") return;
+  const root = document.documentElement;
+  if (target === "dark") {
+    root.classList.add("dark");
+    root.setAttribute("data-theme", "dark");
+  } else {
+    root.classList.remove("dark");
+    root.setAttribute("data-theme", "light");
+  }
+}
+
+function getInitialTheme(): ThemeMode {
+  if (typeof window === "undefined") return "light";
+  try {
+    const saved = localStorage.getItem(THEME_STORAGE_KEY) as ThemeMode | null;
+    if (saved === "light" || saved === "dark") {
+      return saved;
+    }
+    const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+    return prefersDark ? "dark" : "light";
+  } catch {
+    return "light";
+  }
+}
+
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const [theme, setThemeState] = useState<ThemeMode>("light");
+  const [theme, setThemeState] = useState<ThemeMode>(getInitialTheme);
   const [isMounted, setIsMounted] = useState<boolean>(false);
 
   useEffect(() => {
-    try {
-      const saved = localStorage.getItem(THEME_STORAGE_KEY) as ThemeMode | null;
-      if (saved === "light" || saved === "dark") {
-        setThemeState(saved);
-        applyThemeClass(saved);
-      } else {
-        const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-        const initial = prefersDark ? "dark" : "light";
-        setThemeState(initial);
-        applyThemeClass(initial);
-      }
-    } catch {
-      // fallback
-    }
+    applyThemeClass(theme);
     setIsMounted(true);
-  }, []);
-
-  const applyThemeClass = (target: ThemeMode) => {
-    if (typeof document === "undefined") return;
-    const root = document.documentElement;
-    if (target === "dark") {
-      root.classList.add("dark");
-      root.setAttribute("data-theme", "dark");
-    } else {
-      root.classList.remove("dark");
-      root.setAttribute("data-theme", "light");
-    }
-  };
+  }, [theme]);
 
   const setTheme = (newTheme: ThemeMode) => {
     setThemeState(newTheme);
@@ -60,7 +61,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   };
 
   const toggleTheme = () => {
-    const nextTheme: ThemeMode = theme === "dark" ? "light" : "dark";
+    const nextTheme: ThemeMode = theme === "light" ? "dark" : "light";
     setTheme(nextTheme);
   };
 
@@ -71,10 +72,10 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   );
 }
 
-export function useTheme() {
-  const ctx = useContext(ThemeContext);
-  if (!ctx) {
+export function useTheme(): ThemeContextType {
+  const context = useContext(ThemeContext);
+  if (!context) {
     throw new Error("useTheme must be used within a ThemeProvider");
   }
-  return ctx;
+  return context;
 }

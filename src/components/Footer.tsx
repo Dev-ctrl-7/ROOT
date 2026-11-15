@@ -1,6 +1,7 @@
 "use client";
 
-import { Heart, Sparkles, Compass, BookOpen, Clock, Utensils } from "lucide-react";
+import Link from "next/link";
+import { Heart, Sparkles, Compass, BookOpen } from "lucide-react";
 import { useLanguage } from "@/lib/i18n/context";
 
 interface FooterProps {
@@ -46,49 +47,49 @@ export function Footer({ onOpenInspector }: FooterProps) {
             </h4>
             <ul className="space-y-2.5 text-xs text-[#E7DDCC]/75">
               <li>
-                <a href="/" className="hover:text-[#D4AF37] transition-colors">
-                  Museum Foyer & Atrium
-                </a>
+                <Link href="/" className="hover:text-[#D4AF37] transition-colors">
+                  Museum Foyer &amp; Atrium
+                </Link>
               </li>
               <li>
-                <a href="/atlas" className="hover:text-[#D4AF37] transition-colors">
+                <Link href="/atlas" className="hover:text-[#D4AF37] transition-colors">
                   Interactive Cultural Atlas (36 Regions)
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="/exhibition" className="hover:text-[#D4AF37] transition-colors">
+                <Link href="/exhibition" className="hover:text-[#D4AF37] transition-colors">
                   Monochromatic State Galleries
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="/time-machine" className="hover:text-[#D4AF37] transition-colors">
+                <Link href="/time-machine" className="hover:text-[#D4AF37] transition-colors">
                   Cultural Time Machine (5,000 Years)
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="/cuisine" className="hover:text-[#D4AF37] transition-colors">
+                <Link href="/cuisine" className="hover:text-[#D4AF37] transition-colors">
                   Food Across India (Regional Cuisine)
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="/archive-lens" className="hover:text-[#D4AF37] transition-colors">
-                  Granite & Silver Halide (Archive Lens)
-                </a>
+                <Link href="/archive-lens" className="hover:text-[#D4AF37] transition-colors">
+                  Granite &amp; Silver Halide (Archive Lens)
+                </Link>
               </li>
               <li>
-                <a href="/postcard" className="hover:text-[#D4AF37] transition-colors">
-                  Custom Postcard Studio & Atelier
-                </a>
+                <Link href="/postcard" className="hover:text-[#D4AF37] transition-colors">
+                  Custom Postcard Studio &amp; Atelier
+                </Link>
               </li>
               <li>
-                <a href="/letter" className="hover:text-[#D4AF37] transition-colors">
+                <Link href="/letter" className="hover:text-[#D4AF37] transition-colors">
                   A Letter From Home (Epistle Archive)
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="/passport" className="hover:text-[#D4AF37] transition-colors">
+                <Link href="/passport" className="hover:text-[#D4AF37] transition-colors">
                   My Cultural Passport
-                </a>
+                </Link>
               </li>
             </ul>
           </div>

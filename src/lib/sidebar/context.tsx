@@ -13,19 +13,24 @@ const SidebarContext = createContext<SidebarContextType | undefined>(undefined);
 
 const SIDEBAR_STORAGE_KEY = "roots_museum_sidebar_open_state";
 
+function getInitialSidebarOpen(): boolean {
+  if (typeof window === "undefined") return true;
+  try {
+    const saved = localStorage.getItem(SIDEBAR_STORAGE_KEY);
+    if (saved !== null) {
+      return saved === "true";
+    }
+  } catch {
+    // ignore
+  }
+  return true;
+}
+
 export function SidebarProvider({ children }: { children: React.ReactNode }) {
-  const [isOpen, setIsOpenState] = useState<boolean>(true);
+  const [isOpen, setIsOpenState] = useState<boolean>(getInitialSidebarOpen);
   const [isMounted, setIsMounted] = useState<boolean>(false);
 
   useEffect(() => {
-    try {
-      const saved = localStorage.getItem(SIDEBAR_STORAGE_KEY);
-      if (saved !== null) {
-        setIsOpenState(saved === "true");
-      }
-    } catch {
-      // ignore
-    }
     setIsMounted(true);
   }, []);
 

@@ -21,6 +21,7 @@ import {
   analyzeCloudinaryUrl,
   TransformationBreakdown,
 } from "@/lib/cloudinary";
+import { downloadImageReliably } from "@/lib/download";
 import { useLanguage } from "@/lib/i18n/context";
 
 interface PostcardStudioProps {
@@ -45,9 +46,19 @@ export function PostcardStudio({ initialRegionId, onOpenInspector }: PostcardStu
   const [isUploadModalOpen, setIsUploadModalOpen] = useState<boolean>(false);
   const [uploadStatus, setUploadStatus] = useState<string>("");
 
-  // Copy feedback
+  // Copy feedback & download
   const [copiedUrl, setCopiedUrl] = useState<boolean>(false);
   const [sentSuccess, setSentSuccess] = useState<boolean>(false);
+  const [isDownloading, setIsDownloading] = useState<boolean>(false);
+  const [isEmailModalOpen, setIsEmailModalOpen] = useState<boolean>(false);
+  const [recipientEmail, setRecipientEmail] = useState<string>("");
+  const [isSendingEmail, setIsSendingEmail] = useState<boolean>(false);
+  const [emailStatus, setEmailStatus] = useState<{
+    success?: boolean;
+    configured?: boolean;
+    message: string;
+    details?: string;
+  } | null>(null);
   const [, startTransition] = useTransition();
 
   useEffect(() => {
@@ -99,25 +110,72 @@ export function PostcardStudio({ initialRegionId, onOpenInspector }: PostcardStu
     }
   };
 
-  const handleDownloadPostcard = () => {
-    const link = document.createElement("a");
-    link.href = transformedUrl;
-    link.target = "_blank";
-    link.download = `roots-postcard-${activePreset.regionId}.jpg`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+  const handleDownloadPostcard = async () => {
+    setIsDownloading(true);
+    const filename = `roots-postcard-${activePreset.regionId}.jpg`;
+    await downloadImageReliably(transformedUrl, filename);
+    setIsDownloading(false);
   };
 
-  const handleSendPostcard = () => {
-    confetti({
-      particleCount: 70,
-      spread: 65,
-      origin: { y: 0.65 },
-      colors: ["#e4c987", "#e06d1b", "#f7f4ee", "#b04925"],
-    });
-    setSentSuccess(true);
-    setTimeout(() => setSentSuccess(false), 4000);
+  const handleSendPostcardSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!recipientEmail || !recipientEmail.includes("@")) {
+      setEmailStatus({
+        success: false,
+        message: "Please enter a valid recipient email address.",
+      });
+      return;
+    }
+
+    setIsSendingEmail(true);
+    setEmailStatus(null);
+
+    try {
+      const res = await fetch("/api/postcard/send", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          recipientEmail,
+          recipientName: recipient,
+          senderName: sender,
+          letterMessage: message,
+          stateId: activePreset.regionId,
+          stateName: activePreset.regionName,
+          postmarkCity,
+          imageUrl: currentSourceImage,
+          filter,
+        }),
+      });
+
+      const data = await res.json();
+      if (res.ok && data.success) {
+        setEmailStatus({
+          success: true,
+          configured: true,
+          message: data.message || "Postcard successfully dispatched!",
+        });
+        confetti({
+          particleCount: 75,
+          spread: 70,
+          origin: { y: 0.65 },
+          colors: ["#e4c987", "#e06d1b", "#f7f4ee", "#b04925"],
+        });
+      } else {
+        setEmailStatus({
+          success: false,
+          configured: data.configured !== false,
+          message: data.error || "Failed to dispatch postcard.",
+          details: data.details,
+        });
+      }
+    } catch {
+      setEmailStatus({
+        success: false,
+        message: "Network connection error while contacting postal dispatch service.",
+      });
+    } finally {
+      setIsSendingEmail(false);
+    }
   };
 
   const handleCustomImageSubmit = (e: React.FormEvent) => {
@@ -409,17 +467,18 @@ export function PostcardStudio({ initialRegionId, onOpenInspector }: PostcardStu
               <div className="flex items-center gap-2">
                 <button
                   onClick={handleDownloadPostcard}
-                  className="px-4 py-2.5 rounded-lg bg-[#bfa052] hover:bg-[#e4c987] text-[#090807] text-xs uppercase tracking-wider font-medium flex items-center gap-1.5 transition-colors shadow-md shadow-[#bfa052]/20"
+                  disabled={isDownloading}
+                  className="px-4 py-2.5 rounded-lg bg-[#bfa052] hover:bg-[#e4c987] text-[#090807] text-xs uppercase tracking-wider font-medium flex items-center gap-1.5 transition-colors shadow-md shadow-[#bfa052]/20 cursor-pointer disabled:opacity-50"
                 >
                   <Download className="w-3.5 h-3.5" />
-                  Download Postcard
+                  {isDownloading ? "Downloading..." : "Download Postcard"}
                 </button>
                 <button
-                  onClick={handleSendPostcard}
-                  className="px-4 py-2.5 rounded-lg bg-[#e06d1b] hover:bg-[#f28b38] text-[#f7f4ee] text-xs uppercase tracking-wider font-medium flex items-center gap-1.5 transition-colors"
+                  onClick={() => setIsEmailModalOpen(true)}
+                  className="px-4 py-2.5 rounded-lg bg-[#e06d1b] hover:bg-[#f28b38] text-[#f7f4ee] text-xs uppercase tracking-wider font-medium flex items-center gap-1.5 transition-colors cursor-pointer"
                 >
                   <Send className="w-3.5 h-3.5" />
-                  Send & Celebrate
+                  Dispatch by Email
                 </button>
               </div>
 
@@ -556,6 +615,87 @@ export function PostcardStudio({ initialRegionId, onOpenInspector }: PostcardStu
                   className="px-5 py-2 rounded-lg bg-[#bfa052] hover:bg-[#e4c987] text-[#090807] text-xs uppercase tracking-wider font-semibold transition-colors"
                 >
                   Apply To Postcard
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* EMAIL DISPATCH MODAL */}
+      {isEmailModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md">
+          <div className="bg-[#0f0d0b] border border-[#bfa052]/40 rounded-2xl p-6 sm:p-8 max-w-lg w-full space-y-5 shadow-2xl">
+            <div className="flex items-center justify-between border-b border-[#1c1916] pb-3">
+              <h3 className="font-serif text-xl text-[#f7f4ee] flex items-center gap-2">
+                <Mail className="w-5 h-5 text-[#e4c987]" />
+                Dispatch Postcard via Email
+              </h3>
+              <button
+                onClick={() => {
+                  setIsEmailModalOpen(false);
+                  setEmailStatus(null);
+                }}
+                className="text-[#e7ddcc]/60 hover:text-[#f7f4ee] p-1 cursor-pointer"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <p className="text-xs text-[#e7ddcc]/80 leading-relaxed font-light">
+              Send this personalized cultural postcard and letter from <strong>{activePreset.regionName}</strong> directly to a loved one&apos;s inbox.
+            </p>
+
+            <form onSubmit={handleSendPostcardSubmit} className="space-y-4">
+              <div>
+                <label className="block text-[11px] font-mono text-[#e4c987] uppercase tracking-wider mb-1.5">
+                  Recipient Email Address
+                </label>
+                <input
+                  type="email"
+                  value={recipientEmail}
+                  onChange={(e) => setRecipientEmail(e.target.value)}
+                  placeholder="recipient@example.com"
+                  required
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-[#1c1916] bg-[#141210] text-[#f7f4ee] placeholder-[#e7ddcc]/30 text-xs focus:outline-none focus:border-[#bfa052]"
+                />
+              </div>
+
+              {emailStatus && (
+                <div
+                  className={`p-3.5 rounded-xl border text-xs space-y-1 ${
+                    emailStatus.success
+                      ? "bg-emerald-950/60 border-emerald-500/40 text-emerald-200"
+                      : emailStatus.configured === false
+                      ? "bg-amber-950/50 border-amber-500/40 text-amber-200"
+                      : "bg-red-950/60 border-red-500/40 text-red-200"
+                  }`}
+                >
+                  <p className="font-semibold">{emailStatus.message}</p>
+                  {emailStatus.details && (
+                    <p className="text-[11px] opacity-90 leading-relaxed font-sans">{emailStatus.details}</p>
+                  )}
+                </div>
+              )}
+
+              <div className="flex items-center justify-end gap-3 pt-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setIsEmailModalOpen(false);
+                    setEmailStatus(null);
+                  }}
+                  className="px-4 py-2 rounded-lg border border-[#1c1916] text-xs text-[#e7ddcc]/70 hover:text-[#f7f4ee] cursor-pointer"
+                >
+                  Close
+                </button>
+                <button
+                  type="submit"
+                  disabled={isSendingEmail}
+                  className="px-5 py-2 rounded-lg bg-[#e06d1b] hover:bg-[#f28b38] text-white text-xs uppercase tracking-wider font-semibold transition-colors flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
+                >
+                  <Send className="w-3.5 h-3.5" />
+                  {isSendingEmail ? "Dispatching..." : "Send Postcard"}
                 </button>
               </div>
             </form>
