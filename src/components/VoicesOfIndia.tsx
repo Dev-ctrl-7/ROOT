@@ -13,7 +13,6 @@ import {
   AlertCircle,
   ExternalLink,
   Disc3,
-  Award,
 } from "lucide-react";
 import { AUTHENTIC_INSTRUMENTS, AuthenticInstrument } from "@/lib/audio-data";
 
@@ -179,10 +178,6 @@ export function VoicesOfIndia() {
           Authentic master performances of the subcontinent&apos;s classical, temple, and devotional instruments.
           Recorded on location by cultural archives, master practitioners, and heritage custodians.
         </p>
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#C59B27]/10 text-[10px] font-mono text-[#8C5320] dark:text-[#E5C378] border border-[#C59B27]/30">
-          <Award className="w-3 h-3 text-[#C59B27]" />
-          <span>Verified Creative Commons &amp; Public Domain Cultural Archives &bull; 0 Synthesized Oscillators</span>
-        </div>
       </div>
 
       {/* Instruments Grid */}

@@ -111,10 +111,7 @@ export function Navigation({ onOpenInspector }: NavigationProps) {
             </button>
           </div>
 
-          <div className="mt-3 pt-2.5 border-t border-[#C59B27]/15 dark:border-[#C59B27]/20 flex items-center justify-between text-[10px] font-mono tracking-widest text-[#8C7E72] dark:text-[#A89886] uppercase">
-            <span>Living Museum</span>
-            <span className="w-1.5 h-1.5 rounded-full bg-[#C59B27] animate-pulse" />
-          </div>
+
         </div>
 
         {/* Vertical Navigation Links */}
