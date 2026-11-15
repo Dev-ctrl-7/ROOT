@@ -1,184 +1,210 @@
 "use client";
 
-import { useState, useRef } from "react";
-import { Volume2, VolumeX, Music, Sparkles, Play, Square } from "lucide-react";
+import { useState, useRef, useEffect } from "react";
+import {
+  Volume2,
+  VolumeX,
+  Music,
+  Play,
+  Pause,
+  RotateCcw,
+  Loader2,
+  CheckCircle2,
+  AlertCircle,
+  ExternalLink,
+  Disc3,
+  Award,
+} from "lucide-react";
+import { AUTHENTIC_INSTRUMENTS, AuthenticInstrument } from "@/lib/audio-data";
 
-interface Instrument {
-  id: string;
-  name: string;
-  nativeName: string;
-  region: string;
-  tradition: string;
-  description: string;
-  notes: number[]; // frequencies in Hz for melodic phrase
-  waveform: OscillatorType;
-  baseColor: string;
+function formatTime(seconds: number): string {
+  if (isNaN(seconds) || seconds < 0) return "0:00";
+  const mins = Math.floor(seconds / 60);
+  const secs = Math.floor(seconds % 60);
+  return `${mins}:${secs < 10 ? "0" : ""}${secs}`;
 }
 
-const INSTRUMENTS: Instrument[] = [
-  {
-    id: "nadaswaram",
-    name: "Nadaswaram",
-    nativeName: "நாதஸ்வரம்",
-    region: "Tamil Nadu & South India",
-    tradition: "Mangala Isai & Temple Ceremonies",
-    description: "The world's most resonant non-brass acoustic wind instrument, carved from ancient ebony or aacha wood with silver bells.",
-    notes: [293.66, 329.63, 392.00, 440.00, 493.88, 587.33], // Mohanam / Bhupali scale
-    waveform: "sawtooth",
-    baseColor: "#8C5320",
-  },
-  {
-    id: "sitar",
-    name: "Sitar",
-    nativeName: "सितार",
-    region: "Northern & Central India",
-    tradition: "Hindustani Classical Ragas",
-    description: "A plucked string instrument made from seasoned gourds and teakwood with sympathetic resonant strings producing shimmering overtones.",
-    notes: [261.63, 293.66, 329.63, 392.00, 440.00, 523.25], // Bilawal / Shankarabharanam
-    waveform: "triangle",
-    baseColor: "#5B0E1B",
-  },
-  {
-    id: "veena",
-    name: "Saraswati Veena",
-    nativeName: "ವೀಣೆ / வீணை",
-    region: "Karnataka & Tamil Nadu",
-    tradition: "Carnatic Classical Chamber Concerts",
-    description: "One of the most ancient fretted lutes of India, carved from jackfruit wood, held in the lap of the goddess of arts Saraswati.",
-    notes: [220.00, 246.94, 277.18, 329.63, 369.99, 440.00], // Kalyani raga
-    waveform: "sine",
-    baseColor: "#9E5C31",
-  },
-  {
-    id: "bansuri",
-    name: "Bansuri (Flute)",
-    nativeName: "बांसुरी",
-    region: "Pan-India & Vrindavan",
-    tradition: "Pastoral Devotion & Classical Dhrupad",
-    description: "A seamless transverse bamboo flute tuned to natural breath, evoking riverbanks, morning dew, and contemplative stillness.",
-    notes: [329.63, 369.99, 415.30, 493.88, 554.37, 659.25], // Yaman / Kalyani
-    waveform: "sine",
-    baseColor: "#0A4642",
-  },
-  {
-    id: "shehnai",
-    name: "Shehnai",
-    nativeName: "शहनाई",
-    region: "Uttar Pradesh (Varanasi)",
-    tradition: "Ghat Celebrations & Weddings",
-    description: "A quadruple-reed instrument celebrated along the ghats of the Ganges, sanctified forever by Ustad Bismillah Khan.",
-    notes: [349.23, 392.00, 440.00, 523.25, 587.33, 698.46], // Bhairav morning raga
-    waveform: "sawtooth",
-    baseColor: "#C59B27",
-  },
-  {
-    id: "mridangam",
-    name: "Mridangam",
-    nativeName: "மிருதங்கம்",
-    region: "South India",
-    tradition: "Rhythmic Talam & Carnatic Ensemble",
-    description: "The primary rhythmic accompaniment of South India, a two-headed drum carved from heavy jackwood tuned with black iron paste.",
-    notes: [110, 165, 220, 165, 110, 220], // Low rhythmic pulses
-    waveform: "triangle",
-    baseColor: "#7A2E16",
-  },
-];
-
 export function VoicesOfIndia() {
-  const [activePlayingId, setActivePlayingId] = useState<string | null>(null);
-  const audioContextRef = useRef<AudioContext | null>(null);
-  const timeoutIdsRef = useRef<NodeJS.Timeout[]>([]);
+  const [activeTrackId, setActiveTrackId] = useState<string | null>(null);
+  const [isPlaying, setIsPlaying] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [currentTime, setCurrentTime] = useState<number>(0);
+  const [duration, setDuration] = useState<number>(0);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  const stopAllAudio = () => {
-    timeoutIdsRef.current.forEach((id) => clearTimeout(id));
-    timeoutIdsRef.current = [];
-    setActivePlayingId(null);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+
+  // Stop playback when navigating away from the component
+  useEffect(() => {
+    return () => {
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current.src = "";
+        audioRef.current = null;
+      }
+    };
+  }, []);
+
+  const stopCurrentAudio = () => {
+    if (audioRef.current) {
+      audioRef.current.pause();
+    }
+    setIsPlaying(false);
+    setIsLoading(false);
   };
 
-  const playInstrumentMelody = (instrument: Instrument) => {
-    stopAllAudio();
-    setActivePlayingId(instrument.id);
+  const playInstrument = (inst: AuthenticInstrument) => {
+    setErrorMessage(null);
 
-    try {
-      const AudioCtx = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
-      if (!audioContextRef.current) {
-        audioContextRef.current = new AudioCtx();
+    // If clicking the currently active track
+    if (activeTrackId === inst.id && audioRef.current) {
+      if (isPlaying) {
+        audioRef.current.pause();
+        setIsPlaying(false);
+      } else {
+        setIsLoading(true);
+        audioRef.current
+          .play()
+          .then(() => {
+            setIsPlaying(true);
+            setIsLoading(false);
+          })
+          .catch((err) => {
+            console.error("Audio playback error:", err);
+            setErrorMessage("Playback blocked. Please click to interact.");
+            setIsPlaying(false);
+            setIsLoading(false);
+          });
       }
-      const ctx = audioContextRef.current;
-      if (ctx.state === "suspended") {
-        ctx.resume();
+      return;
+    }
+
+    // Switching to a new instrument: pause any active recording first
+    stopCurrentAudio();
+    setActiveTrackId(inst.id);
+    setIsLoading(true);
+    setCurrentTime(0);
+    setDuration(inst.durationSeconds);
+
+    if (!audioRef.current) {
+      audioRef.current = new Audio();
+    }
+
+    const audio = audioRef.current;
+    audio.src = inst.audioSrc;
+    audio.load();
+
+    audio.oncanplay = () => {
+      setIsLoading(false);
+      if (audio.duration && !isNaN(audio.duration)) {
+        setDuration(Math.floor(audio.duration));
       }
+    };
 
-      // Play each note in sequence with subtle envelope
-      instrument.notes.forEach((freq, idx) => {
-        const timeout = setTimeout(() => {
-          const osc = ctx.createOscillator();
-          const gain = ctx.createGain();
+    audio.ontimeupdate = () => {
+      setCurrentTime(audio.currentTime);
+    };
 
-          osc.type = instrument.waveform;
-          osc.frequency.setValueAtTime(freq, ctx.currentTime);
+    audio.onwaiting = () => {
+      setIsLoading(true);
+    };
 
-          // Attack - Decay - Sustain - Release
-          const now = ctx.currentTime;
-          gain.gain.setValueAtTime(0.001, now);
-          gain.gain.exponentialRampToValueAtTime(0.18, now + 0.08);
-          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.45);
+    audio.onplaying = () => {
+      setIsLoading(false);
+      setIsPlaying(true);
+    };
 
-          osc.connect(gain);
-          gain.connect(ctx.destination);
+    audio.onended = () => {
+      setIsPlaying(false);
+      setCurrentTime(0);
+    };
 
-          osc.start(now);
-          osc.stop(now + 0.46);
+    audio.onerror = () => {
+      setIsLoading(false);
+      setIsPlaying(false);
+      setErrorMessage(`Failed to load authentic audio for ${inst.name}.`);
+    };
 
-          if (idx === instrument.notes.length - 1) {
-            const endTimeout = setTimeout(() => {
-              setActivePlayingId(null);
-            }, 500);
-            timeoutIdsRef.current.push(endTimeout);
-          }
-        }, idx * 280);
-
-        timeoutIdsRef.current.push(timeout);
+    audio
+      .play()
+      .then(() => {
+        setIsPlaying(true);
+        setIsLoading(false);
+      })
+      .catch((err) => {
+        console.error("Audio play error:", err);
+        setIsLoading(false);
+        setIsPlaying(false);
+        setErrorMessage("Click to allow audio playback in your browser.");
       });
-    } catch {
-      setActivePlayingId(null);
+  };
+
+  const handleSeek = (e: React.MouseEvent<HTMLDivElement>, totalSeconds: number) => {
+    if (!audioRef.current || !activeTrackId) return;
+    const rect = e.currentTarget.getBoundingClientRect();
+    const clickX = e.clientX - rect.left;
+    const progress = Math.max(0, Math.min(1, clickX / rect.width));
+    const targetTime = progress * (totalSeconds || 100);
+    audioRef.current.currentTime = targetTime;
+    setCurrentTime(targetTime);
+  };
+
+  const handleReplay = (inst: AuthenticInstrument) => {
+    if (audioRef.current && activeTrackId === inst.id) {
+      audioRef.current.currentTime = 0;
+      setCurrentTime(0);
+      if (!isPlaying) {
+        audioRef.current.play().then(() => setIsPlaying(true));
+      }
+    } else {
+      playInstrument(inst);
     }
   };
 
   return (
-    <section id="voices-of-india" className="py-24 px-4 sm:px-8 lg:px-12 max-w-7xl mx-auto space-y-12 border-t border-[#C59B27]/25">
+    <section
+      id="voices-of-india"
+      className="py-24 px-4 sm:px-8 lg:px-12 max-w-7xl mx-auto space-y-12 border-t border-[#C59B27]/25"
+    >
       {/* Section Header */}
       <div className="text-center max-w-3xl mx-auto space-y-3">
         <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-[#C59B27]/40 bg-[#FAF8F5] dark:bg-[#1A1613] text-[#5B0E1B] dark:text-[#E5C378] text-[10px] uppercase tracking-[0.25em] font-mono shadow-xs">
-          <Music className="w-3.5 h-3.5 text-[#C59B27] dark:text-[#D4AF37]" />
-          Acoustic Heritage &bull; Procedural Microtonal Synthesis
+          <Disc3 className="w-3.5 h-3.5 text-[#C59B27] dark:text-[#D4AF37] animate-spin-slow" />
+          Acoustic Heritage &bull; Authentic Field &amp; Archival Recordings
         </div>
         <h2 className="font-serif text-4xl sm:text-5xl text-[#1C1814] dark:text-[#F5EFEB] font-normal tracking-tight">
-          Voices & Resonances of India
+          Voices &amp; Resonances of India
         </h2>
-        <p className="font-sans text-xs sm:text-sm text-[#6E6255] dark:text-[#A89886] max-w-xl mx-auto leading-relaxed font-light">
-          Microtonal Acoustic Synthesis (Web Audio Oscillator Emulation): Interactive frequency chains synthesized in real-time in your browser based on classical Indian raga intervals (shrutis), clearly distinguished from historical field recordings.
+        <p className="font-sans text-xs sm:text-sm text-[#6E6255] dark:text-[#A89886] max-w-2xl mx-auto leading-relaxed font-light">
+          Authentic master performances of the subcontinent&apos;s classical, temple, and devotional instruments.
+          Recorded on location by cultural archives, master practitioners, and heritage custodians.
         </p>
         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#C59B27]/10 text-[10px] font-mono text-[#8C5320] dark:text-[#E5C378] border border-[#C59B27]/30">
-          <span>Waveform-Engineered Shrutis: Sine &amp; Sawtooth Oscillators with ADSR Envelopes</span>
+          <Award className="w-3 h-3 text-[#C59B27]" />
+          <span>Verified Creative Commons &amp; Public Domain Cultural Archives &bull; 0 Synthesized Oscillators</span>
         </div>
       </div>
 
       {/* Instruments Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {INSTRUMENTS.map((inst) => {
-          const isPlaying = activePlayingId === inst.id;
+        {AUTHENTIC_INSTRUMENTS.map((inst) => {
+          const isThisTrackActive = activeTrackId === inst.id;
+          const isThisPlaying = isThisTrackActive && isPlaying;
+          const isThisLoading = isThisTrackActive && isLoading;
+          const currentTrackDuration = isThisTrackActive && duration > 0 ? duration : inst.durationSeconds;
+          const activeProgress = isThisTrackActive && currentTrackDuration > 0 ? (currentTime / currentTrackDuration) * 100 : 0;
 
           return (
             <div
               key={inst.id}
-              className={`rounded-2xl p-6 border transition-all duration-300 flex flex-col justify-between shadow-xs hover:shadow-lg ${
-                isPlaying
-                  ? "bg-white dark:bg-[#1E1915] border-[#C59B27] ring-2 ring-[#C59B27]/30"
-                  : "bg-white/80 dark:bg-[#161210] hover:bg-white dark:hover:bg-[#1C1714] border-[#C59B27]/20 dark:border-[#C59B27]/35"
+              className={`rounded-2xl p-6 border transition-all duration-300 flex flex-col justify-between shadow-xs hover:shadow-xl ${
+                isThisPlaying
+                  ? "bg-white dark:bg-[#1E1915] border-[#C59B27] ring-2 ring-[#C59B27]/30 shadow-md"
+                  : "bg-white/85 dark:bg-[#161210] hover:bg-white dark:hover:bg-[#1C1714] border-[#C59B27]/20 dark:border-[#C59B27]/35"
               }`}
             >
-              <div className="space-y-3">
+              <div className="space-y-4">
+                {/* Header: Region & Native Script */}
                 <div className="flex items-center justify-between pb-2 border-b border-[#C59B27]/15 dark:border-[#C59B27]/25">
                   <span className="text-[10px] font-mono uppercase tracking-wider text-[#8C7E72] dark:text-[#A89886]">
                     {inst.region}
@@ -188,6 +214,7 @@ export function VoicesOfIndia() {
                   </span>
                 </div>
 
+                {/* Instrument Name & Tradition */}
                 <div>
                   <h3 className="font-serif text-2xl font-normal text-[#1C1814] dark:text-[#F5EFEB]">
                     {inst.name}
@@ -197,38 +224,116 @@ export function VoicesOfIndia() {
                   </span>
                 </div>
 
+                {/* Cultural Description */}
                 <p className="text-xs text-[#54483C] dark:text-[#D9CEBF] font-sans leading-relaxed">
                   {inst.description}
                 </p>
+
+                {/* Performer & Archival Attribution Box */}
+                <div className="p-3 rounded-xl bg-[#FAF6EE] dark:bg-[#1C1714] border border-[#C59B27]/20 text-[11px] space-y-1.5 font-sans">
+                  <div className="flex items-start gap-1.5">
+                    <Music className="w-3.5 h-3.5 text-[#C59B27] shrink-0 mt-0.5" />
+                    <div>
+                      <span className="font-serif font-medium text-[#1C1814] dark:text-[#F5EFEB] block">
+                        {inst.recordingTitle}
+                      </span>
+                      <span className="text-[#6E6255] dark:text-[#A89886] text-[10px] block">
+                        Performer: <strong className="text-[#5B0E1B] dark:text-[#E5C378]">{inst.performer}</strong>
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="pt-1.5 border-t border-[#C59B27]/10 flex items-center justify-between text-[10px] text-[#8C7E72] dark:text-[#9A8D7E]">
+                    <span className="truncate max-w-[190px]" title={inst.source}>
+                      {inst.source.split("(")[0].trim()}
+                    </span>
+                    <a
+                      href={inst.licenseUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1 text-[#8C5320] dark:text-[#C59B27] hover:underline shrink-0"
+                    >
+                      <span>{inst.license.split(" ")[0]}</span>
+                      <ExternalLink className="w-2.5 h-2.5" />
+                    </a>
+                  </div>
+                </div>
+
+                {/* Scrubber / Progress Bar */}
+                <div className="space-y-1.5 pt-1">
+                  <div
+                    onClick={(e) => isThisTrackActive && handleSeek(e, currentTrackDuration)}
+                    className={`w-full h-2 rounded-full overflow-hidden transition-all ${
+                      isThisTrackActive ? "bg-[#E6DEC8] dark:bg-[#2C241D] cursor-pointer" : "bg-[#EDE7DA] dark:bg-[#221C17]"
+                    }`}
+                    title={isThisTrackActive ? "Click to scrub playback" : ""}
+                  >
+                    <div
+                      className="h-full bg-gradient-to-r from-[#8C5320] via-[#C59B27] to-[#5B0E1B] transition-all duration-150 rounded-full"
+                      style={{ width: `${activeProgress}%` }}
+                    />
+                  </div>
+
+                  <div className="flex items-center justify-between text-[10px] font-mono text-[#8C7E72] dark:text-[#A89886]">
+                    <span>{isThisTrackActive ? formatTime(currentTime) : "0:00"}</span>
+                    <span>{inst.formattedDuration}</span>
+                  </div>
+                </div>
+
+                {/* Error Banner if any */}
+                {isThisTrackActive && errorMessage && (
+                  <div className="flex items-center gap-1.5 text-[10px] text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-950/30 p-2 rounded-lg border border-red-200 dark:border-red-900/40">
+                    <AlertCircle className="w-3.5 h-3.5 shrink-0" />
+                    <span>{errorMessage}</span>
+                  </div>
+                )}
               </div>
 
-              {/* Play / Stop Button */}
-              <button
-                onClick={() => {
-                  if (isPlaying) {
-                    stopAllAudio();
-                  } else {
-                    playInstrumentMelody(inst);
-                  }
-                }}
-                className={`mt-6 w-full py-2.5 px-4 rounded-xl text-xs font-serif uppercase tracking-widest flex items-center justify-center gap-2 transition-all ${
-                  isPlaying
-                    ? "bg-[#5B0E1B] text-white shadow-md animate-pulse"
-                    : "bg-[#FAF5EE] hover:bg-[#5B0E1B] hover:text-white text-[#5B0E1B] border border-[#C59B27]/30"
-                }`}
-              >
-                {isPlaying ? (
-                  <>
-                    <Square className="w-3.5 h-3.5 fill-current" />
-                    <span>Resonating Raga...</span>
-                  </>
-                ) : (
-                  <>
-                    <Play className="w-3.5 h-3.5 fill-current" />
-                    <span>Play Melodic Phrase</span>
-                  </>
+              {/* Player Control Actions */}
+              <div className="mt-6 flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => playInstrument(inst)}
+                  className={`flex-1 py-2.5 px-4 rounded-xl text-xs font-serif uppercase tracking-wider flex items-center justify-center gap-2 transition-all ${
+                    isThisPlaying
+                      ? "bg-[#5B0E1B] text-white shadow-md"
+                      : "bg-[#FAF5EE] dark:bg-[#231D18] hover:bg-[#5B0E1B] hover:text-white dark:hover:bg-[#5B0E1B] text-[#5B0E1B] dark:text-[#E5C378] border border-[#C59B27]/30"
+                  }`}
+                >
+                  {isThisLoading ? (
+                    <>
+                      <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                      <span>Buffering Master Recording...</span>
+                    </>
+                  ) : isThisPlaying ? (
+                    <>
+                      <Pause className="w-3.5 h-3.5 fill-current" />
+                      <span>Pause Performance</span>
+                    </>
+                  ) : isThisTrackActive && currentTime > 0 ? (
+                    <>
+                      <Play className="w-3.5 h-3.5 fill-current" />
+                      <span>Resume Performance</span>
+                    </>
+                  ) : (
+                    <>
+                      <Play className="w-3.5 h-3.5 fill-current" />
+                      <span>{inst.buttonActionLabel}</span>
+                    </>
+                  )}
+                </button>
+
+                {isThisTrackActive && (
+                  <button
+                    type="button"
+                    onClick={() => handleReplay(inst)}
+                    title="Replay from start"
+                    className="p-2.5 rounded-xl border border-[#C59B27]/30 bg-[#FAF5EE] dark:bg-[#231D18] text-[#5B0E1B] dark:text-[#E5C378] hover:bg-[#5B0E1B] hover:text-white transition-all shrink-0"
+                  >
+                    <RotateCcw className="w-3.5 h-3.5" />
+                  </button>
                 )}
-              </button>
+              </div>
             </div>
           );
         })}
