@@ -116,8 +116,10 @@ export function LetterFromHome({ initialStateId = "tamil-nadu" }: LetterFromHome
   const { t, rootGlyph, rootWord } = useLanguage();
   const speechRef = useRef<SpeechSynthesisUtterance | null>(null);
 
-  // Fallback to Tamil Nadu if selected state doesn't have custom bespoke text
+  // Fallback check to inform user honestly when regional letter is shared
+  const isFallbackLetter = !REGIONAL_EPISTLES[selectedState];
   const currentEpistle = REGIONAL_EPISTLES[selectedState] || REGIONAL_EPISTLES["tamil-nadu"];
+  const selectedStateData = ALL_INDIAN_STATES.find((s) => s.id === selectedState);
 
   const handleOpenLetter = () => {
     ambientSound.playSealBreakSound();
@@ -301,7 +303,7 @@ export function LetterFromHome({ initialStateId = "tamil-nadu" }: LetterFromHome
               className="w-full max-w-2xl bg-[#FAF8F5] rounded-3xl p-8 sm:p-12 border-4 border-double border-[#C59B27]/50 shadow-2xl relative text-[#1C1814]"
             >
               {/* Epistle Header */}
-              <div className="flex items-center justify-between border-b border-[#C59B27]/30 pb-4 mb-8">
+              <div className="flex items-center justify-between border-b border-[#C59B27]/30 pb-4 mb-6">
                 <div>
                   <span className="text-[10px] uppercase tracking-[0.25em] text-[#5B0E1B] font-mono font-bold block">
                     AN EPISTLE FROM THE SOIL &bull; {currentEpistle.stateName}
@@ -346,6 +348,16 @@ export function LetterFromHome({ initialStateId = "tamil-nadu" }: LetterFromHome
                   </button>
                 </div>
               </div>
+
+              {/* Honest Archival Fallback Notice */}
+              {isFallbackLetter && (
+                <div className="mb-6 p-3 rounded-xl bg-amber-50 border border-amber-300 text-amber-900 text-xs font-sans flex items-center gap-2">
+                  <MapPin className="w-4 h-4 text-amber-700 shrink-0" />
+                  <span>
+                    <strong>Regional Archive Notice:</strong> Dedicated lyrical epistle for <em>{selectedStateData?.name || selectedState}</em> is currently in archival curation. Presenting sister regional epistle from <em>{currentEpistle.stateName}</em>.
+                  </span>
+                </div>
+              )}
 
               {/* REGIONAL POETIC VERSE IN NATIVE SCRIPT */}
               <div className="mb-8 font-serif text-base sm:text-lg text-[#26211a] leading-relaxed border-l-3 border-[#5B0E1B] pl-5 space-y-2 bg-[#FAF5EE]/70 py-3 rounded-r-xl">

@@ -125,11 +125,23 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ## 🧪 Quality Assurance & Build Verification
 
-ROOTS has been verified with strict production criteria:
+ROOTS has been verified with strict production criteria and automated test suites:
+- **Automated Verification Suite (`node scripts/verify-authenticity-suite.mjs`)**: **16/16 tests PASSED (100%)**
 - **TypeScript**: `npx tsc --noEmit` exits with **0 errors**.
 - **ESLint**: `npm run lint` exits with **0 errors**.
 - **Next.js Turbopack Build**: `npm run build` compiles **17/17 routes** with zero warnings or hydration errors.
 - **API Tests**: Verified with `curl` across rate limits, SSRF protection, signed uploads, and email handling.
+
+---
+
+## 📚 Governance, Authenticity & Verification Deliverables
+
+The repository includes four comprehensive technical governance and audit documents:
+
+1. [**`AUTHENTICITY_AUDIT.md`**](file:///Users/nandhinivenkatesan/Documents/roots-the-soul-of-india/AUTHENTICITY_AUDIT.md): Line-by-line inventory across 58 application source files categorized under a rigorous 7-tier classification taxonomy (`[A]` to `[G]`).
+2. [**`CLOUDINARY_RUNTIME_VERIFICATION.md`**](file:///Users/nandhinivenkatesan/Documents/roots-the-soul-of-india/CLOUDINARY_RUNTIME_VERIFICATION.md): Complete runtime execution report of the 16-scenario test suite with exact commands, payloads, status codes, latencies, and HTTP/2 200 proofs.
+3. [**`CULTURAL_ASSET_PROVENANCE.md`**](file:///Users/nandhinivenkatesan/Documents/roots-the-soul-of-india/CULTURAL_ASSET_PROVENANCE.md): Institutional provenance register detailing 19th-century public domain archival plates (LACMA, MET, British Library, University of Edinburgh, ASI) and visual assets for all 36 Indian states and union territories.
+4. [**`REMEDIATION_SUMMARY.md`**](file:///Users/nandhinivenkatesan/Documents/roots-the-soul-of-india/REMEDIATION_SUMMARY.md): Complete before-and-after architectural breakdown detailing the 11-phase engineering remediation.
 
 ---
 

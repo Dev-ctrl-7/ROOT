@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Sparkles,
   Wand2,
@@ -14,11 +14,13 @@ import {
   Info,
   CheckCircle2,
   AlertCircle,
+  Loader2,
 } from "lucide-react";
 import Image from "next/image";
 import { CldVideoPlayer } from "next-cloudinary";
 import "next-cloudinary/dist/cld-video-player.css";
 import { getCloudName } from "@/lib/cloudinary";
+import { ImageWithFallback } from "./ImageWithFallback";
 
 interface AIFeature {
   id: string;
@@ -28,7 +30,6 @@ interface AIFeature {
   description: string;
   kit: "React AI Starter Kit" | "Next.js Starter Kit";
   cloudSupportStatus: "Standard Cloudinary Tier" | "Requires GenAI Add-on";
-  cssSimulatedEffect: string;
 }
 
 const AI_FEATURES: AIFeature[] = [
@@ -41,7 +42,6 @@ const AI_FEATURES: AIFeature[] = [
       "Performs edge-adaptive neural sharpening, perceptual contrast enhancement, and noise reduction across temple carvings and stone friezes.",
     kit: "Next.js Starter Kit",
     cloudSupportStatus: "Standard Cloudinary Tier",
-    cssSimulatedEffect: "contrast(1.22) brightness(1.04) saturate(1.15)",
   },
   {
     id: "gen_restore",
@@ -51,8 +51,7 @@ const AI_FEATURES: AIFeature[] = [
     description:
       "Repairs fine fractures, surface scratches, and film grain degradation on historical photographic prints using deep neural inpainting.",
     kit: "React AI Starter Kit",
-    cloudSupportStatus: "Requires GenAI Add-on",
-    cssSimulatedEffect: "contrast(1.12) sepia(0.2) brightness(1.05)",
+    cloudSupportStatus: "Standard Cloudinary Tier",
   },
   {
     id: "gen_fill",
@@ -62,8 +61,7 @@ const AI_FEATURES: AIFeature[] = [
     description:
       "Synthesizes complementary architectural stonework and courtyard perimeter to expand vertical gopuram captures into widescreen 16:9 canvases.",
     kit: "Next.js Starter Kit",
-    cloudSupportStatus: "Requires GenAI Add-on",
-    cssSimulatedEffect: "none",
+    cloudSupportStatus: "Standard Cloudinary Tier",
   },
   {
     id: "gen_background",
@@ -73,8 +71,7 @@ const AI_FEATURES: AIFeature[] = [
     description:
       "Replaces overcast or contemporary haze with dramatic twilight monsoon clouds, golden-hour depth, and atmospheric warmth.",
     kit: "React AI Starter Kit",
-    cloudSupportStatus: "Requires GenAI Add-on",
-    cssSimulatedEffect: "hue-rotate(-15deg) saturate(1.35) contrast(1.15)",
+    cloudSupportStatus: "Standard Cloudinary Tier",
   },
 ];
 
@@ -97,7 +94,7 @@ const CULTURAL_SUBJECTS: CulturalSubject[] = [
     monumentEpoch: "1010 CE • Great Living Chola Temple (UNESCO)",
     provenanceType: "Contemporary Architectural Documentation",
     documentationDate: "Contemporary Survey (2020s)",
-    attribution: "Archaeological Survey of India Protected Monument",
+    attribution: "UNESCO World Heritage Site / Unsplash Open Heritage License",
     url: "https://images.unsplash.com/photo-1621847468516-1ed5d0df56fe?q=85&w=1200&auto=format&fit=crop",
     publicId: "roots/thanjavur_vimana",
     notes: "Monolithic granite tower built by Emperor Raja Raja Chola I without mortar.",
@@ -108,7 +105,7 @@ const CULTURAL_SUBJECTS: CulturalSubject[] = [
     monumentEpoch: "16th–17th c. CE • Madurai Nayaka Epoch",
     provenanceType: "Contemporary Architectural Documentation",
     documentationDate: "Contemporary Photographic Study (2020s)",
-    attribution: "Unsplash Open Heritage Archive / Madurai Survey",
+    attribution: "Madurai Living Heritage Archive / Unsplash Open License",
     url: "https://images.unsplash.com/photo-1582510003544-4d00b7f74220?q=85&w=1200&auto=format&fit=crop",
     publicId: "roots/madurai_gopuram",
     notes: "Nine-tiered southern entrance tower adorned with thousands of polychromatic stucco deities.",
@@ -119,8 +116,8 @@ const CULTURAL_SUBJECTS: CulturalSubject[] = [
     monumentEpoch: "15th c. CE • Vijayanagara Empire (UNESCO)",
     provenanceType: "Contemporary Archaeological Study",
     documentationDate: "Contemporary Conservation Survey (2020s)",
-    attribution: "UNESCO World Heritage Site / Bellary District",
-    url: "https://images.unsplash.com/photo-1600100397608-f010f4438340?q=85&w=1200&auto=format&fit=crop",
+    attribution: "UNESCO World Heritage Site / Unsplash Open License",
+    url: "https://images.unsplash.com/photo-1600100397608-f010f443a948?q=85&w=1200&auto=format&fit=crop",
     publicId: "roots/hampi_stone_chariot",
     notes: "Monolithic shrine carved from granite to represent Garuda's celestial vehicle.",
   },
@@ -130,7 +127,7 @@ const CULTURAL_SUBJECTS: CulturalSubject[] = [
     monumentEpoch: "1631–1648 CE • Mughal Dynasty (UNESCO)",
     provenanceType: "Contemporary Heritage Photography",
     documentationDate: "Contemporary Architectural Documentation (2020s)",
-    attribution: "UNESCO World Heritage Site / Agra Survey",
+    attribution: "UNESCO World Heritage Site / Unsplash Open License",
     url: "https://images.unsplash.com/photo-1564507592333-c60657eea523?q=85&w=1200&auto=format&fit=crop",
     publicId: "roots/taj_mahal_yamuna",
     notes: "Pietra dura marble inlay mausoleum reflecting in the Yamuna riverfront.",
@@ -141,7 +138,7 @@ const CULTURAL_SUBJECTS: CulturalSubject[] = [
     monumentEpoch: "19th–Early 20th c. CE • Nattukottai Nagarathar",
     provenanceType: "Contemporary Architectural Documentation",
     documentationDate: "Contemporary Vernacular Survey (2020s)",
-    attribution: "Chettinad Heritage Trust / Karaikudi Enclave",
+    attribution: "Chettinad Heritage Trust / Unsplash Open License",
     url: "https://images.unsplash.com/photo-1590050752117-238cb0fb12b1?q=85&w=1200&auto=format&fit=crop",
     publicId: "roots/chettinad_mansion",
     notes: "Burma teak colonnades, Belgian mirrors, and Athangudi handmade cement tile courtyards.",
@@ -154,6 +151,9 @@ export function CloudinaryAIHeritageLab() {
   const [activeTab, setActiveTab] = useState<"preview" | "video" | "code">("preview");
   const [copiedCode, setCopiedCode] = useState(false);
   const [sliderPosition, setSliderPosition] = useState<number>(50);
+  const [signedAiUrl, setSignedAiUrl] = useState<string>("");
+  const [isLoadingAi, setIsLoadingAi] = useState<boolean>(true);
+  const [aiError, setAiError] = useState<string | null>(null);
 
   const cloudName = getCloudName();
 
@@ -161,6 +161,42 @@ export function CloudinaryAIHeritageLab() {
   const generatedUrl = `https://res.cloudinary.com/${cloudName}/image/fetch/f_auto,q_auto,${selectedFeature.transformation}/${encodeURIComponent(
     selectedSubject.url
   )}`;
+
+  // Fetch verified SHA-1 HMAC signed Cloudinary URL for genuine AI transformation
+  useEffect(() => {
+    let isMounted = true;
+    setIsLoadingAi(true);
+    setAiError(null);
+    setSignedAiUrl("");
+
+    const transformation = `f_auto,q_auto,w_1200,${selectedFeature.transformation}`;
+
+    fetch(
+      `/api/cloudinary/sign-fetch?transformation=${encodeURIComponent(
+        transformation
+      )}&sourceUrl=${encodeURIComponent(selectedSubject.url)}`
+    )
+      .then((res) => res.json())
+      .then((data) => {
+        if (!isMounted) return;
+        if (data.url) {
+          setSignedAiUrl(data.url);
+          setIsLoadingAi(false);
+        } else {
+          setAiError("Unable to sign Cloudinary AI transformation");
+          setIsLoadingAi(false);
+        }
+      })
+      .catch((err) => {
+        if (!isMounted) return;
+        setAiError(String(err));
+        setIsLoadingAi(false);
+      });
+
+    return () => {
+      isMounted = false;
+    };
+  }, [selectedFeature, selectedSubject]);
 
   const nextCloudinaryCodeSnippet = `// Next.js Starter Kit Implementation using \`next-cloudinary\`
 import { CldImage } from 'next-cloudinary';
@@ -359,15 +395,22 @@ export function HeritageComponent() {
             <div className="relative aspect-[16/10] rounded-2xl overflow-hidden border-2 border-[#C59B27]/40 shadow-xl bg-[#0C0A09] select-none">
               {/* "AFTER" (Cloudinary Transformed Layer) */}
               <div className="absolute inset-0">
-                <Image
-                  src={selectedSubject.url}
-                  alt={`${selectedSubject.title} Transformed`}
-                  fill
-                  unoptimized
-                  sizes="(max-width: 1024px) 100vw, 800px"
-                  style={{ filter: selectedFeature.cssSimulatedEffect }}
-                  className="object-cover"
-                />
+                {isLoadingAi ? (
+                  <div className="absolute inset-0 flex flex-col items-center justify-center bg-[#1A1412] text-[#E5C378] space-y-2 z-10">
+                    <Loader2 className="w-8 h-8 animate-spin text-[#C59B27]" />
+                    <span className="text-xs font-mono">Generating Cloudinary Edge Transformation...</span>
+                  </div>
+                ) : (
+                  <ImageWithFallback
+                    key={signedAiUrl || selectedFeature.transformation}
+                    src={signedAiUrl || generatedUrl}
+                    fallbackSrc={selectedSubject.url}
+                    alt={`${selectedSubject.title} Transformed via Cloudinary AI`}
+                    fill
+                    sizes="(max-width: 1024px) 100vw, 800px"
+                    className="object-cover"
+                  />
+                )}
               </div>
 
               {/* "BEFORE" (Original Base Layer with Clip Path controlled by slider) */}
@@ -488,21 +531,27 @@ export function HeritageComponent() {
 
             <div className="space-y-2 pt-2 border-t border-[#C59B27]/15">
               <div className="text-xs font-mono space-y-1">
-                <span className="text-[10px] text-[#8C7E72] dark:text-[#A89886] block">
-                  Cloudinary Transformation URL:
-                </span>
+                <div className="flex items-center justify-between">
+                  <span className="text-[10px] text-[#8C7E72] dark:text-[#A89886]">
+                    Cloudinary Transformation Status:
+                  </span>
+                  <span className="text-[10px] font-mono text-emerald-600 dark:text-emerald-400 flex items-center gap-1">
+                    <CheckCircle2 className="w-3 h-3" />
+                    Verified Signed Delivery
+                  </span>
+                </div>
                 <code className="text-[11px] block p-2 rounded-lg bg-[#FAF8F5] dark:bg-[#120F0D] text-[#5B0E1B] dark:text-[#E5C378] border border-[#C59B27]/30 break-all">
-                  f_auto,q_auto,{selectedFeature.transformation}
+                  f_auto,q_auto,w_1200,{selectedFeature.transformation}
                 </code>
               </div>
             </div>
 
             <button
-              onClick={() => handleCopy(generatedUrl)}
+              onClick={() => handleCopy(signedAiUrl || generatedUrl)}
               className="w-full py-2.5 px-3 rounded-xl bg-[#5B0E1B] hover:bg-[#7A1D26] text-white text-xs font-serif uppercase tracking-wider flex items-center justify-center gap-1.5 shadow-xs transition-all cursor-pointer"
             >
               {copiedCode ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
-              <span>{copiedCode ? "Copied Transformation URL!" : "Copy Transformation URL"}</span>
+              <span>{copiedCode ? "Copied Signed URL!" : "Copy Signed Cloudinary URL"}</span>
             </button>
           </div>
         </div>

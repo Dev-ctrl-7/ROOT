@@ -151,14 +151,17 @@ export function VoicesOfIndia() {
       <div className="text-center max-w-3xl mx-auto space-y-3">
         <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-[#C59B27]/40 bg-[#FAF8F5] dark:bg-[#1A1613] text-[#5B0E1B] dark:text-[#E5C378] text-[10px] uppercase tracking-[0.25em] font-mono shadow-xs">
           <Music className="w-3.5 h-3.5 text-[#C59B27] dark:text-[#D4AF37]" />
-          Acoustic Heritage of the Subcontinent
+          Acoustic Heritage &bull; Procedural Microtonal Synthesis
         </div>
         <h2 className="font-serif text-4xl sm:text-5xl text-[#1C1814] dark:text-[#F5EFEB] font-normal tracking-tight">
           Voices & Resonances of India
         </h2>
         <p className="font-sans text-xs sm:text-sm text-[#6E6255] dark:text-[#A89886] max-w-xl mx-auto leading-relaxed font-light">
-          Listen to procedural classical microtonal cadences synthesized through the Web Audio API across India&apos;s most revered instruments.
+          Microtonal Acoustic Synthesis (Web Audio Oscillator Emulation): Interactive frequency chains synthesized in real-time in your browser based on classical Indian raga intervals (shrutis), clearly distinguished from historical field recordings.
         </p>
+        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#C59B27]/10 text-[10px] font-mono text-[#8C5320] dark:text-[#E5C378] border border-[#C59B27]/30">
+          <span>Waveform-Engineered Shrutis: Sine &amp; Sawtooth Oscillators with ADSR Envelopes</span>
+        </div>
       </div>
 
       {/* Instruments Grid */}

@@ -46,12 +46,12 @@ export async function GET(req: Request) {
       );
     }
 
-    // Sanitize filename
-    const safeFilename = rawFilename
+    // Sanitize filename base
+    const safeBaseName = rawFilename
+      .replace(/\.(jpg|jpeg|png|webp|avif)$/i, "")
       .replace(/[^a-zA-Z0-9_-]/g, "_")
       .replace(/_+/g, "_")
-      .slice(0, 60);
-    const finalFilename = safeFilename.endsWith(".jpg") ? safeFilename : `${safeFilename}.jpg`;
+      .slice(0, 50);
 
     // Fetch the asset
     const controller = new AbortController();
@@ -68,6 +68,12 @@ export async function GET(req: Request) {
     }
 
     const contentType = response.headers.get("content-type") || "image/jpeg";
+    let extension = ".jpg";
+    if (contentType.includes("webp")) extension = ".webp";
+    else if (contentType.includes("png")) extension = ".png";
+    else if (contentType.includes("avif")) extension = ".avif";
+
+    const finalFilename = `${safeBaseName || "roots-cultural-postcard"}${extension}`;
     const arrayBuffer = await response.arrayBuffer();
 
     return new Response(arrayBuffer, {

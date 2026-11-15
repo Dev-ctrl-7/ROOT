@@ -42,13 +42,17 @@ flowchart LR
 ### Step 3: Archive Lens & Cloudinary AI Heritage Lab (0:35 – 0:55)
 * **Action**:
   1. Navigate to **Archive Lens** ([`/archive-lens`](http://localhost:3000/archive-lens)).
-  2. Drag the stationary comparison slider over the 1868 archaeological survey plate of Brihadeeswarar Temple.
+  2. Drag the stationary comparison slider over genuine 19th-century photographic plates:
+     - Samuel Bourne's 1860 study of the **Taj Mahal** (LACMA / Royal Photographic Society collection).
+     - Captain Linnaeus Tripe's 1858 East Gopuram plate of **Madurai Meenakshi Temple** (Metropolitan Museum of Art, DP144494).
+     - Alexander Greenlaw's 1856 calotype of **Hampi Virupaksha Temple & Bazaar** (British Library Calotype Archive).
+     - Note the **"Interpretation"** badge on Amer Fort, transparently designating the Algorithmic Halide Grading mode.
   3. Scroll down to the **Cloudinary AI Heritage Lab**:
      - Click **AI Historical Restoration** (`e_gen_restore`) to see the scratch removal comparison.
      - Click **Generative Outpainting 16:9** (`b_gen_fill, c_pad`).
      - Click the **Living Video Player** tab to stream `samples/elephants` ("Gajendra: Sacred Temple Elephant").
 * **What to Say**:
-  > *"In our Archive Lens, visitors travel through time. Our split comparison keeps the monument perfectly stationary while sweeping a 19th-century sepia halide treatment (`e_sepia:75`) across modern photography. Below it, our AI Heritage Lab demonstrates Cloudinary's Generative AI pipeline on authentic Indian monuments — Brihadeeswarar Temple, Meenakshi Amman Gopuram, and Hampi's Stone Chariot. We transparently showcase `e_gen_restore` and `b_gen_fill`, alongside `CldVideoPlayer` streaming cultural video with adaptive bitrate and custom royal burgundy branding."*
+  > *"In our Archive Lens, visitors travel through time with verified historical integrity. Rather than using identical images or fabricated dates, we sourced genuine 19th-century public domain albumen and calotype plates from the Metropolitan Museum of Art, the British Library, and LACMA, contrasting them with modern living worship. For monuments without verified 19th-century plates like Amer Fort, our UI explicitly labels them as 'Historical Visual Interpretation Mode', showing Cloudinary's dynamic archival engine (`e_sepia:85`, `e_vignette:35`) grading contemporary photography. Below it, our AI Heritage Lab demonstrates Cloudinary's Generative AI pipeline on authentic Indian monuments with live edge delivery."*
 
 ---
 

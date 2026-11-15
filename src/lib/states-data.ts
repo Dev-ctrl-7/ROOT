@@ -490,7 +490,7 @@ export const ALL_INDIAN_STATES: StateData[] = [
       naturalWonder: "The Great Rann of Kutch (Vast white salt marsh desert)",
       hiddenHeritage: "Lothal Archaeological Site (Oldest engineered tidal dockyard in the world, 2400 BCE)",
       architecturalStyle: "Solanki-Maru-Gurjara temple carving with intricately sculpted stepwells (vavs)",
-      heroImage: "https://images.unsplash.com/photo-1599661046289-e31897846e41?q=85&w=1200&auto=format&fit=crop",
+      heroImage: "https://images.unsplash.com/photo-1558431382-27e303142255?q=85&w=1200&auto=format&fit=crop",
       heroCaption: "Rani ki Vav's multi-tiered subterranean carved stone galleries."
     },
     livingHeritage: {
@@ -742,7 +742,7 @@ export const ALL_INDIAN_STATES: StateData[] = [
       naturalWonder: "Lonar Crater Lake (Formed by a meteor impact 52,000 years ago)",
       hiddenHeritage: "Murud-Janjira (Unconquered sea fortress surrounded by the Arabian Sea)",
       architecturalStyle: "Basalt rock-cut chaityas and Maratha hill fort stone bastions",
-      heroImage: "https://images.unsplash.com/photo-1599661046289-e31897846e41?q=85&w=1200&auto=format&fit=crop",
+      heroImage: "https://images.unsplash.com/photo-1570168007204-dfb528c6958f?q=85&w=1200&auto=format&fit=crop",
       heroCaption: "The colossal rock-cut Kailash Temple at Ellora Caves."
     },
     livingHeritage: {
@@ -910,7 +910,7 @@ export const ALL_INDIAN_STATES: StateData[] = [
       naturalWonder: "Dal Lake with floating gardens & Gulmarg meadows",
       hiddenHeritage: "Martand Sun Temple Ruins (8th-century stone colossus built by Lalitaditya)",
       architecturalStyle: "Pinjrakari wooden trellis screens, Khatamband cedar ceilings, and Mughal stone pavilions",
-      heroImage: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?q=85&w=1200&auto=format&fit=crop",
+      heroImage: "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?q=85&w=1200&auto=format&fit=crop",
       heroCaption: "Shikara wooden boat gliding quietly through water lilies on Dal Lake."
     },
     livingHeritage: {
@@ -1330,7 +1330,7 @@ export const ALL_INDIAN_STATES: StateData[] = [
       naturalWonder: "Bhedaghat Marble Rocks on the Narmada River & Kanha Tiger Reserve",
       hiddenHeritage: "Bhimbetka Rock Shelters (30,000-year-old Stone Age cave paintings)",
       architecturalStyle: "Chandela Nagara spire architecture and Ashokan hemispherical stupas",
-      heroImage: "https://images.unsplash.com/photo-1599661046289-e31897846e41?q=85&w=1200&auto=format&fit=crop",
+      heroImage: "https://images.unsplash.com/photo-1598890777032-bde835ba27c2?q=85&w=1200&auto=format&fit=crop",
       heroCaption: "The great hemispherical dome of Sanchi Stupa with carved torana gateway."
     },
     livingHeritage: {
@@ -1414,7 +1414,7 @@ export const ALL_INDIAN_STATES: StateData[] = [
       naturalWonder: "Vikramshila Gangetic Dolphin Sanctuary",
       hiddenHeritage: "Barabar Caves (Oldest rock-cut caves in India, 3rd Century BCE)",
       architecturalStyle: "Ancient brick monastery architecture and Ashokan polished sandstone pillars",
-      heroImage: "https://images.unsplash.com/photo-1599661046289-e31897846e41?q=85&w=1200&auto=format&fit=crop",
+      heroImage: "https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?q=85&w=1200&auto=format&fit=crop",
       heroCaption: "The sacred Bodhi Tree and stone spire of Mahabodhi Temple."
     },
     livingHeritage: {
@@ -1498,7 +1498,7 @@ export const ALL_INDIAN_STATES: StateData[] = [
       naturalWonder: "Chandratal Lake (The Moon Lake) & Rohtang Pass",
       hiddenHeritage: "Masrur Rock-Cut Temples (8th-century monolithic sandstone temples facing snowy peaks)",
       architecturalStyle: "Kath-Kuni architecture: Interlocking deodar cedar logs and dry-stacked slate stones",
-      heroImage: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?q=85&w=1200&auto=format&fit=crop",
+      heroImage: "https://images.unsplash.com/photo-1432405972618-c60b0225b8f9?q=85&w=1200&auto=format&fit=crop",
       heroCaption: "Ki Tibetan monastery perched high on a conical hill in Spiti Valley."
     },
     livingHeritage: {
@@ -1665,7 +1665,7 @@ export const ALL_INDIAN_STATES: StateData[] = [
       naturalWonder: "Sultanpur Bird Sanctuary (Wetland haven for migratory Siberian cranes)",
       hiddenHeritage: "Yadavindra Gardens, Pinjore (17th-century Mughal terraced water cascade)",
       architecturalStyle: "Indo-Islamic water pavilions and ancient brick stupa architecture",
-      heroImage: "https://images.unsplash.com/photo-1548013146-72479768bada?q=85&w=1200&auto=format&fit=crop",
+      heroImage: "https://images.unsplash.com/photo-1596176530529-78163a4f7af2?q=85&w=1200&auto=format&fit=crop",
       heroCaption: "Reflections along the historic water channels of Pinjore Gardens."
     },
     livingHeritage: {
@@ -1749,7 +1749,7 @@ export const ALL_INDIAN_STATES: StateData[] = [
       naturalWonder: "Hundru Falls (Subarnarekha River cascading 320 feet over rugged granite)",
       hiddenHeritage: "Maluti Terracotta Temples (Enclave of 72 surviving terracotta temple shrines)",
       architecturalStyle: "Chala-style terracotta brick carving and megalithic stone circles",
-      heroImage: "https://images.unsplash.com/photo-1548013146-72479768bada?q=85&w=1200&auto=format&fit=crop",
+      heroImage: "https://images.unsplash.com/photo-1620766182966-c6eb5ed2b788?q=85&w=1200&auto=format&fit=crop",
       heroCaption: "Intricate terracotta reliefs depicting Ramayana epics on 17th-century Maluti shrines."
     },
     livingHeritage: {
@@ -1833,7 +1833,7 @@ export const ALL_INDIAN_STATES: StateData[] = [
       naturalWonder: "Chitrakote Falls (The 'Niagara of India' spanning 980 feet across the Indravati river)",
       hiddenHeritage: "Kanger Valley National Park & Kutumsar Caves (Ancient subterranean stalactites)",
       architecturalStyle: "Early red-brick Nagara temple design and indigenous woodcraft",
-      heroImage: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?q=85&w=1200&auto=format&fit=crop",
+      heroImage: "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?q=85&w=1200&auto=format&fit=crop",
       heroCaption: "The roaring horseshoe crest of Chitrakote Falls shrouded in sunset rainbow mist."
     },
     livingHeritage: {
@@ -1917,7 +1917,7 @@ export const ALL_INDIAN_STATES: StateData[] = [
       naturalWonder: "Valley of Flowers (UNESCO World Heritage alpine wildflower meadow)",
       hiddenHeritage: "Jageshwar Temple Cluster (124 ancient stone Nagara shrines in dense deodar forest)",
       architecturalStyle: "Katyuri architecture: Interlocking dry-stone construction with pagoda slate roofs",
-      heroImage: "https://images.unsplash.com/photo-1548013146-72479768bada?q=85&w=1200&auto=format&fit=crop",
+      heroImage: "https://images.unsplash.com/photo-1596176530529-78163a4f7af2?q=85&w=1200&auto=format&fit=crop",
       heroCaption: "Kedarnath Temple glowing against twilight snow-dusted Himalayan peaks."
     },
     livingHeritage: {
@@ -2001,7 +2001,7 @@ export const ALL_INDIAN_STATES: StateData[] = [
       naturalWonder: "Gurudongmar Lake (Sacred glacial lake at 17,800 feet that never completely freezes)",
       hiddenHeritage: "Yuksom (The historic 1642 coronation capital where three lamas consecrated the first Chogyal)",
       architecturalStyle: "Tibetan-Sikkimese Buddhist monastery architecture with golden Pagoda finials",
-      heroImage: "https://images.unsplash.com/photo-1548013146-72479768bada?q=85&w=1200&auto=format&fit=crop",
+      heroImage: "https://images.unsplash.com/photo-1544735716-392fe2489ffa?q=85&w=1200&auto=format&fit=crop",
       heroCaption: "The red and gold lacquered facade of Rumtek Monastery framed by mountain mist."
     },
     livingHeritage: {
@@ -2085,7 +2085,7 @@ export const ALL_INDIAN_STATES: StateData[] = [
       naturalWonder: "Sela Pass (Perpetually snow-capped mountain pass at 13,700 feet with twin lakes)",
       hiddenHeritage: "Ziro Valley (UNESCO tentative heritage landscape of Apatani paddy-cum-pisciculture)",
       architecturalStyle: "Tibetan fortress monastery (Dzong) style and cane suspension bridge engineering",
-      heroImage: "https://images.unsplash.com/photo-1548013146-72479768bada?q=85&w=1200&auto=format&fit=crop",
+      heroImage: "https://images.unsplash.com/photo-1605649487212-47bdab064df7?q=85&w=1200&auto=format&fit=crop",
       heroCaption: "Tawang Monastery rising like a fortress city against snow-covered peaks."
     },
     livingHeritage: {
@@ -2169,7 +2169,7 @@ export const ALL_INDIAN_STATES: StateData[] = [
       naturalWonder: "Dzukou Valley (High-altitude 'Valley of Flowers' bordering Manipur with rare Dzukou lilies)",
       hiddenHeritage: "Khonoma Green Village (Asia's first conservation village, renowned for Angami stone terracing)",
       architecturalStyle: "Morung architecture with carved hornbill crests, bison horn rafters, and massive timber pillars",
-      heroImage: "https://images.unsplash.com/photo-1548013146-72479768bada?q=85&w=1200&auto=format&fit=crop",
+      heroImage: "https://images.unsplash.com/photo-1571536802807-30451e3955d8?q=85&w=1200&auto=format&fit=crop",
       heroCaption: "Carved wooden hornbill gateway of an ancestral Angami village morung."
     },
     livingHeritage: {
@@ -2207,8 +2207,8 @@ export const ALL_INDIAN_STATES: StateData[] = [
       "The 'Jeweled Land' (Kangleipak), celebrated for classical Manipuri Raas Leela dance, the birthplace of modern polo (*Sagol Kangjei*), and Loktak Lake — the world's only floating national park. A civilization of refined martial arts (*Thang-Ta*), and master black-stone pottery.",
     curatorQuote: "When a Manipuri walks, it is dance; when they speak, it is melody.",
     curatorAuthor: "Jawaharlal Nehru on the valleys of Imphal",
-    heroImage: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=85&w=1800&auto=format&fit=crop",
-    heroFallback: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=85&w=1800&auto=format&fit=crop",
+    heroImage: "https://images.unsplash.com/photo-1618773928121-c32242e63f39?q=85&w=1800&auto=format&fit=crop",
+    heroFallback: "https://images.unsplash.com/photo-1618773928121-c32242e63f39?q=85&w=1800&auto=format&fit=crop",
     taste: {
       title: "Fermented Fish, Purple Rice & Fresh Water Greens",
       signatureDish: "Kangshoi (Nutritious vegetable and dried fish stew seasoned with wild allium herbs and king chillies)",
@@ -2337,7 +2337,7 @@ export const ALL_INDIAN_STATES: StateData[] = [
       naturalWonder: "Vantawng Falls (The highest two-tiered waterfall in Mizoram cascading 750 feet through bamboo forests)",
       hiddenHeritage: "Phawngpui (The 'Blue Mountain', highest peak adorned with rhododendrons and clouded leopards)",
       architecturalStyle: "Traditional bamboo and thatch hill houses raised on wooden stilts against steep slopes",
-      heroImage: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?q=85&w=1200&auto=format&fit=crop",
+      heroImage: "https://images.unsplash.com/photo-1544551763-46a013bb70d5?q=85&w=1200&auto=format&fit=crop",
       heroCaption: "Vantawng Falls plunging through pristine green valleys of Serchhip district."
     },
     livingHeritage: {
@@ -2925,7 +2925,7 @@ export const ALL_INDIAN_STATES: StateData[] = [
       naturalWonder: "Radhanagar Beach, Havelock (Rated among the world's most beautiful beaches for turquoise waters and white sand)",
       hiddenHeritage: "Ross Island (Netaji Subhash Chandra Bose Island, ruins of Victorian colonial capital swallowed by ancient banyan roots)",
       architecturalStyle: "Panopticon radial brick architecture (Cellular Jail) and indigenous stilt thatch lodges",
-      heroImage: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?q=85&w=1200&auto=format&fit=crop",
+      heroImage: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=85&w=1200&auto=format&fit=crop",
       heroCaption: "Radhanagar Beach sunset with calm azure waves lapping pristine powdery white sand."
     },
     livingHeritage: {
@@ -3009,7 +3009,7 @@ export const ALL_INDIAN_STATES: StateData[] = [
       naturalWonder: "Bangaram Atoll (Breathtaking tear-drop shaped lagoon glowing with bioluminescence at night)",
       hiddenHeritage: "Ujra Mosque, Kavaratti (17th-century coral-stone shrine with an intricately carved ceiling carved from driftwood)",
       architecturalStyle: "Coral stone masonry and master timber joinery without iron nails",
-      heroImage: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?q=85&w=1200&auto=format&fit=crop",
+      heroImage: "https://images.unsplash.com/photo-1595815771614-ade9d652a65d?q=85&w=1200&auto=format&fit=crop",
       heroCaption: "The iconic red and white Minicoy Lighthouse overlooking the coral reef."
     },
     livingHeritage: {
@@ -3047,8 +3047,8 @@ export const ALL_INDIAN_STATES: StateData[] = [
       "A coastal and forest union territory where 450 years of Portuguese maritime fortifications blend with the ancestral earth traditions of the Warli and Dhodia tribes. Renowned for sea citadels at Diu, white rice-paste Warli folk murals, and peaceful Arabian Sea shores.",
     curatorQuote: "The circle is the sun, the triangle is the mountain, and the line is human harmony.",
     curatorAuthor: "Warli Tribal Artists of Silvassa",
-    heroImage: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=85&w=1800&auto=format&fit=crop",
-    heroFallback: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=85&w=1800&auto=format&fit=crop",
+    heroImage: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=85&w=1800&auto=format&fit=crop",
+    heroFallback: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=85&w=1800&auto=format&fit=crop",
     taste: {
       title: "Coastal Seafood, Parsi Flavors & Earthen Pots",
       signatureDish: "Daman Fish Koliwada & Ubadiyu (Earthen pot roasted seasonal tubers and beans cooked in wild herbs)",

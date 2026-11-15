@@ -67,6 +67,10 @@ export interface ArchiveLensComparison {
   imageNowPublicId: string;
   imageNowFallback: string;
   significance: string;
+  isVisualInterpretation?: boolean;
+  institutionProvenance?: string;
+  photographer?: string;
+  legalRights?: string;
 }
 
 export interface PostcardPreset {

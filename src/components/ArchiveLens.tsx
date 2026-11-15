@@ -246,6 +246,10 @@ export function ArchiveLens() {
   let currentHistoricalContext = "";
   let currentArchivalSource = "";
   let currentSignificance = "";
+  let currentInstitution = "";
+  let currentPhotographer = "";
+  let currentLegalRights = "";
+  let currentIsVisualInterpretation = false;
   let baseNowUrl = "";
   let baseThenUrl = "";
 
@@ -258,6 +262,10 @@ export function ArchiveLens() {
     currentHistoricalContext = comp.historicalContext;
     currentArchivalSource = comp.archivalSource;
     currentSignificance = comp.significance;
+    currentInstitution = comp.institutionProvenance || "";
+    currentPhotographer = comp.photographer || "";
+    currentLegalRights = comp.legalRights || "";
+    currentIsVisualInterpretation = Boolean(comp.isVisualInterpretation);
     baseNowUrl = comp.imageNowFallback;
     baseThenUrl = comp.imageThenFallback;
   } else if (sourceMode === "pinterest_board") {
@@ -269,6 +277,9 @@ export function ArchiveLens() {
     currentHistoricalContext = pin.curatorNote;
     currentArchivalSource = pin.source;
     currentSignificance = pin.significance;
+    currentInstitution = "Curated Indian Visual Culture Archive";
+    currentLegalRights = "Contemporary Reference / Open Culture";
+    currentIsVisualInterpretation = true;
     baseNowUrl = pin.url;
     baseThenUrl = pin.url;
   } else {
@@ -282,6 +293,9 @@ export function ArchiveLens() {
       "User-selected aesthetic photograph processed through Cloudinary's dynamic color gradient and vintage plate engine.";
     currentArchivalSource = "Curated Pinterest / Custom Image Upload";
     currentSignificance = "Contrast original contemporary living colors with vintage 19th-century photographic processes.";
+    currentInstitution = "User Contributed / External Reference";
+    currentLegalRights = "Fair Use Cultural Exploration";
+    currentIsVisualInterpretation = true;
     baseNowUrl = userImg;
     baseThenUrl = userImg;
   }
@@ -334,11 +348,14 @@ export function ArchiveLens() {
     quality: "auto",
   });
 
-  // Sign fetch URLs via server API to bypass fetch ACL restrictions with HTTP 200 OK
+  // Reset signed URLs on subject change and sign remote URLs via server API
   useEffect(() => {
     let isMounted = true;
-    const effectParts = cloudinaryEffectString ? `,${cloudinaryEffectString}` : "";
-    const thenTransform = `f_auto,q_auto,c_fill,g_auto,w_1400,h_875${effectParts}`;
+    setSignedThenUrl("");
+    setSignedNowUrl("");
+
+    const effectTransform = cloudinaryEffectString ? `,${cloudinaryEffectString}` : "";
+    const thenTransform = `f_auto,q_auto,c_fill,g_auto,w_1400,h_875${effectTransform}`;
     const nowTransform = `f_auto,q_auto,c_fill,g_auto,w_1400,h_875`;
 
     if (baseThenUrl && baseThenUrl.startsWith("http")) {
@@ -658,6 +675,11 @@ export function ArchiveLens() {
                 <span className="font-serif truncate max-w-[150px] sm:max-w-none">
                   {comp.title.split("Temple")[0] || comp.title}
                 </span>
+                {comp.isVisualInterpretation && (
+                  <span className="text-[8px] font-mono px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-600 dark:text-amber-400 border border-amber-500/30">
+                    Interpretation
+                  </span>
+                )}
               </button>
             );
           })}
@@ -697,8 +719,8 @@ export function ArchiveLens() {
             }}
           >
             <ImageWithFallback
-              key={signedThenUrl || `${selectedGradient.id}-${gradientIntensity}-${vignetteAmount}-${contrastBoost}`}
-              src={signedThenUrl || thenImageUrl}
+              key={signedThenUrl || `${selectedGradient.id}-${gradientIntensity}-${vignetteAmount}-${contrastBoost}-${baseThenUrl}`}
+              src={baseThenUrl.startsWith("/") ? baseThenUrl : (signedThenUrl || thenImageUrl)}
               fallbackSrc={baseThenUrl}
               alt={`${currentTitle} - Historical Archival`}
               fill
@@ -710,6 +732,11 @@ export function ArchiveLens() {
             <div className="absolute top-4 left-4 bg-[#5B0E1B]/90 backdrop-blur-md px-3.5 py-1.5 rounded-full border border-[#C59B27]/50 text-[11px] font-mono text-[#FAF5EE] flex items-center gap-1.5 z-10 shadow-lg">
               <Calendar className="w-3 h-3 text-[#D4AF37]" />
               THEN: {currentYearThen}
+              {currentIsVisualInterpretation && (
+                <span className="text-[9px] text-amber-300 font-bold ml-1 bg-amber-950/60 px-2 py-0.5 rounded border border-amber-500/40">
+                  Visual Interpretation
+                </span>
+              )}
               <span className="text-[9px] text-[#E4C987] hidden sm:inline">
                 &bull; {selectedGradient.name}
               </span>
@@ -900,9 +927,19 @@ export function ArchiveLens() {
         {/* Archival Provenance & Inscription Context */}
         <div className="grid grid-cols-1 md:grid-cols-12 gap-6 bg-white dark:bg-[#1A1613] p-5 sm:p-7 rounded-2xl border border-[#C59B27]/25 dark:border-[#C59B27]/20 shadow-xs">
           <div className="md:col-span-8 space-y-2.5">
-            <div className="flex items-center gap-2 text-xs uppercase tracking-wider text-[#5B0E1B] dark:text-[#E5C378] font-mono font-bold">
+            <div className="flex flex-wrap items-center gap-2 text-xs uppercase tracking-wider text-[#5B0E1B] dark:text-[#E5C378] font-mono font-bold">
               <BookOpen className="w-3.5 h-3.5 text-[#C59B27] dark:text-[#D4AF37]" />
-              Archival Provenance & Analysis &bull; {currentLocation}
+              <span>
+                {currentIsVisualInterpretation
+                  ? "Historical Visual Interpretation"
+                  : "Verified Archival Provenance"}
+              </span>
+              <span>&bull; {currentLocation}</span>
+              {currentLegalRights && (
+                <span className="text-[10px] font-mono font-normal normal-case px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/30">
+                  {currentLegalRights}
+                </span>
+              )}
             </div>
             <h3 className="font-serif text-lg text-[#1C1814] dark:text-[#F5EFEB] font-medium">
               {currentTitle}
@@ -910,8 +947,20 @@ export function ArchiveLens() {
             <p className="text-xs sm:text-sm text-[#423A32] dark:text-[#D5C7B8] font-light leading-relaxed">
               {currentHistoricalContext}
             </p>
-            <div className="text-xs text-[#8C5320] dark:text-[#D4AF37] font-sans pt-1">
-              <strong className="text-[#1C1814] dark:text-[#F5EFEB]">Source Citation:</strong> {currentArchivalSource}
+            <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-[#8C5320] dark:text-[#D4AF37] font-sans pt-1 border-t border-[#C59B27]/15">
+              {currentPhotographer && (
+                <span>
+                  <strong className="text-[#1C1814] dark:text-[#F5EFEB]">Photographer:</strong> {currentPhotographer}
+                </span>
+              )}
+              {currentInstitution && (
+                <span>
+                  <strong className="text-[#1C1814] dark:text-[#F5EFEB]">Archive:</strong> {currentInstitution}
+                </span>
+              )}
+              <span>
+                <strong className="text-[#1C1814] dark:text-[#F5EFEB]">Source Citation:</strong> {currentArchivalSource}
+              </span>
             </div>
           </div>
 

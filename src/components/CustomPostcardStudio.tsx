@@ -71,7 +71,7 @@ const AESTHETIC_GALLERY = [
     id: "hampi-chariot",
     title: "Hampi Stone Chariot",
     region: "Karnataka",
-    url: "https://images.unsplash.com/photo-1590050752117-238cb0fb12b1?q=85&w=1200&auto=format&fit=crop",
+    url: "https://images.unsplash.com/photo-1600100397608-f010f443a948?q=85&w=1200&auto=format&fit=crop",
   },
   {
     id: "golden-temple",
@@ -96,21 +96,33 @@ export function CustomPostcardStudio({ onOpenInspector }: CustomPostcardStudioPr
   const [selectedPhotoUrl, setSelectedPhotoUrl] = useState<string>(AESTHETIC_GALLERY[0].url);
   const [selectedStateId, setSelectedStateId] = useState<string>("tamil-nadu");
   const [filter, setFilter] = useState<string>("heritage_sepia");
+  const [aspectRatio, setAspectRatio] = useState<"postcard" | "square" | "story" | "landscape">("postcard");
   const [activeTab, setActiveTab] = useState<"gallery" | "camera" | "upload" | "pinterest">("gallery");
   const [pinterestInputUrl, setPinterestInputUrl] = useState<string>("");
   const [pinterestError, setPinterestError] = useState<string>("");
   const [pinterestSuccess, setPinterestSuccess] = useState<string>("");
   const [imageLoadError, setImageLoadError] = useState<boolean>(false);
   const [signedPostcardUrl, setSignedPostcardUrl] = useState<string>("");
+  const [uploadNotice, setUploadNotice] = useState<{
+    type: "success" | "info" | "warning";
+    message: string;
+  } | null>(null);
+  const [isUploading, setIsUploading] = useState<boolean>(false);
 
   // Sign Cloudinary fetch URL whenever photo or color grade filter changes
   useEffect(() => {
     let isMounted = true;
     setImageLoadError(false);
 
+    let w = 1200;
+    let h = 750;
+    if (aspectRatio === "square") { w = 1000; h = 1000; }
+    else if (aspectRatio === "story") { w = 800; h = 1200; }
+    else if (aspectRatio === "landscape") { w = 1200; h = 675; }
+
     const activeFilterObj = FILTERS.find((f) => f.id === filter);
     const filterEffect = activeFilterObj?.tag ? `,${activeFilterObj.tag}` : "";
-    const transformation = `f_auto,q_auto,c_fill,g_auto,w_1200,h_750${filterEffect}`;
+    const transformation = `f_auto,q_auto,c_fill,g_auto,w_${w},h_${h}${filterEffect}`;
 
     if (selectedPhotoUrl && selectedPhotoUrl.startsWith("http")) {
       fetch(
@@ -132,7 +144,7 @@ export function CustomPostcardStudio({ onOpenInspector }: CustomPostcardStudioPr
     return () => {
       isMounted = false;
     };
-  }, [selectedPhotoUrl, filter]);
+  }, [selectedPhotoUrl, filter, aspectRatio]);
 
   const handleLoadPinterestUrl = () => {
     const url = pinterestInputUrl.trim();
@@ -185,9 +197,12 @@ export function CustomPostcardStudio({ onOpenInspector }: CustomPostcardStudioPr
     recipient: recipientName,
     message: letterMessage,
     sender: senderName,
+    stateId: selectedState.id,
+    stateName: selectedState.name,
+    nativeStateName: selectedState.nativeName,
     postmarkCity,
     filter: filter as any,
-    aspectRatio: "postcard",
+    aspectRatio,
   });
 
   // Camera Handlers
@@ -207,6 +222,72 @@ export function CustomPostcardStudio({ onOpenInspector }: CustomPostcardStudioPr
     }
   };
 
+  const handleMediaUpload = async (fileOrBlob: File | Blob) => {
+    // 1. Client file size check (10MB limit)
+    if (fileOrBlob.size > 10 * 1024 * 1024) {
+      setUploadNotice({
+        type: "warning",
+        message: "File exceeds 10MB size limit. Please choose a smaller photo.",
+      });
+      return;
+    }
+
+    setIsUploading(true);
+    setUploadNotice({ type: "info", message: "Connecting to Cloudinary Upload API..." });
+
+    try {
+      // 2. Request secure signature from server
+      const signRes = await fetch("/api/cloudinary/sign", { method: "POST" });
+      const signData = await signRes.json();
+
+      if (signRes.ok && signData.authenticated) {
+        // 3. Attempt signed upload to Cloudinary
+        const formData = new FormData();
+        formData.append("file", fileOrBlob);
+        formData.append("api_key", signData.apiKey);
+        formData.append("timestamp", String(signData.timestamp));
+        formData.append("signature", signData.signature);
+        formData.append("folder", signData.folder);
+        formData.append("allowed_formats", signData.allowedFormats);
+        formData.append("tags", signData.tags);
+
+        const uploadRes = await fetch(
+          `https://api.cloudinary.com/v1_1/${signData.cloudName}/image/upload`,
+          { method: "POST", body: formData }
+        );
+
+        if (uploadRes.ok) {
+          const uploadData = await uploadRes.json();
+          setSelectedPhotoUrl(uploadData.secure_url);
+          setUploadNotice({
+            type: "success",
+            message: "Uploaded and registered in Cloudinary Media Library.",
+          });
+          setIsUploading(false);
+          return;
+        }
+      }
+
+      // 4. Honest graceful fallback when API key lacks 'create' action permissions
+      const localUrl = URL.createObjectURL(fileOrBlob);
+      setSelectedPhotoUrl(localUrl);
+      setUploadNotice({
+        type: "info",
+        message:
+          "Cloudinary credentials operate in Read/Transform mode (actions=['create'] restricted). Switched to Local Photographic Stage for interactive preview & composite export.",
+      });
+    } catch {
+      const localUrl = URL.createObjectURL(fileOrBlob);
+      setSelectedPhotoUrl(localUrl);
+      setUploadNotice({
+        type: "info",
+        message: "Switched to Local Photographic Stage for interactive preview & composite export.",
+      });
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
   const capturePhoto = () => {
     if (!videoRef.current) return;
     const canvas = document.createElement("canvas");
@@ -215,9 +296,10 @@ export function CustomPostcardStudio({ onOpenInspector }: CustomPostcardStudioPr
     const ctx = canvas.getContext("2d");
     if (ctx) {
       ctx.drawImage(videoRef.current, 0, 0, canvas.width, canvas.height);
-      const dataUrl = canvas.toDataURL("image/jpeg", 0.9);
-      setSelectedPhotoUrl(dataUrl);
       stopCamera();
+      canvas.toBlob((blob) => {
+        if (blob) handleMediaUpload(blob);
+      }, "image/jpeg", 0.92);
     }
   };
 
@@ -239,13 +321,7 @@ export function CustomPostcardStudio({ onOpenInspector }: CustomPostcardStudioPr
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        if (event.target?.result) {
-          setSelectedPhotoUrl(event.target.result as string);
-        }
-      };
-      reader.readAsDataURL(file);
+      handleMediaUpload(file);
     }
   };
 
@@ -303,9 +379,149 @@ export function CustomPostcardStudio({ onOpenInspector }: CustomPostcardStudioPr
 
   const handleDownloadPostcard = async () => {
     setIsDownloading(true);
-    const filename = `roots-postcard-${selectedState.id}.jpg`;
-    await downloadImageReliably(signedPostcardUrl || transformedUrl, filename);
-    setIsDownloading(false);
+    try {
+      // Generate authentic high-res composite postcard with borders, postmarks, and stamps
+      const canvas = document.createElement("canvas");
+      let w = 1200;
+      let h = 750;
+      if (aspectRatio === "square") {
+        w = 1000;
+        h = 1000;
+      } else if (aspectRatio === "story") {
+        w = 800;
+        h = 1200;
+      } else if (aspectRatio === "landscape") {
+        w = 1200;
+        h = 675;
+      }
+
+      canvas.width = w;
+      canvas.height = h;
+      const ctx = canvas.getContext("2d");
+      if (!ctx) throw new Error("Canvas context failed");
+
+      // Draw background image
+      const img = new (window as any).Image();
+      img.crossOrigin = "anonymous";
+      img.src = selectedPhotoUrl;
+
+      await new Promise((resolve) => {
+        img.onload = () => resolve(true);
+        img.onerror = () => resolve(false);
+      });
+
+      if (img.width > 0) {
+        // Draw image scaled to cover canvas
+        const scale = Math.max(w / img.width, h / img.height);
+        const nw = img.width * scale;
+        const nh = img.height * scale;
+        const nx = (w - nw) / 2;
+        const ny = (h - nh) / 2;
+        ctx.drawImage(img, nx, ny, nw, nh);
+      } else {
+        ctx.fillStyle = "#1A1412";
+        ctx.fillRect(0, 0, w, h);
+      }
+
+      // Apply filter tint layer if applicable
+      if (filter === "heritage_sepia") {
+        ctx.fillStyle = "rgba(122, 88, 53, 0.45)";
+        ctx.fillRect(0, 0, w, h);
+      } else if (filter === "monsoon_teal") {
+        ctx.fillStyle = "rgba(10, 70, 66, 0.4)";
+        ctx.fillRect(0, 0, w, h);
+      } else if (filter === "desert_gold") {
+        ctx.fillStyle = "rgba(197, 155, 39, 0.35)";
+        ctx.fillRect(0, 0, w, h);
+      } else if (filter === "burgundy_inferno") {
+        ctx.fillStyle = "rgba(91, 14, 27, 0.45)";
+        ctx.fillRect(0, 0, w, h);
+      }
+
+      // Draw dark gradient scrim at bottom
+      const gradient = ctx.createLinearGradient(0, h * 0.4, 0, h);
+      gradient.addColorStop(0, "rgba(0,0,0,0)");
+      gradient.addColorStop(1, "rgba(15,10,8,0.92)");
+      ctx.fillStyle = gradient;
+      ctx.fillRect(0, h * 0.35, w, h * 0.65);
+
+      // Gold border
+      ctx.strokeStyle = "#D4AF37";
+      ctx.lineWidth = 4;
+      ctx.strokeRect(16, 16, w - 32, h - 32);
+
+      // Header text
+      ctx.font = "bold 16px 'Courier New', monospace";
+      ctx.fillStyle = "#E5C378";
+      ctx.fillText(`POSTCARD FROM ${selectedState.name.toUpperCase()} • ${selectedState.nativeName}`, 36, 44);
+      ctx.textAlign = "right";
+      ctx.fillText(`DISPATCH: ${postmarkCity}`, w - 36, 44);
+
+      // Recipient
+      ctx.textAlign = "left";
+      ctx.font = "bold 26px 'Georgia', serif";
+      ctx.fillStyle = "#FAF7F0";
+      ctx.fillText(recipientName, 44, h - 140);
+
+      // Message
+      ctx.font = "italic 18px 'Arial', sans-serif";
+      ctx.fillStyle = "#EFE8DC";
+      const words = letterMessage.split(" ");
+      let line = "";
+      let lineY = h - 100;
+      for (const word of words) {
+        const testLine = line + word + " ";
+        if (ctx.measureText(testLine).width > w - 280) {
+          ctx.fillText(line, 44, lineY);
+          line = word + " ";
+          lineY += 24;
+          if (lineY > h - 45) break;
+        } else {
+          line = testLine;
+        }
+      }
+      ctx.fillText(line, 44, lineY);
+
+      // Sender
+      ctx.font = "bold 16px 'Georgia', serif";
+      ctx.fillStyle = "#D4AF37";
+      ctx.fillText(`— ${senderName}`, 44, h - 36);
+
+      // Stamp badge (Right bottom)
+      ctx.fillStyle = "rgba(91, 14, 27, 0.9)";
+      ctx.fillRect(w - 180, h - 140, 140, 95);
+      ctx.strokeStyle = "#D4AF37";
+      ctx.lineWidth = 2;
+      ctx.strokeRect(w - 180, h - 140, 140, 95);
+      ctx.fillStyle = "#FAF8F5";
+      ctx.font = "bold 11px 'Courier New', monospace";
+      ctx.textAlign = "center";
+      ctx.fillText("INDIA POST", w - 110, h - 118);
+      ctx.font = "bold 13px 'Georgia', serif";
+      ctx.fillStyle = "#E5C378";
+      ctx.fillText(selectedState.name.substring(0, 12), w - 110, h - 94);
+      ctx.font = "10px 'Courier New', monospace";
+      ctx.fillStyle = "#D4AF37";
+      ctx.fillText("₹ 5.00 HERITAGE", w - 110, h - 68);
+
+      // Trigger download
+      canvas.toBlob((blob) => {
+        if (blob) {
+          const dlUrl = URL.createObjectURL(blob);
+          const a = document.createElement("a");
+          a.href = dlUrl;
+          a.download = `roots-postcard-${selectedState.id}.png`;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          URL.revokeObjectURL(dlUrl);
+        }
+      }, "image/png");
+    } catch {
+      await downloadImageReliably(signedPostcardUrl || transformedUrl, `roots-postcard-${selectedState.id}.jpg`);
+    } finally {
+      setIsDownloading(false);
+    }
   };
 
   const handleCopyPostcardUrl = () => {
@@ -521,6 +737,53 @@ export function CustomPostcardStudio({ onOpenInspector }: CustomPostcardStudioPr
                 >
                   <Camera className="w-3.5 h-3.5" />
                   <span>Capture Photo Frame</span>
+                </button>
+              </div>
+            )}
+
+            {/* Aspect Ratio Selector */}
+            <div className="pt-2 border-t border-[#C59B27]/15 dark:border-[#C59B27]/10 flex flex-wrap items-center gap-1.5">
+              <span className="text-[10px] font-mono uppercase text-[#8C7E72] dark:text-[#A89886] mr-1">
+                Aspect Ratio:
+              </span>
+              {[
+                { id: "postcard", label: "Postcard (8:5 • 1200×750)" },
+                { id: "landscape", label: "Widescreen (16:9 • 1200×675)" },
+                { id: "square", label: "Square (1:1 • 1000×1000)" },
+                { id: "story", label: "Portrait (2:3 • 800×1200)" },
+              ].map((ar) => (
+                <button
+                  key={ar.id}
+                  onClick={() => setAspectRatio(ar.id as any)}
+                  className={`text-[10px] font-serif px-2.5 py-1 rounded-full border transition-all ${
+                    aspectRatio === ar.id
+                      ? "bg-[#C59B27] text-white border-[#C59B27] font-semibold"
+                      : "bg-[#FAF8F5] dark:bg-[#14110E] text-[#423A32] dark:text-[#D5C7B8] border-[#C59B27]/25 hover:border-[#C59B27]"
+                  }`}
+                >
+                  {ar.label}
+                </button>
+              ))}
+            </div>
+
+            {/* Upload Notice Banner */}
+            {uploadNotice && (
+              <div
+                className={`p-2.5 rounded-xl border text-[11px] font-sans flex items-center gap-2 ${
+                  uploadNotice.type === "success"
+                    ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-800 dark:text-emerald-300"
+                    : uploadNotice.type === "warning"
+                    ? "bg-amber-500/10 border-amber-500/30 text-amber-800 dark:text-amber-300"
+                    : "bg-blue-500/10 border-blue-500/30 text-blue-800 dark:text-blue-300"
+                }`}
+              >
+                <CheckCircle2 className="w-3.5 h-3.5 shrink-0" />
+                <span className="flex-1">{uploadNotice.message}</span>
+                <button
+                  onClick={() => setUploadNotice(null)}
+                  className="text-xs hover:opacity-75 cursor-pointer font-bold ml-1"
+                >
+                  &times;
                 </button>
               </div>
             )}

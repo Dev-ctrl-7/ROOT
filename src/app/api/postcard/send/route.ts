@@ -201,28 +201,34 @@ export async function POST(req: Request) {
     const fromEmail =
       process.env.RESEND_FROM_EMAIL || "ROOTS Postal Bureau <onboarding@resend.dev>";
 
-    // Development Safe Testing Workflow:
-    // If client requested testMode in development or if provider is intentionally in mock test mode
-    if (testMode) {
+    // Server-controlled test mode authorization (strictly server-configured, never public client controlled)
+    const isServerTestModeEnabled =
+      process.env.NODE_ENV !== "production" &&
+      process.env.ALLOW_TEST_EMAIL_DISPATCH === "true";
+
+    if (isServerTestModeEnabled) {
       return NextResponse.json({
-        success: true,
-        testMode: true,
-        message: `[TEST MODE] Postcard payload rendered successfully for ${recipientEmail}. Real email dispatch was skipped because testMode=true.`,
+        success: false,
+        postcardGenerated: true,
+        emailStatus: "test_mode_skipped",
+        message: `[DEVELOPMENT MOCK] Server environment variable ALLOW_TEST_EMAIL_DISPATCH=true. Postcard generated successfully, but live email transmission was skipped.`,
         postcardUrl: transformedPostcardUrl,
         breakdown,
       });
     }
 
     // If Resend API Key is NOT configured, report accurately to user:
+    // Cloudinary generated the media, but email transmission requires Resend.
     // NEVER falsely claim email delivery!
     if (!resendApiKey) {
       return NextResponse.json(
         {
           success: false,
-          configured: false,
-          error: "Email delivery is not configured yet.",
+          postcardGenerated: true,
+          emailStatus: "not_configured",
+          error: "Email delivery provider not configured.",
           details:
-            "The email delivery provider (Resend) requires RESEND_API_KEY to be set in your server environment variables. Configure RESEND_API_KEY in .env.local to enable live transactional dispatch.",
+            "The transactional email provider (Resend) requires RESEND_API_KEY to be set in server environment variables. The postcard was successfully rendered by Cloudinary, but live email dispatch is offline.",
           postcardUrl: transformedPostcardUrl,
           breakdown,
         },
@@ -270,14 +276,27 @@ export async function POST(req: Request) {
         return NextResponse.json(
           {
             success: false,
+            postcardGenerated: true,
+            emailStatus: "provider_rejected",
             error: resendData.message || "Email provider failed to accept the message",
             providerDetails: resendData,
+            postcardUrl: transformedPostcardUrl,
           },
           { status: resendResponse.status >= 400 && resendResponse.status < 500 ? 400 : 502 }
         );
       }
 
       // Return success ONLY after provider has verified acceptance with an ID
+      return NextResponse.json({
+        success: true,
+        postcardGenerated: true,
+        emailStatus: "provider_accepted",
+        dispatchId: resendData.id,
+        recipient: recipientEmail.trim(),
+        postcardUrl: transformedPostcardUrl,
+        breakdown,
+        notice: "Postcard rendered by Cloudinary media engine; email dispatched via Resend transactional email API.",
+      });
       return NextResponse.json({
         success: true,
         deliveryId: resendData.id,
