@@ -538,8 +538,8 @@ export const ALL_INDIAN_STATES: StateData[] = [
       iconicIngredients: ["Mustard Oil", "Panch Phoron (Five-spice blend)", "Posto (Poppy seeds)", "Hilsa Fish", "Nolen Gur (Date palm jaggery)"],
       foodStory:
         "Bengali cuisine treats food as a fine art form, following a strict progression of courses from bitter (shukto) to pungent, sour (tok), and sweet.",
-      heroImage: "https://images.unsplash.com/photo-1626777552726-4a6b54c97e46?q=85&w=1200&auto=format&fit=crop",
-      heroCaption: "Authentic Bengali Shorshe Ilish served with fragrant Gobindobhog rice."
+      heroImage: "https://res.cloudinary.com/tecwmb40/image/fetch/s--ai77Lcwm--/c_fill,f_auto,g_auto,h_750,q_auto,w_1000/https://i.pinimg.com/736x/35/0a/eb/350aebe0bf2b2e723580b3a8b92ec81e.jpg?_a=BAMAROWQ0",
+      heroCaption: "Authentic Bengali Shorshe Ilish (Hilsa in pungent mustard gravy) with green chillies and mustard oil."
     },
     games: {
       name: "Ashta Chamma / Chokkhor",
@@ -558,16 +558,16 @@ export const ALL_INDIAN_STATES: StateData[] = [
       heirloomJewelry: "Shakha Pola (Conch and red coral bangles), Hansuli necklace & Chik choker",
       craftTechnique: "Baluchari sarees depict mythological scenes from Mahabharata woven directly into the pallu.",
       historicalOrigins: "Dhaka and Murshidabad muslin were historically so fine that an entire saree could pass through a signet ring.",
-      heroImage: "https://images.unsplash.com/photo-1610030469983-98e550d6193c?q=85&w=1200&auto=format&fit=crop",
-      heroCaption: "Traditional Baluchari silk saree with woven mythological chariot motifs."
+      heroImage: "https://res.cloudinary.com/tecwmb40/image/fetch/s--zU02lT_o--/c_fill,f_auto,g_auto,h_750,q_auto,w_1000/https://i.pinimg.com/736x/61/88/97/618897f2815bba6042b8870e4b92d0ee.jpg?_a=BAMAROWQ0",
+      heroCaption: "Traditional Lal-Paad white saree with vibrant red border, the timeless attire of Bengal."
     },
     celebration: {
       majorFestival: "Durga Puja (UNESCO Intangible Cultural Heritage) & Poila Boishakh",
       danceForm: "Chhau (Masked martial folk dance) and Gaudiya Nritya",
       folkMusic: "Baul Sangeet (Mystic bard songs with Ektara) & Rabindra Sangeet",
       celebrationRitual: "Sindoor Khela on Dashami, where married women smear vermilion on each other before immersion.",
-      heroImage: "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?q=85&w=1200&auto=format&fit=crop",
-      heroCaption: "A majestic idol of Goddess Durga decorated with traditional Sholar Saaj."
+      heroImage: "https://res.cloudinary.com/tecwmb40/image/fetch/s--PbYWP4zL--/c_fill,f_auto,g_auto,h_750,q_auto,w_1000/https://i.pinimg.com/736x/7d/37/6d/7d376d13005bd37f0908a957df3b0ac6.jpg?_a=BAMAROWQ0",
+      heroCaption: "A majestic idol of Goddess Durga during Kolkata's grand Durga Puja celebrations."
     },
     places: {
       iconicMonument: "Victoria Memorial & Howrah Bridge, Kolkata",
@@ -622,8 +622,8 @@ export const ALL_INDIAN_STATES: StateData[] = [
       iconicIngredients: ["Byadagi Chillies", "Coorg Black Pepper", "Ghee", "Tamarind", "Sandalwood extract"],
       foodStory:
         "The royal cooks (Madapalli) of the Wadiyar dynasty perfected Mysore Pak in 1935 when King Krishna Raja Wadiyar IV praised its melt-in-mouth texture.",
-      heroImage: "https://images.unsplash.com/photo-1589301760014-d929f3979dbc?q=85&w=1200&auto=format&fit=crop",
-      heroCaption: "Crisp Mysore Masala Dosa smeared with fiery red garlic-chilli chutney."
+      heroImage: "https://res.cloudinary.com/tecwmb40/image/fetch/s--8b387z1T--/c_fill,f_auto,g_auto,h_750,q_auto,w_1000/https://i.pinimg.com/736x/27/c3/97/27c397d61810aa332c56953239c962f4.jpg?_a=BAMAROWQ0",
+      heroCaption: "Authentic royal Mysore Pak prepared with pure ghee, gram flour, and cardamom."
     },
     games: {
       name: "Chauka Bara / Pagade",
@@ -642,24 +642,24 @@ export const ALL_INDIAN_STATES: StateData[] = [
       heirloomJewelry: "Lakshmi Sara (Gold coin necklace), Ganda Berunda pendant & Kadagas",
       craftTechnique: "Mysore Silk utilizes Swiss-imported machinery patronized by the Maharaja of Mysore in 1912.",
       historicalOrigins: "Tipu Sultan introduced sericulture to the kingdom in 1785.",
-      heroImage: "https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?q=85&w=1200&auto=format&fit=crop",
-      heroCaption: "Mysore Silk saree with pure gold zari embroidered border."
+      heroImage: "https://res.cloudinary.com/tecwmb40/image/fetch/s--95YYmg3s--/c_fill,f_auto,g_auto,h_750,q_auto,w_1000/https://i.pinimg.com/736x/93/8f/a0/938fa009a5f049d9572b22b333e12f04.jpg?_a=BAMAROWQ0",
+      heroCaption: "Regal blue Mysore Silk saree with pure gold zari embroidered border and rich pallu."
     },
     celebration: {
       majorFestival: "Mysore Dasara (10-day state festival celebrating victory of Chamundeshwari)",
       danceForm: "Yakshagana (Theatrical dance-opera with vibrant costumes and towering headdresses)",
       folkMusic: "Sugama Sangeetha and classical Carnatic Purandara Dasa compositions",
       celebrationRitual: "The Jumboo Savari royal elephant procession carrying the golden howdah with Goddess Chamundeshwari.",
-      heroImage: "https://images.unsplash.com/photo-1609137144813-7d9921338f24?q=85&w=1200&auto=format&fit=crop",
-      heroCaption: "Yakshagana performer in regal gilded costume and winged headdress."
+      heroImage: "https://res.cloudinary.com/tecwmb40/image/fetch/s--P-d6eUh7--/c_fill,f_auto,g_auto,h_750,q_auto,w_1000/https://i.pinimg.com/736x/c2/b0/a0/c2b0a0435c7cdf3a15b9b48454d88343.jpg?_a=BAMAROWQ0",
+      heroCaption: "Illuminated Mysore Dasara royal procession celebrating the victory of Goddess Chamundeshwari."
     },
     places: {
       iconicMonument: "Mysore Palace & Hampi Virupaksha Temple",
       naturalWonder: "Jog Falls (Second-highest plunge waterfall in India) & Kudremukh Peak",
       hiddenHeritage: "Hoysaleswara Temple at Halebidu (Exquisite chloritic schist soapstone lace)",
       architecturalStyle: "Hoysala stellate star-shaped temple platforms and Vijayanagara granite pillars",
-      heroImage: "https://images.unsplash.com/photo-1600100397608-f010f481b876?q=85&w=1200&auto=format&fit=crop",
-      heroCaption: "The stone chariot at Hampi Vitthala Temple complex."
+      heroImage: "https://res.cloudinary.com/tecwmb40/image/fetch/s---3jgoeH8--/c_fill,f_auto,g_auto,h_750,q_auto,w_1200/https://i.pinimg.com/736x/36/d1/7b/36d17b7470e2ebdd367a930a753ee1b3.jpg?_a=BAMAROWQ0",
+      heroCaption: "The magnificent Mysore Palace glowing with royal heritage in Mysuru."
     },
     livingHeritage: {
       traditionalCraft: "Channapatna Wooden Toys (GI, lacquered ivory-wood) & Sandalwood Carving",
