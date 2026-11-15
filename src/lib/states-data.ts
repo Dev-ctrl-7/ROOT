@@ -790,7 +790,7 @@ export const ALL_INDIAN_STATES: StateData[] = [
       iconicIngredients: ["Bhut Jolokia (Ghost Pepper)", "Khar (Banana peel alkaline filtrate)", "Kaji Nemu (Assam Lemon)", "Bamboo Shoot"],
       foodStory:
         "Assamese food uses minimal oil and heavy spices, relying on fermented bamboo shoot, alkaline khar, and sour tengaa to create sublime, delicate flavors.",
-      heroImage: "https://images.unsplash.com/photo-1626777552726-4a6b54c97e46?q=85&w=1200&auto=format&fit=crop",
+      heroImage: "https://res.cloudinary.com/tecwmb40/image/fetch/s--BRwR62sB--/c_fill,f_auto,g_auto,h_750,q_auto,w_1000/https://i.pinimg.com/736x/33/99/66/339966ee37777c265488234f8d70a5c2.jpg?_a=BAMAROWQ0",
       heroCaption: "Traditional Assamese bell-metal thali featuring Masor Tenga and Joha aromatic rice."
     },
     games: {
@@ -810,16 +810,16 @@ export const ALL_INDIAN_STATES: StateData[] = [
       heirloomJewelry: "Jonbiri (Crescent moon pendant), Gam Kharu (Heavy silver/gold bracelet) & Dholbiri",
       craftTechnique: "Sualkuchi hand-weaving of natural golden Muga filaments produced exclusively in Assam.",
       historicalOrigins: "Ahom kings decreed that Muga silk was reserved strictly for royalty.",
-      heroImage: "https://images.unsplash.com/photo-1610030469983-98e550d6193c?q=85&w=1200&auto=format&fit=crop",
-      heroCaption: "Gleaming golden Muga Mekhela Chador with red Kingkhap motifs."
+      heroImage: "https://res.cloudinary.com/tecwmb40/image/fetch/s--8jrvK9GG--/c_fill,f_auto,g_auto,h_750,q_auto,w_1000/https://i.pinimg.com/736x/57/9b/a5/579ba598e5c354550fa3fe32482aca09.jpg?_a=BAMAROWQ0",
+      heroCaption: "Gleaming golden Muga Mekhela Chador with delicate traditional red and gold Kingkhap motifs."
     },
     celebration: {
       majorFestival: "Rongali Bihu (Spring festival of agriculture and love) & Ambubachi Mela",
       danceForm: "Bihu Dance (Joyous rapid hip movements and rhythmic hand gestures) & Sattriya Classical Dance",
       folkMusic: "Bihu Geet played on Dhol, Pepa (Buffalo horn trumpet), and Toka (Bamboo clapper)",
       celebrationRitual: "Weaving Gamosa towels as symbols of respect presented to elders on the first day of Bihu.",
-      heroImage: "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?q=85&w=1200&auto=format&fit=crop",
-      heroCaption: "Assamese Bihu dancers playing the buffalo horn Pepa."
+      heroImage: "https://res.cloudinary.com/tecwmb40/image/fetch/s--ghPBUswH--/c_fill,f_auto,g_auto,h_750,q_auto,w_1000/https://i.pinimg.com/736x/4c/88/94/4c8894faf7b15fc026f98f646436c6b2.jpg?_a=BAMAROWQ0",
+      heroCaption: "Assamese Bihu dancers celebrating Rongali Bihu playing the buffalo horn Pepa."
     },
     places: {
       iconicMonument: "Kamakhya Temple & Rang Ghar (Oldest amphitheater in Asia, Sivasagar)",
