@@ -251,6 +251,18 @@ export function buildCloudinaryUrl(options: CloudinaryTransformOptions): string 
 
   const transformString = transformComponents.join("/");
 
+  // If sourceUrl is already a signed Cloudinary delivery URL and no tint or text overlays are requested,
+  // preserve the signed URL directly to maintain cryptographic HMAC authentication
+  if (
+    options.sourceUrl &&
+    options.sourceUrl.includes("res.cloudinary.com") &&
+    options.sourceUrl.includes("/s--") &&
+    !options.tintHex &&
+    (!options.textOverlays || options.textOverlays.length === 0)
+  ) {
+    return options.sourceUrl;
+  }
+
   if (options.publicId && !options.publicId.startsWith("http")) {
     return `https://res.cloudinary.com/${cloudName}/image/upload/${transformString}/${options.publicId}`;
   }

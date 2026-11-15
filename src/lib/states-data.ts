@@ -146,8 +146,8 @@ export const ALL_INDIAN_STATES: StateData[] = [
       danceForm: "Ghoomar (Graceful pirouetting dance of royal women) and Kalbelia (Snake-charmer gypsies)",
       folkMusic: "Maand, played on Kamaicha, Sarangi, and Khartal by Manganiyar & Langa master musicians",
       celebrationRitual: "Lighting thousand brass ghee lamps on the steps of Pushkar lake under the Kartik Purnima full moon.",
-      heroImage: "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?q=85&w=1200&auto=format&fit=crop",
-      heroCaption: "Ghoomar dancer in deep crimson ghagra whirling before stone palace walls."
+      heroImage: "https://res.cloudinary.com/tecwmb40/image/fetch/s--ITAni31q--/c_fill,f_auto,g_auto,h_750,q_auto,w_1000/https://i.pinimg.com/736x/02/85/69/02856995ce49f480cbfe71ad10da1ac2.jpg?_a=BAMAROWQ0",
+      heroCaption: "Rajasthani folk dancers celebrating cultural festivals in traditional vibrant attire."
     },
     places: {
       iconicMonument: "Hawa Mahal (Palace of Winds) & Mehrangarh Fort",
