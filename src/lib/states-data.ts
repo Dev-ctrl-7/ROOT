@@ -454,8 +454,8 @@ export const ALL_INDIAN_STATES: StateData[] = [
       iconicIngredients: ["Jaggery", "Asafoetida (Hing)", "Sesame Seeds", "Peanut Oil", "Green Chillies"],
       foodStory:
         "The quintessential Gujarati Thali balances sweet, sour, spicy, and salty in a single meal, with a pinch of jaggery even in savoury lentil dals.",
-      heroImage: "https://images.unsplash.com/photo-1626777552726-4a6b54c97e46?q=85&w=1200&auto=format&fit=crop",
-      heroCaption: "Steamed fluffy Khaman Dhokla garnished with mustard seeds and coriander."
+      heroImage: "https://res.cloudinary.com/tecwmb40/image/fetch/s--9f78nN6H--/c_fill,f_auto,g_auto,h_750,q_auto,w_1000/https://i.pinimg.com/736x/23/62/b8/2362b85a9eb497373e67860e5329ce41.jpg?_a=BAMAROWQ0",
+      heroCaption: "Authentic Gujarati Undhiyu served with freshly fried puris and traditional festive accompaniments."
     },
     games: {
       name: "Chopat (Chaupar)",
@@ -474,24 +474,24 @@ export const ALL_INDIAN_STATES: StateData[] = [
       heirloomJewelry: "Kandora silver waist chain, Damini head ornament & Pachhikam jewelry",
       craftTechnique: "Double-Ikat weaving so precise that both sides of the silk fabric look identical.",
       historicalOrigins: "A single genuine Patan Patola takes six months to weave and can last 300 years.",
-      heroImage: "https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?q=85&w=1200&auto=format&fit=crop",
-      heroCaption: "Patan Patola silk textile with geometric double-ikat floral motifs."
+      heroImage: "https://res.cloudinary.com/tecwmb40/image/fetch/s--ZVqgfLpN--/c_fill,f_auto,g_auto,h_750,q_auto,w_1000/https://i.pinimg.com/736x/6c/f1/e0/6cf1e0a3d3c09ff7f1382f6f0e1b6da4.jpg?_a=BAMAROWQ0",
+      heroCaption: "Traditional vibrant mirror-work Chaniya Choli worn during Navratri and Gujarati festive celebrations."
     },
     celebration: {
       majorFestival: "Navratri (World's longest dance festival) & Uttarayan (International Kite Festival)",
       danceForm: "Garba & Dandiya Raas (Rhythmic clapping and wooden stick dances in concentric circles)",
       folkMusic: "Dayro poetry and music played on Jhanjh, Manjira and Dholak",
       celebrationRitual: "Millions dancing in synchronized circles beneath night skies celebrating Goddess Durga.",
-      heroImage: "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?q=85&w=1200&auto=format&fit=crop",
-      heroCaption: "Garba dancers spinning in vibrant mirror-embroidered chaniya cholis."
+      heroImage: "https://res.cloudinary.com/tecwmb40/image/fetch/s--nKyb2S-V--/c_fill,f_auto,g_auto,h_750,q_auto,w_1000/https://i.pinimg.com/736x/83/55/1d/83551d823201df1fdc8b9ead6ee44aa3.jpg?_a=BAMAROWQ0",
+      heroCaption: "Vibrant Navratri Garba night celebration with dancers twirling in rhythmic devotion beneath festive lights."
     },
     places: {
       iconicMonument: "Rani ki Vav (The Queen's Stepwell, UNESCO Heritage) & Modhera Sun Temple",
       naturalWonder: "The Great Rann of Kutch (Vast white salt marsh desert)",
       hiddenHeritage: "Lothal Archaeological Site (Oldest engineered tidal dockyard in the world, 2400 BCE)",
       architecturalStyle: "Solanki-Maru-Gurjara temple carving with intricately sculpted stepwells (vavs)",
-      heroImage: "https://images.unsplash.com/photo-1558431382-27e303142255?q=85&w=1200&auto=format&fit=crop",
-      heroCaption: "Rani ki Vav's multi-tiered subterranean carved stone galleries."
+      heroImage: "https://res.cloudinary.com/tecwmb40/image/fetch/s--eKTVt1az--/c_fill,f_auto,g_auto,h_750,q_auto,w_1200/https://i.pinimg.com/736x/79/56/33/795633ca41942c0bdbda0111aac50d8c.jpg?_a=BAMAROWQ0",
+      heroCaption: "Rani ki Vav's multi-tiered subterranean carved stone galleries in Patan, a UNESCO World Heritage stepwell."
     },
     livingHeritage: {
       traditionalCraft: "Rogan Art of Nirona (Painting cloth using boiled castor oil paste with metal styluses)",
