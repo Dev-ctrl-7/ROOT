@@ -286,15 +286,30 @@ export function ArchiveLens() {
     baseThenUrl = userImg;
   }
 
-  // Dynamic Cloudinary Transformation String for the Color Gradient
-  const cloudinaryEffectString = [
-    selectedGradient.sepia > 0 ? `sepia:${selectedGradient.sepia}` : null,
-    `tint:${gradientIntensity}:${selectedGradient.tintHex}`,
-    vignetteAmount > 0 ? `vignette:${vignetteAmount}` : null,
-    contrastBoost !== 0 ? `contrast:${contrastBoost}` : null,
-  ]
-    .filter(Boolean)
-    .join(",");
+  // Build authentic Cloudinary color gradient transformation string
+  const effectParts: string[] = [];
+
+  if (selectedGradient.id === "cyanotype_blue") {
+    effectParts.push("e_saturation:-60");
+  } else if (selectedGradient.id === "silver_gelatin") {
+    effectParts.push("e_saturation:-100");
+  } else if (selectedGradient.sepia > 0) {
+    effectParts.push(`e_sepia:${selectedGradient.sepia}`);
+  }
+
+  if (selectedGradient.tintHex) {
+    effectParts.push(`e_tint:${gradientIntensity}:${selectedGradient.tintHex}`);
+  }
+
+  if (vignetteAmount > 0) {
+    effectParts.push(`e_vignette:${vignetteAmount}`);
+  }
+
+  if (contrastBoost !== 0) {
+    effectParts.push(`e_contrast:${contrastBoost}`);
+  }
+
+  const cloudinaryEffectString = effectParts.join(",");
 
   // Cloudinary transformed "Then" historical plate
   const thenImageUrl = buildCloudinaryUrl({
@@ -682,6 +697,7 @@ export function ArchiveLens() {
             }}
           >
             <ImageWithFallback
+              key={signedThenUrl || `${selectedGradient.id}-${gradientIntensity}-${vignetteAmount}-${contrastBoost}`}
               src={signedThenUrl || thenImageUrl}
               fallbackSrc={baseThenUrl}
               alt={`${currentTitle} - Historical Archival`}
@@ -767,7 +783,10 @@ export function ArchiveLens() {
                   return (
                     <button
                       key={preset.id}
-                      onClick={() => setSelectedGradient(preset)}
+                      onClick={() => {
+                        setSelectedGradient(preset);
+                        setSignedThenUrl("");
+                      }}
                       className={`p-2.5 rounded-xl border text-left transition-all relative overflow-hidden flex flex-col justify-between ${
                         isSelected
                           ? "border-[#5B0E1B] dark:border-[#D4AF37] ring-2 ring-[#C59B27]/40 bg-[#FAF5EE] dark:bg-[#201C18]"

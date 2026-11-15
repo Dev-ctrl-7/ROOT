@@ -26,7 +26,7 @@ const PRIVATE_IP_PATTERNS = [
   /^\[?fe80:/i,
 ];
 
-// Allowlisted transformation tokens/patterns
+// Allowlisted transformation tokens/patterns (supports canonical e_ prefixes and normalized variants)
 const ALLOWED_TRANSFORM_SEGMENTS = [
   /^f_(auto|webp|avif|jpg|png)$/,
   /^q_(auto|auto:best|auto:good|auto:eco|auto:low|[0-9]{1,3})$/,
@@ -35,11 +35,13 @@ const ALLOWED_TRANSFORM_SEGMENTS = [
   /^w_[0-9]{1,4}$/,
   /^h_[0-9]{1,4}$/,
   /^ar_[0-9]+:[0-9]+$/,
-  /^e_sepia(:[0-9]{1,3})?$/,
-  /^e_tint:[0-9]{1,3}:[0-9a-fA-F]{3,8}$/,
-  /^e_vignette(:[0-9]{1,3})?$/,
-  /^e_contrast:[-0-9]{1,4}$/,
-  /^e_saturation:[-0-9]{1,4}$/,
+  /^(e_)?sepia(:[0-9]{1,3})?$/,
+  /^(e_)?tint:[0-9]{1,3}(:[0-9a-fA-F]{3,8}(:[0-9]{1,3})?)+$/,
+  /^(e_)?vignette(:[0-9]{1,3})?$/,
+  /^(e_)?contrast:[-0-9]{1,4}$/,
+  /^(e_)?saturation:[-0-9]{1,4}$/,
+  /^(e_)?colorize:[0-9]{1,3}$/,
+  /^(e_)?grayscale$/,
   /^e_gen_restore$/,
   /^b_gen_fill$/,
   /^e_gen_background_replace(:prompt_[a-zA-Z0-9_\s%]+)?$/,
@@ -47,9 +49,38 @@ const ALLOWED_TRANSFORM_SEGMENTS = [
   /^e_enhance$/,
   /^l_text:[a-zA-Z0-9_%]+(:[a-zA-Z0-9_%-]+)*$/,
   /^co_(rgb:[0-9a-fA-F]{3,8}|[a-zA-Z]+)$/,
+  /^b_rgb:[0-9a-fA-F]{3,8}$/,
+  /^(e_)?gradient_fade(:[0-9]{1,3})?$/,
   /^x_[-0-9]{1,4}$/,
   /^y_[-0-9]{1,4}$/,
 ];
+
+function normalizeTransformation(rawTransform: string): string {
+  const segments = rawTransform
+    .split(",")
+    .map((s) => s.trim())
+    .filter(Boolean);
+
+  const normalized = segments.map((seg) => {
+    // Auto-prefix missing 'e_' for known Cloudinary effect parameters
+    if (
+      seg.startsWith("sepia:") ||
+      seg === "sepia" ||
+      seg.startsWith("tint:") ||
+      seg.startsWith("vignette:") ||
+      seg === "vignette" ||
+      seg.startsWith("contrast:") ||
+      seg.startsWith("saturation:") ||
+      seg.startsWith("colorize:") ||
+      seg === "grayscale"
+    ) {
+      return `e_${seg}`;
+    }
+    return seg;
+  });
+
+  return normalized.join(",");
+}
 
 function isSafeUrl(rawUrl: string): { valid: boolean; reason?: string } {
   try {
@@ -189,7 +220,8 @@ export async function GET(req: Request) {
       "demo";
     const apiSecret = process.env.CLOUDINARY_API_SECRET;
 
-    const result = generateSignedFetchUrl(cloudName, transformation, sourceUrl, apiSecret);
+    const normalizedTransform = normalizeTransformation(transformation);
+    const result = generateSignedFetchUrl(cloudName, normalizedTransform, sourceUrl, apiSecret);
 
     return NextResponse.json(result);
   } catch (error) {
@@ -248,7 +280,8 @@ export async function POST(req: Request) {
       "demo";
     const apiSecret = process.env.CLOUDINARY_API_SECRET;
 
-    const result = generateSignedFetchUrl(cloudName, transformation, sourceUrl, apiSecret);
+    const normalizedTransform = normalizeTransformation(transformation);
+    const result = generateSignedFetchUrl(cloudName, normalizedTransform, sourceUrl, apiSecret);
 
     return NextResponse.json(result);
   } catch (error) {

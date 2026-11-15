@@ -82,11 +82,11 @@ const AESTHETIC_GALLERY = [
 ];
 
 const FILTERS = [
-  { id: "heritage_sepia", name: "1890 Sepia Halide", tag: "sepia:80" },
-  { id: "monsoon_teal", name: "Monsoon Peacock", tag: "e_tint:50:0A4642" },
-  { id: "desert_gold", name: "Royal Gold", tag: "e_tint:50:C59B27" },
-  { id: "burgundy_inferno", name: "Burgundy Velvet", tag: "e_tint:55:5B0E1B" },
-  { id: "none", name: "Natural Editorial", tag: "q_auto,f_auto" },
+  { id: "heritage_sepia", name: "1890 Sepia Halide", tag: "e_sepia:80,e_vignette:25" },
+  { id: "monsoon_teal", name: "Monsoon Peacock", tag: "e_tint:50:0A4642,e_contrast:15" },
+  { id: "desert_gold", name: "Royal Gold", tag: "e_tint:50:C59B27,e_contrast:15" },
+  { id: "burgundy_inferno", name: "Burgundy Velvet", tag: "e_tint:55:5B0E1B,e_contrast:20" },
+  { id: "none", name: "Natural Editorial", tag: "" },
 ];
 
 export function CustomPostcardStudio({ onOpenInspector }: CustomPostcardStudioProps) {
@@ -101,10 +101,38 @@ export function CustomPostcardStudio({ onOpenInspector }: CustomPostcardStudioPr
   const [pinterestError, setPinterestError] = useState<string>("");
   const [pinterestSuccess, setPinterestSuccess] = useState<string>("");
   const [imageLoadError, setImageLoadError] = useState<boolean>(false);
+  const [signedPostcardUrl, setSignedPostcardUrl] = useState<string>("");
 
+  // Sign Cloudinary fetch URL whenever photo or color grade filter changes
   useEffect(() => {
+    let isMounted = true;
     setImageLoadError(false);
-  }, [selectedPhotoUrl]);
+
+    const activeFilterObj = FILTERS.find((f) => f.id === filter);
+    const filterEffect = activeFilterObj?.tag ? `,${activeFilterObj.tag}` : "";
+    const transformation = `f_auto,q_auto,c_fill,g_auto,w_1200,h_750${filterEffect}`;
+
+    if (selectedPhotoUrl && selectedPhotoUrl.startsWith("http")) {
+      fetch(
+        `/api/cloudinary/sign-fetch?transformation=${encodeURIComponent(
+          transformation
+        )}&sourceUrl=${encodeURIComponent(selectedPhotoUrl)}`
+      )
+        .then((res) => res.json())
+        .then((data) => {
+          if (isMounted && data.url) {
+            setSignedPostcardUrl(data.url);
+          }
+        })
+        .catch(() => {});
+    } else {
+      setSignedPostcardUrl("");
+    }
+
+    return () => {
+      isMounted = false;
+    };
+  }, [selectedPhotoUrl, filter]);
 
   const handleLoadPinterestUrl = () => {
     const url = pinterestInputUrl.trim();
@@ -276,12 +304,12 @@ export function CustomPostcardStudio({ onOpenInspector }: CustomPostcardStudioPr
   const handleDownloadPostcard = async () => {
     setIsDownloading(true);
     const filename = `roots-postcard-${selectedState.id}.jpg`;
-    await downloadImageReliably(transformedUrl, filename);
+    await downloadImageReliably(signedPostcardUrl || transformedUrl, filename);
     setIsDownloading(false);
   };
 
   const handleCopyPostcardUrl = () => {
-    navigator.clipboard.writeText(transformedUrl);
+    navigator.clipboard.writeText(signedPostcardUrl || transformedUrl);
     setCopiedLink(true);
     setTimeout(() => setCopiedLink(false), 2000);
   };
@@ -505,7 +533,11 @@ export function CustomPostcardStudio({ onOpenInspector }: CustomPostcardStudioPr
               {FILTERS.map((f) => (
                 <button
                   key={f.id}
-                  onClick={() => setFilter(f.id)}
+                  onClick={() => {
+                    setFilter(f.id);
+                    setImageLoadError(false);
+                    setSignedPostcardUrl("");
+                  }}
                   className={`px-2.5 py-0.5 rounded-full text-[11px] transition-all ${
                     filter === f.id
                       ? "bg-[#C59B27] dark:bg-[#D4AF37] text-white dark:text-[#0C0A09] font-medium shadow-2xs"
@@ -619,12 +651,13 @@ export function CustomPostcardStudio({ onOpenInspector }: CustomPostcardStudioPr
                 /* FRONT: Transformed Image + State Postal Stamp + Overlay Text */
                 <div className="relative w-full h-full">
                   <Image
-                    src={imageLoadError ? AESTHETIC_GALLERY[0].url : transformedUrl}
+                    key={signedPostcardUrl || `${filter}-${selectedPhotoUrl}`}
+                    src={signedPostcardUrl || (imageLoadError ? selectedPhotoUrl : transformedUrl)}
                     alt="Postcard Artifact"
                     fill
                     unoptimized={true}
                     onError={() => setImageLoadError(true)}
-                    className="object-cover"
+                    className="object-cover transition-opacity duration-300"
                     sizes="(max-width: 768px) 100vw, 50vw"
                   />
 
