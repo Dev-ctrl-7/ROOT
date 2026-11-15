@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import { ALL_INDIAN_STATES } from "@/lib/states-data";
 import { buildPostcardCloudinaryUrl } from "@/lib/cloudinary";
+import { downloadImageReliably } from "@/lib/download";
 import { useLanguage } from "@/lib/i18n/context";
 import {
   Sparkles,
@@ -81,11 +82,11 @@ const AESTHETIC_GALLERY = [
 ];
 
 const FILTERS = [
-  { id: "heritage_sepia", name: "1890 Sepia Halide", tag: "sepia:80" },
-  { id: "monsoon_teal", name: "Monsoon Peacock", tag: "e_tint:50:0A4642" },
-  { id: "desert_gold", name: "Royal Gold", tag: "e_tint:50:C59B27" },
-  { id: "burgundy_inferno", name: "Burgundy Velvet", tag: "e_tint:55:5B0E1B" },
-  { id: "none", name: "Natural Editorial", tag: "q_auto,f_auto" },
+  { id: "heritage_sepia", name: "1890 Sepia Halide", tag: "e_sepia:80,e_vignette:25" },
+  { id: "monsoon_teal", name: "Monsoon Peacock", tag: "e_tint:50:0A4642,e_contrast:15" },
+  { id: "desert_gold", name: "Royal Gold", tag: "e_tint:50:C59B27,e_contrast:15" },
+  { id: "burgundy_inferno", name: "Burgundy Velvet", tag: "e_tint:55:5B0E1B,e_contrast:20" },
+  { id: "none", name: "Natural Editorial", tag: "" },
 ];
 
 export function CustomPostcardStudio({ onOpenInspector }: CustomPostcardStudioProps) {
@@ -100,10 +101,38 @@ export function CustomPostcardStudio({ onOpenInspector }: CustomPostcardStudioPr
   const [pinterestError, setPinterestError] = useState<string>("");
   const [pinterestSuccess, setPinterestSuccess] = useState<string>("");
   const [imageLoadError, setImageLoadError] = useState<boolean>(false);
+  const [signedPostcardUrl, setSignedPostcardUrl] = useState<string>("");
 
+  // Sign Cloudinary fetch URL whenever photo or color grade filter changes
   useEffect(() => {
+    let isMounted = true;
     setImageLoadError(false);
-  }, [selectedPhotoUrl]);
+
+    const activeFilterObj = FILTERS.find((f) => f.id === filter);
+    const filterEffect = activeFilterObj?.tag ? `,${activeFilterObj.tag}` : "";
+    const transformation = `f_auto,q_auto,c_fill,g_auto,w_1200,h_750${filterEffect}`;
+
+    if (selectedPhotoUrl && selectedPhotoUrl.startsWith("http")) {
+      fetch(
+        `/api/cloudinary/sign-fetch?transformation=${encodeURIComponent(
+          transformation
+        )}&sourceUrl=${encodeURIComponent(selectedPhotoUrl)}`
+      )
+        .then((res) => res.json())
+        .then((data) => {
+          if (isMounted && data.url) {
+            setSignedPostcardUrl(data.url);
+          }
+        })
+        .catch(() => {});
+    } else {
+      setSignedPostcardUrl("");
+    }
+
+    return () => {
+      isMounted = false;
+    };
+  }, [selectedPhotoUrl, filter]);
 
   const handleLoadPinterestUrl = () => {
     const url = pinterestInputUrl.trim();
@@ -136,10 +165,13 @@ export function CustomPostcardStudio({ onOpenInspector }: CustomPostcardStudioPr
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const streamRef = useRef<MediaStream | null>(null);
 
-  // Mail sending state
+  // Mail sending & download state
   const [isSending, setIsSending] = useState<boolean>(false);
   const [sendSuccess, setSendSuccess] = useState<boolean>(false);
   const [sendError, setSendError] = useState<string>("");
+  const [sendErrorDetails, setSendErrorDetails] = useState<string>("");
+  const [sendIsUnconfigured, setSendIsUnconfigured] = useState<boolean>(false);
+  const [isDownloading, setIsDownloading] = useState<boolean>(false);
   const [copiedLink, setCopiedLink] = useState<boolean>(false);
   const [isFlipped, setIsFlipped] = useState<boolean>(false);
 
@@ -227,6 +259,9 @@ export function CustomPostcardStudio({ onOpenInspector }: CustomPostcardStudioPr
 
     setIsSending(true);
     setSendError("");
+    setSendErrorDetails("");
+    setSendIsUnconfigured(false);
+    setSendSuccess(false);
 
     try {
       const res = await fetch("/api/postcard/send", {
@@ -246,7 +281,7 @@ export function CustomPostcardStudio({ onOpenInspector }: CustomPostcardStudioPr
       });
 
       const data = await res.json();
-      if (res.ok) {
+      if (res.ok && data.success) {
         setSendSuccess(true);
         confetti({
           particleCount: 80,
@@ -256,6 +291,8 @@ export function CustomPostcardStudio({ onOpenInspector }: CustomPostcardStudioPr
         });
       } else {
         setSendError(data.error || "Failed to dispatch postcard.");
+        if (data.details) setSendErrorDetails(data.details);
+        if (data.configured === false) setSendIsUnconfigured(true);
       }
     } catch {
       setSendError("Network error. Please try again.");
@@ -264,8 +301,15 @@ export function CustomPostcardStudio({ onOpenInspector }: CustomPostcardStudioPr
     }
   };
 
+  const handleDownloadPostcard = async () => {
+    setIsDownloading(true);
+    const filename = `roots-postcard-${selectedState.id}.jpg`;
+    await downloadImageReliably(signedPostcardUrl || transformedUrl, filename);
+    setIsDownloading(false);
+  };
+
   const handleCopyPostcardUrl = () => {
-    navigator.clipboard.writeText(transformedUrl);
+    navigator.clipboard.writeText(signedPostcardUrl || transformedUrl);
     setCopiedLink(true);
     setTimeout(() => setCopiedLink(false), 2000);
   };
@@ -489,7 +533,11 @@ export function CustomPostcardStudio({ onOpenInspector }: CustomPostcardStudioPr
               {FILTERS.map((f) => (
                 <button
                   key={f.id}
-                  onClick={() => setFilter(f.id)}
+                  onClick={() => {
+                    setFilter(f.id);
+                    setImageLoadError(false);
+                    setSignedPostcardUrl("");
+                  }}
                   className={`px-2.5 py-0.5 rounded-full text-[11px] transition-all ${
                     filter === f.id
                       ? "bg-[#C59B27] dark:bg-[#D4AF37] text-white dark:text-[#0C0A09] font-medium shadow-2xs"
@@ -603,12 +651,13 @@ export function CustomPostcardStudio({ onOpenInspector }: CustomPostcardStudioPr
                 /* FRONT: Transformed Image + State Postal Stamp + Overlay Text */
                 <div className="relative w-full h-full">
                   <Image
-                    src={imageLoadError ? AESTHETIC_GALLERY[0].url : transformedUrl}
+                    key={signedPostcardUrl || `${filter}-${selectedPhotoUrl}`}
+                    src={signedPostcardUrl || (imageLoadError ? selectedPhotoUrl : transformedUrl)}
                     alt="Postcard Artifact"
                     fill
                     unoptimized={true}
                     onError={() => setImageLoadError(true)}
-                    className="object-cover"
+                    className="object-cover transition-opacity duration-300"
                     sizes="(max-width: 768px) 100vw, 50vw"
                   />
 
@@ -741,16 +790,18 @@ export function CustomPostcardStudio({ onOpenInspector }: CustomPostcardStudioPr
                 <span>{copiedLink ? "Copied!" : "Copy Link"}</span>
               </button>
 
-              <a
-                href={transformedUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                download="roots-cultural-postcard.jpg"
-                className="flex-1 py-1.5 px-2.5 rounded-xl bg-[#FAF8F5] dark:bg-[#14110E] hover:bg-[#5B0E1B] hover:text-white dark:hover:bg-[#5B0E1B] dark:hover:text-white text-[#5B0E1B] dark:text-[#E5C378] border border-[#C59B27]/30 text-xs font-serif flex items-center justify-center gap-1.5 shadow-2xs transition-all"
+              <button
+                onClick={handleDownloadPostcard}
+                disabled={isDownloading}
+                className="flex-1 py-1.5 px-2.5 rounded-xl bg-[#FAF8F5] dark:bg-[#14110E] hover:bg-[#5B0E1B] hover:text-white dark:hover:bg-[#5B0E1B] dark:hover:text-white text-[#5B0E1B] dark:text-[#E5C378] border border-[#C59B27]/30 text-xs font-serif flex items-center justify-center gap-1.5 shadow-2xs transition-all cursor-pointer disabled:opacity-50"
               >
-                <Download className="w-3.5 h-3.5" />
-                <span>Download</span>
-              </a>
+                {isDownloading ? (
+                  <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                ) : (
+                  <Download className="w-3.5 h-3.5" />
+                )}
+                <span>{isDownloading ? "Downloading..." : "Download"}</span>
+              </button>
 
               <button
                 onClick={onOpenInspector}
@@ -805,7 +856,21 @@ export function CustomPostcardStudio({ onOpenInspector }: CustomPostcardStudioPr
             </div>
 
             {sendError && (
-              <p className="text-xs text-red-600 dark:text-red-400 font-sans">{sendError}</p>
+              <div
+                className={`p-3 rounded-xl border text-xs space-y-1 ${
+                  sendIsUnconfigured
+                    ? "bg-amber-50 dark:bg-amber-950/40 border-amber-300 dark:border-amber-700 text-amber-900 dark:text-amber-200"
+                    : "bg-red-50 dark:bg-red-950/40 border-red-300 dark:border-red-850 text-red-700 dark:text-red-300"
+                }`}
+              >
+                <div className="font-semibold flex items-center gap-1.5">
+                  <AlertTriangle className="w-4 h-4 shrink-0" />
+                  <span>{sendError}</span>
+                </div>
+                {sendErrorDetails && (
+                  <p className="text-[11px] opacity-90 leading-relaxed font-sans">{sendErrorDetails}</p>
+                )}
+              </div>
             )}
 
             {sendSuccess && (

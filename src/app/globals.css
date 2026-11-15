@@ -201,3 +201,59 @@ html.dark .champagne-card:hover {
     scroll-behavior: auto !important;
   }
 }
+
+/* Print Optimization: Exact One-Sheet Official Passport */
+@media print {
+  @page {
+    size: A4 portrait;
+    margin: 5mm 7mm;
+  }
+
+  html,
+  body {
+    background: #0F0C0A !important;
+    color: #FAF5EE !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    max-height: 100% !important;
+    overflow: hidden !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* Hide all website chrome */
+  nav,
+  header,
+  footer,
+  aside,
+  button,
+  .print\:hidden {
+    display: none !important;
+  }
+
+  main,
+  section,
+  #cultural-passport {
+    padding: 0 !important;
+    margin: 0 !important;
+    border: none !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow: hidden !important;
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+
+  .printable-passport-sheet {
+    display: flex !important;
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+    page-break-after: avoid !important;
+    page-break-before: avoid !important;
+    height: 275mm !important;
+    max-height: 275mm !important;
+    box-sizing: border-box !important;
+  }
+}

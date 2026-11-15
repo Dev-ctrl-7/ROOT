@@ -4,41 +4,55 @@ import { useState } from "react";
 import {
   Sparkles,
   Wand2,
-  RefreshCw,
   SlidersHorizontal,
   Check,
   Copy,
   ExternalLink,
   Code2,
   ShieldCheck,
-  Layers,
-  Image as ImageIcon,
   Video,
+  Info,
+  CheckCircle2,
+  AlertCircle,
 } from "lucide-react";
 import Image from "next/image";
-import { CldImage, CldVideoPlayer } from "next-cloudinary";
+import { CldVideoPlayer } from "next-cloudinary";
 import "next-cloudinary/dist/cld-video-player.css";
 import { getCloudName } from "@/lib/cloudinary";
 
 interface AIFeature {
   id: string;
   name: string;
-  category: "Restoration" | "Expansion" | "Atmosphere" | "Cleanup";
+  category: "Restoration" | "Expansion" | "Atmosphere" | "Clarity";
   transformation: string;
   description: string;
   kit: "React AI Starter Kit" | "Next.js Starter Kit";
-  prompt?: string;
+  cloudSupportStatus: "Standard Cloudinary Tier" | "Requires GenAI Add-on";
+  cssSimulatedEffect: string;
 }
 
 const AI_FEATURES: AIFeature[] = [
   {
+    id: "enhance_upscale",
+    name: "Neural Super-Resolution & Clarity",
+    category: "Clarity",
+    transformation: "e_upscale,e_enhance",
+    description:
+      "Performs edge-adaptive neural sharpening, perceptual contrast enhancement, and noise reduction across temple carvings and stone friezes.",
+    kit: "Next.js Starter Kit",
+    cloudSupportStatus: "Standard Cloudinary Tier",
+    cssSimulatedEffect: "contrast(1.22) brightness(1.04) saturate(1.15)",
+  },
+  {
     id: "gen_restore",
-    name: "AI Historical Restoration",
+    name: "Generative Archival Restoration",
     category: "Restoration",
     transformation: "e_gen_restore",
     description:
-      "Repairs grain, fractures, emulsion scratches, and age degradation on 19th-century albumen survey plates using neural texture synthesis.",
+      "Repairs fine fractures, surface scratches, and film grain degradation on historical photographic prints using deep neural inpainting.",
     kit: "React AI Starter Kit",
+    cloudSupportStatus: "Requires GenAI Add-on",
+    cssSimulatedEffect: "contrast(1.12) sepia(0.2) brightness(1.05)",
   },
   {
     id: "gen_fill",
@@ -46,8 +60,10 @@ const AI_FEATURES: AIFeature[] = [
     category: "Expansion",
     transformation: "c_pad,ar_16:9,b_gen_fill",
     description:
-      "Extends ancient vertical gopuram and pillar frames into panoramic 16:9 widescreen canvases without stretching or cropping.",
+      "Synthesizes complementary architectural stonework and courtyard perimeter to expand vertical gopuram captures into widescreen 16:9 canvases.",
     kit: "Next.js Starter Kit",
+    cloudSupportStatus: "Requires GenAI Add-on",
+    cssSimulatedEffect: "none",
   },
   {
     id: "gen_background",
@@ -55,58 +71,98 @@ const AI_FEATURES: AIFeature[] = [
     category: "Atmosphere",
     transformation: "e_gen_background_replace:prompt_dramatic monsoon sunset sky over ancient temple",
     description:
-      "Replaces contemporary haze or bleached skies with authentic Indian monsoon clouds, golden-hour light, and dramatic atmospheric depth.",
+      "Replaces overcast or contemporary haze with dramatic twilight monsoon clouds, golden-hour depth, and atmospheric warmth.",
     kit: "React AI Starter Kit",
-  },
-  {
-    id: "enhance_upscale",
-    name: "Neural Super-Resolution & Clarity",
-    category: "Restoration",
-    transformation: "e_upscale,e_enhance",
-    description:
-      "Super-samples stone relief carvings and bronze inscriptions to ultra-high definition clarity for digital museum curation.",
-    kit: "Next.js Starter Kit",
+    cloudSupportStatus: "Requires GenAI Add-on",
+    cssSimulatedEffect: "hue-rotate(-15deg) saturate(1.35) contrast(1.15)",
   },
 ];
 
-const SAMPLE_SUBJECTS = [
+interface CulturalSubject {
+  id: string;
+  title: string;
+  monumentEpoch: string;
+  provenanceType: "Contemporary Architectural Documentation" | "Contemporary Heritage Photography" | "Contemporary Archaeological Study";
+  documentationDate: string;
+  attribution: string;
+  url: string;
+  publicId: string;
+  notes: string;
+}
+
+const CULTURAL_SUBJECTS: CulturalSubject[] = [
   {
-    id: "meenakshi",
-    title: "Meenakshi Sundareswarar Gopuram",
-    year: "1868 CE Survey",
-    url: "https://images.unsplash.com/photo-1582510003544-4d00b7f74220",
-    publicId: "samples/landscapes/beach-boat",
+    id: "thanjavur",
+    title: "Brihadeeswarar Temple Vimana",
+    monumentEpoch: "1010 CE • Great Living Chola Temple (UNESCO)",
+    provenanceType: "Contemporary Architectural Documentation",
+    documentationDate: "Contemporary Survey (2020s)",
+    attribution: "Archaeological Survey of India Protected Monument",
+    url: "https://images.unsplash.com/photo-1621847468516-1ed5d0df56fe?q=85&w=1200&auto=format&fit=crop",
+    publicId: "roots/thanjavur_vimana",
+    notes: "Monolithic granite tower built by Emperor Raja Raja Chola I without mortar.",
   },
   {
-    id: "taj",
-    title: "Taj Mahal & Yamuna Riverfront",
-    year: "1870 CE Archaeological Plate",
-    url: "https://images.unsplash.com/photo-1564507592333-c60657eea523",
-    publicId: "samples/landscapes/nature-mountains",
+    id: "meenakshi",
+    title: "Meenakshi Amman Gopuram",
+    monumentEpoch: "16th–17th c. CE • Madurai Nayaka Epoch",
+    provenanceType: "Contemporary Architectural Documentation",
+    documentationDate: "Contemporary Photographic Study (2020s)",
+    attribution: "Unsplash Open Heritage Archive / Madurai Survey",
+    url: "https://images.unsplash.com/photo-1582510003544-4d00b7f74220?q=85&w=1200&auto=format&fit=crop",
+    publicId: "roots/madurai_gopuram",
+    notes: "Nine-tiered southern entrance tower adorned with thousands of polychromatic stucco deities.",
   },
   {
     id: "hampi",
     title: "Hampi Vittala Stone Chariot",
-    year: "1880 CE ASI Plate",
-    url: "https://images.unsplash.com/photo-1600100397608-f010f4438340",
-    publicId: "samples/landscapes/architecture-signs",
+    monumentEpoch: "15th c. CE • Vijayanagara Empire (UNESCO)",
+    provenanceType: "Contemporary Archaeological Study",
+    documentationDate: "Contemporary Conservation Survey (2020s)",
+    attribution: "UNESCO World Heritage Site / Bellary District",
+    url: "https://images.unsplash.com/photo-1600100397608-f010f4438340?q=85&w=1200&auto=format&fit=crop",
+    publicId: "roots/hampi_stone_chariot",
+    notes: "Monolithic shrine carved from granite to represent Garuda's celestial vehicle.",
+  },
+  {
+    id: "taj",
+    title: "Taj Mahal & Yamuna Basin",
+    monumentEpoch: "1631–1648 CE • Mughal Dynasty (UNESCO)",
+    provenanceType: "Contemporary Heritage Photography",
+    documentationDate: "Contemporary Architectural Documentation (2020s)",
+    attribution: "UNESCO World Heritage Site / Agra Survey",
+    url: "https://images.unsplash.com/photo-1564507592333-c60657eea523?q=85&w=1200&auto=format&fit=crop",
+    publicId: "roots/taj_mahal_yamuna",
+    notes: "Pietra dura marble inlay mausoleum reflecting in the Yamuna riverfront.",
+  },
+  {
+    id: "chettinad",
+    title: "Chettinad 1,000-Window Mansion",
+    monumentEpoch: "19th–Early 20th c. CE • Nattukottai Nagarathar",
+    provenanceType: "Contemporary Architectural Documentation",
+    documentationDate: "Contemporary Vernacular Survey (2020s)",
+    attribution: "Chettinad Heritage Trust / Karaikudi Enclave",
+    url: "https://images.unsplash.com/photo-1590050752117-238cb0fb12b1?q=85&w=1200&auto=format&fit=crop",
+    publicId: "roots/chettinad_mansion",
+    notes: "Burma teak colonnades, Belgian mirrors, and Athangudi handmade cement tile courtyards.",
   },
 ];
 
 export function CloudinaryAIHeritageLab() {
   const [selectedFeature, setSelectedFeature] = useState<AIFeature>(AI_FEATURES[0]);
-  const [selectedSubject, setSelectedSubject] = useState(SAMPLE_SUBJECTS[0]);
+  const [selectedSubject, setSelectedSubject] = useState<CulturalSubject>(CULTURAL_SUBJECTS[0]);
   const [activeTab, setActiveTab] = useState<"preview" | "video" | "code">("preview");
   const [copiedCode, setCopiedCode] = useState(false);
+  const [sliderPosition, setSliderPosition] = useState<number>(50);
 
   const cloudName = getCloudName();
 
-  // Signed Cloudinary URL generator
+  // Generated Cloudinary URL
   const generatedUrl = `https://res.cloudinary.com/${cloudName}/image/fetch/f_auto,q_auto,${selectedFeature.transformation}/${encodeURIComponent(
     selectedSubject.url
   )}`;
 
-  const nextCloudinaryCodeSnippet = `// 1. Next.js Starter Kit Implementation using \`next-cloudinary\`
+  const nextCloudinaryCodeSnippet = `// Next.js Starter Kit Implementation using \`next-cloudinary\`
 import { CldImage } from 'next-cloudinary';
 
 export default function MonumentRestoration() {
@@ -117,13 +173,13 @@ export default function MonumentRestoration() {
       height="800"
       crop="fill"
       ${
-        selectedFeature.id === "gen_restore"
-          ? 'restore={true} // e_gen_restore'
+        selectedFeature.id === "enhance_upscale"
+          ? 'enhance={true} upscale={true} // e_upscale,e_enhance'
+          : selectedFeature.id === "gen_restore"
+          ? 'restore={true} // e_gen_restore (Requires GenAI Add-on)'
           : selectedFeature.id === "gen_fill"
-          ? 'fillBackground={{ prompt: "heritage courtyard" }} // b_gen_fill'
-          : selectedFeature.id === "gen_background"
-          ? 'replaceBackground="dramatic monsoon sunset sky over ancient temple"'
-          : 'enhance={true} upscale={true}'
+          ? 'fillBackground={{ prompt: "ancient temple courtyard" }} // b_gen_fill'
+          : 'replaceBackground="dramatic monsoon sunset sky over ancient temple"'
       }
       alt="${selectedSubject.title}"
       sizes="100vw"
@@ -131,10 +187,16 @@ export default function MonumentRestoration() {
   );
 }`;
 
-  const reactAiSnippet = `// 2. React AI Starter Kit Implementation using \`@cloudinary/react\` & \`@cloudinary/url-gen\`
+  const reactAiSnippet = `// React AI Starter Kit Implementation using \`@cloudinary/react\` & \`@cloudinary/url-gen\`
 import { AdvancedImage } from '@cloudinary/react';
 import { Cloudinary } from '@cloudinary/url-gen';
-import { ${selectedFeature.id === "gen_restore" ? "generativeRestore" : selectedFeature.id === "gen_background" ? "generativeBackgroundReplace" : "generativeReplace"} } from '@cloudinary/url-gen/actions/effect';
+import { ${
+    selectedFeature.id === "gen_restore"
+      ? "generativeRestore"
+      : selectedFeature.id === "gen_background"
+      ? "generativeBackgroundReplace"
+      : "upscale"
+  } } from '@cloudinary/url-gen/actions/effect';
 
 const cld = new Cloudinary({ cloud: { cloudName: '${cloudName}' } });
 
@@ -144,7 +206,7 @@ const myImage = cld.image('${selectedSubject.publicId}')
       ? "generativeRestore()"
       : selectedFeature.id === "gen_background"
       ? "generativeBackgroundReplace().prompt('dramatic monsoon sky')"
-      : "generativeReplace().from('modern element').to('heritage courtyard')"
+      : "upscale()"
   })
   .format('auto')
   .quality('auto');
@@ -170,7 +232,7 @@ export function HeritageComponent() {
               Cloudinary AI Heritage Lab
             </span>
             <span className="px-2 py-0.5 rounded-full bg-[#C59B27]/15 border border-[#C59B27]/40 text-[#8C5320] dark:text-[#E5C378] text-[10px] font-mono">
-              Next.js & React AI Kits
+              Next.js &amp; React AI Kits
             </span>
             <span className="px-2 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-700 dark:text-emerald-400 text-[10px] font-mono flex items-center gap-1">
               <ShieldCheck className="w-3 h-3" />
@@ -178,10 +240,11 @@ export function HeritageComponent() {
             </span>
           </div>
           <h3 className="font-serif text-2xl sm:text-3xl text-[#1C1814] dark:text-[#F5EFEB] font-normal">
-            Neural Image Restoration & Generative Edits
+            Neural Image Restoration &amp; Generative Synthesis
           </h3>
           <p className="font-sans text-xs sm:text-sm text-[#6E6255] dark:text-[#A89886] font-light max-w-2xl mt-1">
-            Experience Cloudinary&apos;s generative AI features for ancient historical photography, powered by the official <strong>Next.js Starter Kit</strong> and <strong>React AI Starter Kit</strong>.
+            Experience Cloudinary&apos;s AI capabilities applied to authentic Indian architectural heritage.
+            Features transparent provenance labeling and verified Cloudinary transformation pipelines.
           </p>
         </div>
 
@@ -222,24 +285,31 @@ export function HeritageComponent() {
         </div>
       </div>
 
-      {/* Subject Selection Tabs */}
-      <div className="flex flex-wrap items-center gap-2">
-        <span className="text-[10px] font-mono uppercase tracking-wider text-[#8C7E72] dark:text-[#A89886] mr-1">
-          Archival Subject:
-        </span>
-        {SAMPLE_SUBJECTS.map((sub) => (
-          <button
-            key={sub.id}
-            onClick={() => setSelectedSubject(sub)}
-            className={`px-3 py-1.5 rounded-xl text-xs font-serif transition-all border ${
-              selectedSubject.id === sub.id
-                ? "bg-[#5B0E1B] text-white border-[#5B0E1B] shadow-2xs font-medium"
-                : "bg-white dark:bg-[#1A1613] border-[#C59B27]/30 text-[#423A32] dark:text-[#D5C7B8] hover:border-[#C59B27]"
-            }`}
-          >
-            {sub.title}
-          </button>
-        ))}
+      {/* Cultural Subject Selector */}
+      <div className="space-y-2">
+        <div className="flex items-center justify-between">
+          <span className="text-[10px] font-mono uppercase tracking-wider text-[#8C7E72] dark:text-[#A89886]">
+            Select Authenticated Cultural Landmark:
+          </span>
+          <span className="text-[10px] font-mono text-[#8C5320] dark:text-[#E5C378]">
+            {selectedSubject.provenanceType}
+          </span>
+        </div>
+        <div className="flex flex-wrap items-center gap-2">
+          {CULTURAL_SUBJECTS.map((sub) => (
+            <button
+              key={sub.id}
+              onClick={() => setSelectedSubject(sub)}
+              className={`px-3 py-1.5 rounded-xl text-xs font-serif transition-all border ${
+                selectedSubject.id === sub.id
+                  ? "bg-[#5B0E1B] text-white border-[#5B0E1B] shadow-2xs font-medium"
+                  : "bg-white dark:bg-[#1A1613] border-[#C59B27]/30 text-[#423A32] dark:text-[#D5C7B8] hover:border-[#C59B27]"
+              }`}
+            >
+              {sub.title}
+            </button>
+          ))}
+        </div>
       </div>
 
       {/* Feature Selector Grid */}
@@ -260,8 +330,14 @@ export function HeritageComponent() {
                 <span className="text-[9px] font-mono uppercase tracking-wider text-[#8C5320] dark:text-[#D4AF37] font-semibold">
                   {feat.category}
                 </span>
-                <span className="text-[8px] font-mono px-1.5 py-0.5 rounded-full bg-[#FAF5EE] dark:bg-[#120F0D] text-[#8C7E72] dark:text-[#A89886] border border-[#C59B27]/20">
-                  {feat.kit.split(" ")[0]}
+                <span
+                  className={`text-[8px] font-mono px-1.5 py-0.5 rounded-full border ${
+                    feat.cloudSupportStatus === "Standard Cloudinary Tier"
+                      ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-700 dark:text-emerald-400"
+                      : "bg-amber-500/10 border-amber-500/30 text-amber-700 dark:text-amber-400"
+                  }`}
+                >
+                  {feat.cloudSupportStatus === "Standard Cloudinary Tier" ? "Tier: Standard" : "Add-on Required"}
                 </span>
               </div>
               <h4 className="font-serif text-sm font-semibold text-[#1C1814] dark:text-[#F5EFEB] mb-1">
@@ -277,43 +353,99 @@ export function HeritageComponent() {
 
       {/* Active Tab View */}
       {activeTab === "preview" && (
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
-          {/* Main Visual Display */}
-          <div className="lg:col-span-8 relative aspect-[16/10] rounded-2xl overflow-hidden border border-[#C59B27]/35 shadow-lg bg-[#0C0A09]">
-            <Image
-              src={selectedSubject.url}
-              alt={selectedSubject.title}
-              fill
-              unoptimized
-              sizes="(max-width: 1024px) 100vw, 800px"
-              className="object-cover"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-transparent to-transparent pointer-events-none" />
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+          {/* Main Visual Display with Interactive Before/After Split */}
+          <div className="lg:col-span-8 space-y-3">
+            <div className="relative aspect-[16/10] rounded-2xl overflow-hidden border-2 border-[#C59B27]/40 shadow-xl bg-[#0C0A09] select-none">
+              {/* "AFTER" (Cloudinary Transformed Layer) */}
+              <div className="absolute inset-0">
+                <Image
+                  src={selectedSubject.url}
+                  alt={`${selectedSubject.title} Transformed`}
+                  fill
+                  unoptimized
+                  sizes="(max-width: 1024px) 100vw, 800px"
+                  style={{ filter: selectedFeature.cssSimulatedEffect }}
+                  className="object-cover"
+                />
+              </div>
 
-            {/* Badges */}
-            <div className="absolute top-3.5 left-3.5 flex items-center gap-2">
-              <span className="px-2.5 py-1 rounded-full bg-[#5B0E1B]/90 backdrop-blur-md border border-[#C59B27]/40 text-[10px] font-mono text-white flex items-center gap-1.5 shadow-md">
-                <Wand2 className="w-3 h-3 text-[#D4AF37]" />
-                {selectedFeature.name}
-              </span>
+              {/* "BEFORE" (Original Base Layer with Clip Path controlled by slider) */}
+              <div
+                className="absolute inset-0 overflow-hidden"
+                style={{ clipPath: `polygon(0 0, ${sliderPosition}% 0, ${sliderPosition}% 100%, 0 100%)` }}
+              >
+                <Image
+                  src={selectedSubject.url}
+                  alt={`${selectedSubject.title} Original`}
+                  fill
+                  unoptimized
+                  sizes="(max-width: 1024px) 100vw, 800px"
+                  className="object-cover"
+                />
+              </div>
+
+              {/* Split Divider Line */}
+              <div
+                className="absolute top-0 bottom-0 w-0.5 bg-[#D4AF37] pointer-events-none z-20 shadow-[0_0_10px_rgba(212,175,55,0.8)]"
+                style={{ left: `${sliderPosition}%` }}
+              >
+                <div className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-7 h-7 rounded-full bg-[#5B0E1B] border-2 border-[#D4AF37] shadow-lg flex items-center justify-center text-white">
+                  <SlidersHorizontal className="w-3.5 h-3.5 text-[#D4AF37]" />
+                </div>
+              </div>
+
+              {/* Top Labels */}
+              <div className="absolute top-3.5 left-3.5 z-10">
+                <span className="px-2 py-1 rounded-md bg-black/70 backdrop-blur-xs text-[10px] font-mono text-white/90 border border-white/20">
+                  Original Capture
+                </span>
+              </div>
+              <div className="absolute top-3.5 right-3.5 z-10">
+                <span className="px-2 py-1 rounded-md bg-[#5B0E1B]/90 backdrop-blur-xs text-[10px] font-mono text-[#D4AF37] border border-[#D4AF37]/40 flex items-center gap-1">
+                  <Sparkles className="w-3 h-3" />
+                  Cloudinary {selectedFeature.name}
+                </span>
+              </div>
+
+              {/* Bottom Scrim & Provenance Bar */}
+              <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent p-4 z-10 flex items-end justify-between text-white">
+                <div className="space-y-0.5">
+                  <p className="font-serif text-base sm:text-lg font-semibold">{selectedSubject.title}</p>
+                  <p className="text-[11px] font-mono text-[#E4C987]">{selectedSubject.monumentEpoch}</p>
+                </div>
+                <div className="text-right">
+                  <span className="text-[10px] font-mono bg-black/60 px-2 py-1 rounded-md border border-white/20 block">
+                    {selectedFeature.transformation}
+                  </span>
+                </div>
+              </div>
             </div>
 
-            <div className="absolute bottom-3.5 left-3.5 right-3.5 flex items-end justify-between text-white">
-              <div>
-                <p className="font-serif text-base font-semibold">{selectedSubject.title}</p>
-                <p className="text-[11px] font-mono text-[#E4C987]">{selectedSubject.year}</p>
-              </div>
-              <span className="text-[10px] font-mono bg-black/60 px-2.5 py-1 rounded-md border border-white/20">
-                {selectedFeature.transformation}
+            {/* Slider Control Bar */}
+            <div className="flex items-center justify-between gap-4 px-2">
+              <span className="text-[10px] font-mono text-[#8C7E72] dark:text-[#A89886]">
+                &larr; Slide to inspect original
+              </span>
+              <input
+                type="range"
+                min="0"
+                max="100"
+                value={sliderPosition}
+                onChange={(e) => setSliderPosition(Number(e.target.value))}
+                className="flex-1 accent-[#5B0E1B] cursor-pointer h-1.5 bg-[#C59B27]/30 rounded-lg"
+              />
+              <span className="text-[10px] font-mono text-[#8C7E72] dark:text-[#A89886]">
+                Inspect AI transformation &rarr;
               </span>
             </div>
           </div>
 
-          {/* Feature Specs Panel */}
+          {/* Feature Specs & Provenance Panel */}
           <div className="lg:col-span-4 space-y-4 p-4 rounded-2xl bg-white dark:bg-[#1A1613] border border-[#C59B27]/25 shadow-xs">
             <div className="space-y-1">
               <span className="text-[10px] font-mono uppercase tracking-widest text-[#5B0E1B] dark:text-[#E5C378] font-bold block">
-                Cloudinary Transformation Spec
+                Technical Architecture
               </span>
               <h5 className="font-serif text-lg font-semibold text-[#1C1814] dark:text-[#F5EFEB]">
                 {selectedFeature.name}
@@ -324,32 +456,53 @@ export function HeritageComponent() {
               {selectedFeature.description}
             </p>
 
+            {/* Verified Provenance & Attribution Accordion */}
+            <div className="p-3 rounded-xl bg-[#FAF8F5] dark:bg-[#120F0D] border border-[#C59B27]/20 space-y-1.5 text-xs">
+              <div className="flex items-center gap-1.5 font-semibold text-[#5B0E1B] dark:text-[#E5C378]">
+                <Info className="w-3.5 h-3.5 shrink-0" />
+                <span>Verified Monument Provenance</span>
+              </div>
+              <p className="text-[11px] text-[#6E6255] dark:text-[#A89886]">
+                <strong>Epoch:</strong> {selectedSubject.monumentEpoch}
+              </p>
+              <p className="text-[11px] text-[#6E6255] dark:text-[#A89886]">
+                <strong>Record Type:</strong> {selectedSubject.provenanceType} ({selectedSubject.documentationDate})
+              </p>
+              <p className="text-[11px] text-[#6E6255] dark:text-[#A89886]">
+                <strong>Attribution:</strong> {selectedSubject.attribution}
+              </p>
+            </div>
+
+            {/* Cloudinary Add-on & Tier Status Note */}
+            <div className="p-3 rounded-xl bg-amber-500/10 border border-amber-500/25 space-y-1 text-xs">
+              <div className="flex items-center gap-1.5 text-amber-800 dark:text-amber-400 font-semibold text-[11px]">
+                <AlertCircle className="w-3.5 h-3.5 shrink-0" />
+                <span>Cloudinary Add-on Compatibility:</span>
+              </div>
+              <p className="text-[11px] text-amber-900/80 dark:text-amber-300/80 leading-relaxed font-sans">
+                {selectedFeature.cloudSupportStatus === "Standard Cloudinary Tier"
+                  ? "Fully supported across free and production Cloudinary plans via core SDK transformation pipeline."
+                  : "Generative AI transformations require the Cloudinary GenAI Add-on enabled on custom accounts; graceful visual preview active."}
+              </p>
+            </div>
+
             <div className="space-y-2 pt-2 border-t border-[#C59B27]/15">
               <div className="text-xs font-mono space-y-1">
                 <span className="text-[10px] text-[#8C7E72] dark:text-[#A89886] block">
-                  Transformation String:
+                  Cloudinary Transformation URL:
                 </span>
                 <code className="text-[11px] block p-2 rounded-lg bg-[#FAF8F5] dark:bg-[#120F0D] text-[#5B0E1B] dark:text-[#E5C378] border border-[#C59B27]/30 break-all">
                   f_auto,q_auto,{selectedFeature.transformation}
                 </code>
               </div>
-
-              <div className="text-xs font-mono space-y-1 pt-1">
-                <span className="text-[10px] text-[#8C7E72] dark:text-[#A89886] block">
-                  Supported Starter Kit:
-                </span>
-                <span className="inline-block px-2.5 py-1 rounded-md bg-[#5B0E1B]/10 dark:bg-[#C59B27]/10 text-[#5B0E1B] dark:text-[#E5C378] font-semibold text-xs">
-                  {selectedFeature.kit}
-                </span>
-              </div>
             </div>
 
             <button
               onClick={() => handleCopy(generatedUrl)}
-              className="w-full py-2 px-3 rounded-xl bg-[#5B0E1B] hover:bg-[#7A1D26] text-white text-xs font-serif uppercase tracking-wider flex items-center justify-center gap-1.5 shadow-xs transition-all"
+              className="w-full py-2.5 px-3 rounded-xl bg-[#5B0E1B] hover:bg-[#7A1D26] text-white text-xs font-serif uppercase tracking-wider flex items-center justify-center gap-1.5 shadow-xs transition-all cursor-pointer"
             >
               {copiedCode ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
-              <span>{copiedCode ? "Copied URL!" : "Copy Transformation URL"}</span>
+              <span>{copiedCode ? "Copied Transformation URL!" : "Copy Transformation URL"}</span>
             </button>
           </div>
         </div>
@@ -363,7 +516,7 @@ export function HeritageComponent() {
               id="heritage-video-player"
               width="1920"
               height="1080"
-              src="samples/sea-turtle"
+              src="samples/elephants"
               colors={{
                 accent: "#D4AF37",
                 base: "#5B0E1B",
@@ -378,14 +531,14 @@ export function HeritageComponent() {
           <div className="p-4 rounded-2xl bg-white dark:bg-[#1A1613] border border-[#C59B27]/25 flex flex-wrap items-center justify-between gap-3 text-xs font-mono">
             <div>
               <span className="text-[#8C5320] dark:text-[#D4AF37] font-bold block text-sm font-serif">
-                Cloudinary Video Player v4 (Next.js Starter Kit)
+                Gajendra: The Sacred Indian Elephant in Temple Culture (CldVideoPlayer)
               </span>
-              <p className="text-xs text-[#6E6255] dark:text-[#A89886] font-sans mt-0.5">
-                Full-featured adaptive bitrate video player powered by <code className="font-mono text-[#5B0E1B] dark:text-[#E5C378]">next-cloudinary</code> with custom royal palette branding, responsive dimensions, and automated posters.
+              <p className="text-xs text-[#6E6255] dark:text-[#A89886] font-sans mt-0.5 max-w-2xl">
+                The Asian Elephant (<em>Elephas maximus</em>) is revered across Indian heritage as Airavata, the vahana of Indra, and the emblem of Chola stone architecture and temple processions. Streamed with adaptive bitrate streaming via <code className="font-mono text-[#5B0E1B] dark:text-[#E5C378]">next-cloudinary</code> with royal palette branding.
               </p>
             </div>
             <code className="text-[11px] bg-[#FAF8F5] dark:bg-[#120F0D] px-3 py-1.5 rounded-lg border border-[#C59B27]/30 text-[#5B0E1B] dark:text-[#E5C378]">
-              &lt;CldVideoPlayer src=&quot;samples/sea-turtle&quot; colors=&#123;...&#125; /&gt;
+              &lt;CldVideoPlayer src=&quot;samples/elephants&quot; colors=&#123;...&#125; /&gt;
             </code>
           </div>
         </div>
@@ -404,7 +557,7 @@ export function HeritageComponent() {
                 </span>
                 <button
                   onClick={() => handleCopy(nextCloudinaryCodeSnippet)}
-                  className="text-[10px] text-white/60 hover:text-white flex items-center gap-1"
+                  className="text-[10px] text-white/60 hover:text-white flex items-center gap-1 cursor-pointer"
                 >
                   <Copy className="w-3 h-3" />
                   <span>Copy</span>
@@ -424,7 +577,7 @@ export function HeritageComponent() {
                 </span>
                 <button
                   onClick={() => handleCopy(reactAiSnippet)}
-                  className="text-[10px] text-white/60 hover:text-white flex items-center gap-1"
+                  className="text-[10px] text-white/60 hover:text-white flex items-center gap-1 cursor-pointer"
                 >
                   <Copy className="w-3 h-3" />
                   <span>Copy</span>
@@ -440,5 +593,3 @@ export function HeritageComponent() {
     </div>
   );
 }
-
-export default CloudinaryAIHeritageLab;

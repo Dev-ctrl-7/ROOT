@@ -177,25 +177,6 @@ export function buildCloudinaryUrl(options: CloudinaryTransformOptions): string 
       return source;
     }
 
-    // If running in Node.js server context with API secret, generate signed fetch URL to bypass Cloudinary ACL restrictions
-    const apiSecret = typeof process !== "undefined" ? process.env?.CLOUDINARY_API_SECRET : undefined;
-    if (apiSecret) {
-      try {
-        const crypto = require("crypto");
-        const toSign = `${transformString}/${source}${apiSecret}`;
-        const hash = crypto
-          .createHash("sha1")
-          .update(toSign)
-          .digest("base64")
-          .slice(0, 8)
-          .replace(/\//g, "_")
-          .replace(/\+/g, "-");
-        return `https://res.cloudinary.com/${cloudName}/image/fetch/s--${hash}--/${transformString}/${source}`;
-      } catch {
-        // Fall back to unsigned fetch if crypto is unavailable
-      }
-    }
-
     return `https://res.cloudinary.com/${cloudName}/image/fetch/${transformString}/${source}`;
   }
 
@@ -214,20 +195,29 @@ export function buildStatePostcardUrl(params: {
   message: string;
   sender: string;
   tintHex?: string;
-  filter?: "monochromatic" | "sepia" | "golden" | "natural";
+  filter?: "monochromatic" | "sepia" | "golden" | "natural" | string;
 }): string {
   let effectParam = "";
   let tintParam = params.tintHex;
 
-  if (params.filter === "sepia") {
-    effectParam = "sepia:70";
+  if (params.filter === "sepia" || params.filter === "heritage_sepia") {
+    effectParam = "sepia:80,vignette:25";
     tintParam = undefined;
-  } else if (params.filter === "golden") {
-    effectParam = "saturation:25,e_contrast:15";
+  } else if (params.filter === "golden" || params.filter === "desert_gold") {
+    effectParam = "tint:50:C59B27,contrast:15";
     tintParam = undefined;
-  } else if (params.filter === "natural") {
+  } else if (params.filter === "monsoon_teal") {
+    effectParam = "tint:50:0A4642,contrast:15";
+    tintParam = undefined;
+  } else if (params.filter === "burgundy_inferno") {
+    effectParam = "tint:55:5B0E1B,contrast:20";
+    tintParam = undefined;
+  } else if (params.filter === "natural" || params.filter === "none") {
     effectParam = "";
     tintParam = undefined;
+  } else if (params.filter === "monochromatic") {
+    effectParam = "";
+    tintParam = params.tintHex || "C59B27";
   }
 
   const shortMessage =
@@ -323,7 +313,7 @@ export function buildPostcardCloudinaryUrl(options: PostcardCloudinaryOptions): 
     recipient: options.recipient || "To a kindred soul,",
     message: options.message || "A memory etched in time.",
     sender: options.sender || "A traveler",
-    filter: (options.filter as any) || "natural",
+    filter: (options.filter as "monochromatic" | "sepia" | "golden" | "natural") || "natural",
   });
 }
 

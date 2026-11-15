@@ -37,7 +37,7 @@ export function LanguageSwitcher() {
       </button>
 
       {isOpen && (
-        <div className="absolute right-0 mt-2 w-64 rounded-2xl bg-[#FFFDF9] dark:bg-[#181411] border border-[#C59B27]/30 dark:border-[#C59B27]/40 shadow-2xl z-50 p-2 overflow-hidden animate-in fade-in zoom-in-95 duration-150">
+        <div className="absolute right-0 bottom-full mb-2 w-64 rounded-2xl bg-[#FFFDF9] dark:bg-[#181411] border border-[#C59B27]/30 dark:border-[#C59B27]/40 shadow-2xl z-50 p-2 overflow-hidden animate-in fade-in zoom-in-95 duration-150">
           <div className="px-3 py-2 text-[10px] font-mono uppercase tracking-widest text-[#8C7E72] dark:text-[#A89886] border-b border-[#C59B27]/15 dark:border-[#C59B27]/25">
             Select Language • 12 Indian Scripts
           </div>
@@ -58,19 +58,19 @@ export function LanguageSwitcher() {
                   }`}
                 >
                   <div className="flex items-center gap-2.5">
-                    <span className="w-6 h-6 rounded-full bg-[#FAF4EC] border border-[#C59B27]/30 text-[#5B0E1B] text-xs flex items-center justify-center font-bold">
+                    <span className="w-6 h-6 rounded-full bg-[#FAF4EC] dark:bg-[#2A1E16] border border-[#C59B27]/30 dark:border-[#C59B27]/40 text-[#5B0E1B] dark:text-[#E5C378] text-xs flex items-center justify-center font-bold">
                       {lang.rootGlyph}
                     </span>
                     <div>
-                      <div className="font-serif text-sm leading-tight text-[#2C241E]">
+                      <div className="font-serif text-sm leading-tight text-[#2C241E] dark:text-[#FAF5EE]">
                         {lang.nativeName}
                       </div>
-                      <div className="text-[10px] font-sans text-[#8C7E72] leading-tight">
+                      <div className="text-[10px] font-sans text-[#8C7E72] dark:text-[#A89886] leading-tight">
                         {lang.name} • &ldquo;{lang.rootWord}&rdquo;
                       </div>
                     </div>
                   </div>
-                  {isSelected && <Check className="w-3.5 h-3.5 text-[#5B0E1B]" />}
+                  {isSelected && <Check className="w-3.5 h-3.5 text-[#5B0E1B] dark:text-[#E5C378]" />}
                 </button>
               );
             })}

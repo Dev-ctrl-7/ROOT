@@ -44,14 +44,14 @@ export function FoodAcrossIndia({ onSelectState }: FoodAcrossIndiaProps) {
     <section id="culinary-explorer" className="py-24 px-4 sm:px-8 lg:px-12 max-w-7xl mx-auto space-y-12 border-t border-[#C59B27]/25">
       {/* Header */}
       <div className="text-center max-w-3xl mx-auto space-y-3">
-        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-[#C59B27]/40 bg-[#FAF8F5] text-[#8C5320] text-[10px] uppercase tracking-[0.25em] font-mono shadow-xs">
+        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-[#C59B27]/40 bg-[#FAF8F5] dark:bg-[#1C1713] text-[#8C5320] dark:text-[#E5C378] text-[10px] uppercase tracking-[0.25em] font-mono shadow-xs">
           <Utensils className="w-3.5 h-3.5 text-[#C59B27]" />
           Gastronomic Cartography of India
         </div>
-        <h2 className="font-serif text-4xl sm:text-5xl text-[#1C1814] font-normal tracking-tight">
+        <h2 className="font-serif text-4xl sm:text-5xl text-[#1C1814] dark:text-[#F5EFEB] font-normal tracking-tight">
           Food Across India
         </h2>
-        <p className="font-sans text-xs sm:text-sm text-[#6E6255] max-w-xl mx-auto leading-relaxed font-light">
+        <p className="font-sans text-xs sm:text-sm text-[#6E6255] dark:text-[#D9CEBF] max-w-xl mx-auto leading-relaxed font-light">
           From slow-simmered brass handis to temple prasadam and banana-leaf feasts across 36 regional terroirs.
         </p>
 

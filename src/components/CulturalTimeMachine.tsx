@@ -164,14 +164,14 @@ export function CulturalTimeMachine() {
     <section id="time-machine" className="py-24 px-4 sm:px-8 lg:px-12 max-w-7xl mx-auto space-y-12 border-t border-[#C59B27]/25">
       {/* Header */}
       <div className="text-center max-w-3xl mx-auto space-y-3">
-        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-[#C59B27]/40 bg-[#FAF8F5] text-[#5B0E1B] text-[10px] uppercase tracking-[0.25em] font-mono shadow-xs">
+        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-[#C59B27]/40 bg-[#FAF8F5] dark:bg-[#1C1713] text-[#5B0E1B] dark:text-[#E5C378] text-[10px] uppercase tracking-[0.25em] font-mono shadow-xs">
           <Clock className="w-3.5 h-3.5 text-[#C59B27]" />
           Temporal Curatorial Chronology
         </div>
-        <h2 className="font-serif text-4xl sm:text-5xl text-[#1C1814] font-normal tracking-tight">
+        <h2 className="font-serif text-4xl sm:text-5xl text-[#1C1814] dark:text-[#F5EFEB] font-normal tracking-tight">
           The Cultural Time Machine
         </h2>
-        <p className="font-sans text-xs sm:text-sm text-[#6E6255] max-w-xl mx-auto leading-relaxed font-light">
+        <p className="font-sans text-xs sm:text-sm text-[#6E6255] dark:text-[#D9CEBF] max-w-xl mx-auto leading-relaxed font-light">
           Traverse 5,000 years of unbroken creative memory across four landmark epochs of the Indian subcontinent.
         </p>
       </div>
@@ -215,51 +215,51 @@ export function CulturalTimeMachine() {
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -15 }}
           transition={{ duration: 0.4 }}
-          className="rounded-3xl p-6 sm:p-10 border border-[#C59B27]/30 bg-gradient-to-b from-[#FFFDF9] via-[#FAF6F0] to-[#F5EFEB] shadow-xl grid grid-cols-1 lg:grid-cols-12 gap-8 items-center"
+          className="rounded-3xl p-6 sm:p-10 border border-[#C59B27]/30 bg-gradient-to-b from-[#FFFDF9] via-[#FAF6F0] to-[#F5EFEB] dark:from-[#181411] dark:via-[#14100D] dark:to-[#0F0C0A] shadow-xl grid grid-cols-1 lg:grid-cols-12 gap-8 items-center"
         >
           {/* Left Column: Epoch Narrative */}
           <div className="lg:col-span-7 space-y-6">
             <div className="space-y-1">
-              <span className="text-xs font-mono uppercase tracking-widest text-[#8C7E72]">
+              <span className="text-xs font-mono uppercase tracking-widest text-[#8C7E72] dark:text-[#A89886]">
                 Epoch &bull; {currentEra.period}
               </span>
               <h3
-                className="font-serif text-3xl sm:text-4xl text-[#1C1814] font-normal leading-tight"
+                className="font-serif text-3xl sm:text-4xl text-[#1C1814] dark:text-[#F5EFEB] font-normal leading-tight"
                 style={{ color: currentEra.accentColor }}
               >
                 {currentEra.title}
               </h3>
-              <p className="text-xs font-mono text-[#C59B27] uppercase tracking-wider">
+              <p className="text-xs font-mono text-[#C59B27] dark:text-[#D4AF37] uppercase tracking-wider">
                 {currentEra.epoch}
               </p>
             </div>
 
-            <p className="text-sm font-serif italic text-[#382F26] leading-relaxed">
+            <p className="text-sm font-serif italic text-[#382F26] dark:text-[#D9CEBF] leading-relaxed">
               &ldquo;{currentEra.summary}&rdquo;
             </p>
 
             {/* Curated Milestones List */}
             <div className="space-y-3 pt-2">
-              <span className="text-xs font-mono uppercase tracking-widest text-[#5B0E1B] block font-bold">
+              <span className="text-xs font-mono uppercase tracking-widest text-[#5B0E1B] dark:text-[#E5C378] block font-bold">
                 Civilizational Milestones:
               </span>
               <div className="space-y-2.5">
                 {currentEra.milestones.map((m, idx) => (
                   <div
                     key={idx}
-                    className="p-3.5 rounded-xl bg-white/80 border border-[#C59B27]/20 flex items-start gap-3 shadow-2xs"
+                    className="p-3.5 rounded-xl bg-white/80 dark:bg-[#1A1613] border border-[#C59B27]/20 dark:border-[#C59B27]/30 flex items-start gap-3 shadow-2xs"
                   >
-                    <span className="font-mono text-xs font-bold text-[#C59B27] shrink-0 pt-0.5">
+                    <span className="font-mono text-xs font-bold text-[#C59B27] dark:text-[#D4AF37] shrink-0 pt-0.5">
                       {m.year}
                     </span>
                     <div>
-                      <h4 className="font-serif text-sm font-semibold text-[#1C1814]">
+                      <h4 className="font-serif text-sm font-semibold text-[#1C1814] dark:text-[#F5EFEB]">
                         {m.headline}
                       </h4>
-                      <p className="text-xs text-[#6E6255] font-sans mt-0.5 leading-relaxed">
+                      <p className="text-xs text-[#6E6255] dark:text-[#D9CEBF] font-sans mt-0.5 leading-relaxed">
                         {m.detail}
                       </p>
-                      <span className="inline-block mt-1 text-[10px] font-mono text-[#8C7E72] uppercase">
+                      <span className="inline-block mt-1 text-[10px] font-mono text-[#8C7E72] dark:text-[#A89886] uppercase">
                         Origin: {m.region}
                       </span>
                     </div>

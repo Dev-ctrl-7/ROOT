@@ -1,6 +1,6 @@
 "use client";
 
-import React, { createContext, useContext, useState, useEffect, useMemo } from "react";
+import React, { createContext, useContext, useState, useMemo } from "react";
 import { SupportedLanguage, SUPPORTED_LANGUAGES, LanguageMeta, TranslationDictionary } from "./types";
 import { TRANSLATIONS } from "./translations";
 
@@ -17,19 +17,21 @@ const LanguageContext = createContext<LanguageContextType | undefined>(undefined
 
 const STORAGE_KEY = "roots_heritage_lang";
 
-export function LanguageProvider({ children }: { children: React.ReactNode }) {
-  const [language, setLanguageState] = useState<SupportedLanguage>("en");
-
-  useEffect(() => {
-    try {
-      const saved = localStorage.getItem(STORAGE_KEY) as SupportedLanguage | null;
-      if (saved && TRANSLATIONS[saved]) {
-        setLanguageState(saved);
-      }
-    } catch {
-      // localStorage may fail in restricted/SSR environments
+function getInitialLanguage(): SupportedLanguage {
+  if (typeof window === "undefined") return "en";
+  try {
+    const saved = localStorage.getItem(STORAGE_KEY) as SupportedLanguage | null;
+    if (saved && TRANSLATIONS[saved]) {
+      return saved;
     }
-  }, []);
+  } catch {
+    // fallback
+  }
+  return "en";
+}
+
+export function LanguageProvider({ children }: { children: React.ReactNode }) {
+  const [language, setLanguageState] = useState<SupportedLanguage>(getInitialLanguage);
 
   const setLanguage = (lang: SupportedLanguage) => {
     setLanguageState(lang);
@@ -70,19 +72,10 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
   );
 }
 
-export function useLanguage() {
+export function useLanguage(): LanguageContextType {
   const context = useContext(LanguageContext);
   if (!context) {
-    // Fallback if rendered outside provider
-    const defaultMeta = SUPPORTED_LANGUAGES[0];
-    return {
-      language: "en" as SupportedLanguage,
-      currentLangMeta: defaultMeta,
-      t: TRANSLATIONS.en,
-      setLanguage: () => {},
-      rootGlyph: "R",
-      rootWord: "Roots",
-    };
+    throw new Error("useLanguage must be used within a LanguageProvider");
   }
   return context;
 }
