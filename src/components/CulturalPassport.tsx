@@ -2,11 +2,12 @@
 
 import { useState, useEffect } from "react";
 import { ALL_INDIAN_STATES } from "@/lib/states-data";
-import { Award, RotateCcw } from "lucide-react";
+import { Award, RotateCcw, Printer, Pencil } from "lucide-react";
 import { STATE_ICON_MAP } from "@/components/MotifIcon";
 import confetti from "canvas-confetti";
 
 const PASSPORT_STORAGE_KEY = "roots_cultural_passport_stamps_v2";
+const PASSPORT_BEARER_KEY = "roots_cultural_passport_bearer_name";
 
 interface CulturalPassportProps {
   onSelectState: (stateId: string) => void;
@@ -14,24 +15,38 @@ interface CulturalPassportProps {
 
 export function CulturalPassport({ onSelectState }: CulturalPassportProps) {
   const [stampedStateIds, setStampedStateIds] = useState<string[]>([]);
+  const [bearerName, setBearerName] = useState<string>("Cultural Traveler");
 
   useEffect(() => {
     try {
-      // Clean up legacy storage key that held default pre-stamped states
+      // Clean up legacy storage key
       localStorage.removeItem("roots_cultural_passport_stamps");
 
-      const saved = localStorage.getItem(PASSPORT_STORAGE_KEY);
-      if (saved) {
-        setStampedStateIds(JSON.parse(saved));
+      const savedStamps = localStorage.getItem(PASSPORT_STORAGE_KEY);
+      if (savedStamps) {
+        setStampedStateIds(JSON.parse(savedStamps));
       } else {
-        // Start clean
         setStampedStateIds([]);
         localStorage.setItem(PASSPORT_STORAGE_KEY, JSON.stringify([]));
+      }
+
+      const savedName = localStorage.getItem(PASSPORT_BEARER_KEY);
+      if (savedName) {
+        setBearerName(savedName);
       }
     } catch {
       // ignore
     }
   }, []);
+
+  const handleBearerNameChange = (val: string) => {
+    setBearerName(val);
+    try {
+      localStorage.setItem(PASSPORT_BEARER_KEY, val);
+    } catch {
+      // ignore
+    }
+  };
 
   const toggleStamp = (stateId: string) => {
     let next: string[];
@@ -67,6 +82,12 @@ export function CulturalPassport({ onSelectState }: CulturalPassportProps) {
     }
   };
 
+  const handlePrintPassport = () => {
+    if (typeof window !== "undefined") {
+      window.print();
+    }
+  };
+
   const totalCount = ALL_INDIAN_STATES.length;
   const stampedCount = stampedStateIds.length;
   const percentage = Math.round((stampedCount / totalCount) * 100);
@@ -74,7 +95,7 @@ export function CulturalPassport({ onSelectState }: CulturalPassportProps) {
   return (
     <section id="cultural-passport" className="py-24 px-4 sm:px-8 lg:px-12 max-w-7xl mx-auto space-y-12 border-t border-[#C59B27]/25">
       {/* Header */}
-      <div className="text-center max-w-3xl mx-auto space-y-3">
+      <div className="text-center max-w-3xl mx-auto space-y-3 print:hidden">
         <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-[#C59B27]/40 bg-[#FAF8F5] dark:bg-[#1A1613] text-[#5B0E1B] dark:text-[#E5C378] text-[10px] uppercase tracking-[0.25em] font-mono shadow-xs">
           <Award className="w-3.5 h-3.5 text-[#C59B27] dark:text-[#D4AF37]" />
           Visitor Living Archive Journal
@@ -88,7 +109,7 @@ export function CulturalPassport({ onSelectState }: CulturalPassportProps) {
       </div>
 
       {/* Passport Credential Card */}
-      <div className="max-w-4xl mx-auto rounded-3xl bg-gradient-to-br from-[#1C1412] via-[#2A1D1A] to-[#1C1412] p-6 sm:p-10 lg:p-12 text-[#FAF5EE] border-2 border-[#C59B27]/40 shadow-2xl relative overflow-hidden">
+      <div className="max-w-4xl mx-auto rounded-3xl bg-gradient-to-br from-[#1C1412] via-[#2A1D1A] to-[#1C1412] p-6 sm:p-10 lg:p-12 text-[#FAF5EE] border-2 border-[#C59B27]/40 shadow-2xl relative overflow-hidden passport-credential-card">
         {/* Background Emblem */}
         <div className="absolute right-0 top-0 w-80 h-80 opacity-[0.06] pointer-events-none select-none">
           <svg viewBox="0 0 200 200" fill="currentColor">
@@ -98,33 +119,62 @@ export function CulturalPassport({ onSelectState }: CulturalPassportProps) {
         </div>
 
         <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6 pb-8 border-b border-[#C59B27]/25">
-          <div>
+          <div className="space-y-3">
             <span className="text-[10px] font-mono uppercase tracking-[0.3em] text-[#D4AF37] block">
               Official Cultural Passbook &bull; Republic of India
             </span>
             <h3 className="font-serif text-3xl font-normal text-[#FAF5EE] mt-1">
               National Digital Heritage Passport
             </h3>
-            <p className="text-xs text-[#E7DDCC]/70 font-mono mt-1">
-              Bearer: Cultural Traveler &bull; Issued at: ROOTS Museum, 2026
-            </p>
+
+            {/* Editable Bearer Name Input */}
+            <div className="flex flex-wrap items-center gap-2 pt-1 text-xs font-mono text-[#E7DDCC]/80">
+              <span className="text-[#D4AF37] font-semibold">Bearer:</span>
+              <div className="inline-flex items-center gap-1.5 bg-black/40 hover:bg-black/60 focus-within:bg-black/60 border border-[#D4AF37]/50 focus-within:border-[#D4AF37] rounded-lg px-2.5 py-1 transition-all shadow-inner">
+                <input
+                  type="text"
+                  value={bearerName}
+                  onChange={(e) => handleBearerNameChange(e.target.value)}
+                  placeholder="Enter your name..."
+                  className="bg-transparent text-[#FAF5EE] font-serif font-bold text-sm focus:outline-none placeholder:text-[#E7DDCC]/40 w-44 sm:w-56"
+                  aria-label="Enter your name on the passport"
+                />
+                <Pencil className="w-3 h-3 text-[#D4AF37] opacity-80 print:hidden" />
+              </div>
+              <span className="text-[#D4AF37] hidden sm:inline">&bull;</span>
+              <span className="text-[11px] text-[#E7DDCC]/70 block sm:inline">
+                Issued at: ROOTS Museum, 2026
+              </span>
+            </div>
           </div>
 
-          {/* Progress Gauge */}
-          <div className="bg-[#FAF5EE]/10 backdrop-blur-xs p-4 rounded-2xl border border-[#C59B27]/30 flex flex-col items-center min-w-[170px]">
-            <span className="text-[10px] font-mono uppercase tracking-widest text-[#D4AF37]">
-              Exploration Progress
-            </span>
-            <span className="font-serif text-3xl font-bold text-white mt-1">
-              {stampedCount} / {totalCount}
-            </span>
-            <div className="w-full h-2 rounded-full bg-white/20 mt-2 overflow-hidden">
-              <div
-                className="h-full bg-gradient-to-r from-[#C59B27] to-[#D4AF37] rounded-full transition-all duration-500"
-                style={{ width: `${percentage}%` }}
-              />
+          <div className="flex flex-col items-center sm:items-end gap-3 shrink-0">
+            {/* Progress Gauge */}
+            <div className="bg-[#FAF5EE]/10 backdrop-blur-xs p-4 rounded-2xl border border-[#C59B27]/30 flex flex-col items-center min-w-[170px] w-full sm:w-auto">
+              <span className="text-[10px] font-mono uppercase tracking-widest text-[#D4AF37]">
+                Exploration Progress
+              </span>
+              <span className="font-serif text-3xl font-bold text-white mt-1">
+                {stampedCount} / {totalCount}
+              </span>
+              <div className="w-full h-2 rounded-full bg-white/20 mt-2 overflow-hidden">
+                <div
+                  className="h-full bg-gradient-to-r from-[#C59B27] to-[#D4AF37] rounded-full transition-all duration-500"
+                  style={{ width: `${percentage}%` }}
+                />
+              </div>
+              <span className="text-[10px] font-mono text-[#D4AF37] mt-1">{percentage}% Discovered</span>
             </div>
-            <span className="text-[10px] font-mono text-[#D4AF37] mt-1">{percentage}% Discovered</span>
+
+            {/* Print & Save Passport Button */}
+            <button
+              onClick={handlePrintPassport}
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-4 py-2 rounded-xl border border-[#D4AF37] bg-[#D4AF37]/20 hover:bg-[#D4AF37]/35 text-[#D4AF37] hover:text-white text-xs font-mono uppercase tracking-wider transition-all duration-200 cursor-pointer shadow-md hover:shadow-[0_0_15px_rgba(212,175,55,0.4)] select-none print:hidden"
+              title="Print or Save Cultural Passport as PDF"
+            >
+              <Printer className="w-3.5 h-3.5" />
+              <span>Print / Save Passport</span>
+            </button>
           </div>
         </div>
 
@@ -137,7 +187,7 @@ export function CulturalPassport({ onSelectState }: CulturalPassportProps) {
             {stampedCount > 0 && (
               <button
                 onClick={handleResetPassport}
-                className="text-[11px] font-mono text-[#E7DDCC]/60 hover:text-white flex items-center gap-1 transition-colors cursor-pointer"
+                className="text-[11px] font-mono text-[#E7DDCC]/60 hover:text-white flex items-center gap-1 transition-colors cursor-pointer print:hidden"
               >
                 <RotateCcw className="w-3 h-3" />
                 Reset Passport
@@ -196,7 +246,7 @@ export function CulturalPassport({ onSelectState }: CulturalPassportProps) {
                         </span>
                       </div>
 
-                      <span className="text-[9px] font-mono px-2.5 py-0.5 rounded-full uppercase tracking-wider text-[#E7DDCC]/45 border border-white/10 bg-white/5 group-hover:border-[#C59B27]/40 group-hover:text-[#D4AF37] transition-colors">
+                      <span className="text-[9px] font-mono px-2.5 py-0.5 rounded-full uppercase tracking-wider text-[#E7DDCC]/45 border border-white/10 bg-white/5 group-hover:border-[#C59B27]/40 group-hover:text-[#D4AF37] transition-colors print:hidden">
                         + Stamp
                       </span>
                     </div>

@@ -201,3 +201,35 @@ html.dark .champagne-card:hover {
     scroll-behavior: auto !important;
   }
 }
+
+/* Print Optimization for Cultural Passport & Artifacts */
+@media print {
+  nav,
+  header,
+  footer,
+  aside,
+  button,
+  .print\:hidden {
+    display: none !important;
+  }
+
+  body {
+    background: #140E0C !important;
+    color: #FAF5EE !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  #cultural-passport {
+    padding: 0 !important;
+    margin: 0 !important;
+    border: none !important;
+    max-width: 100% !important;
+  }
+
+  .passport-credential-card {
+    box-shadow: none !important;
+    border-width: 1px !important;
+    page-break-inside: avoid;
+  }
+}
