@@ -230,7 +230,7 @@ export const ALL_INDIAN_STATES: StateData[] = [
       danceForm: "Bharatanatyam (The classical cosmic dance of Nataraja)",
       folkMusic: "Carnatic concerts with Nadaswaram, Thavil, Ghatam and Mridangam",
       celebrationRitual: "Boiling fresh milk and harvest rice in earthen pots until it overflows with shouts of 'Pongalo Pongal!'.",
-      heroImage: "https://images.unsplash.com/photo-1609137144813-7d9921338f24?q=85&w=1200&auto=format&fit=crop",
+      heroImage: "https://res.cloudinary.com/tecwmb40/image/fetch/s--ghQ2Ee5---/c_fill,f_auto,g_auto,h_750,q_auto,w_1000/https://i.pinimg.com/736x/bc/f7/14/bcf714ed1f1d9b6cf603960e7847937a.jpg?_a=BAMAROWQ0",
       heroCaption: "Bharatanatyam dancer in classical temple pose adorned with temple gold jewelry."
     },
     places: {
@@ -238,7 +238,7 @@ export const ALL_INDIAN_STATES: StateData[] = [
       naturalWonder: "Dolphin's Nose & Nilgiri Cloud Forests",
       hiddenHeritage: "Chettinad 1000-Window Mansions of Kanadukathan & Swamimalai Bronze Foundries",
       architecturalStyle: "Dravidian granite vimanas, interlocking stone masonry, and pillared mandapams",
-      heroImage: "https://images.unsplash.com/photo-1600100397608-f010f481b876?q=85&w=1200&auto=format&fit=crop",
+      heroImage: "https://res.cloudinary.com/tecwmb40/image/fetch/s--YjiRUP8e--/c_fill,f_auto,g_auto,h_750,q_auto,w_1200/https://i.pinimg.com/736x/36/bc/3e/36bc3ea596a0c00f134e34d3b6e8f2d8.jpg?_a=BAMAROWQ0",
       heroCaption: "The 216-foot monolithic granite tower of Thanjavur Big Temple at sunset."
     },
     livingHeritage: {
