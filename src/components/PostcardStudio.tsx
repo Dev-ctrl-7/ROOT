@@ -22,6 +22,7 @@ import {
   TransformationBreakdown,
 } from "@/lib/cloudinary";
 import { downloadImageReliably } from "@/lib/download";
+import { downloadPostcardAsPng } from "@/lib/postcard-canvas";
 import { useLanguage } from "@/lib/i18n/context";
 
 interface PostcardStudioProps {
@@ -112,9 +113,30 @@ export function PostcardStudio({ initialRegionId, onOpenInspector }: PostcardStu
 
   const handleDownloadPostcard = async () => {
     setIsDownloading(true);
-    const filename = `roots-postcard-${activePreset.regionId}.jpg`;
-    await downloadImageReliably(transformedUrl, filename);
-    setIsDownloading(false);
+    try {
+      const filename = `roots-postcard-${activePreset.regionId}.png`;
+      const result = await downloadPostcardAsPng(
+        {
+          imageUrl: currentSourceImage,
+          stateId: activePreset.regionId,
+          stateName: activePreset.regionName,
+          recipient,
+          message,
+          sender,
+          filter,
+          aspectRatio,
+        },
+        filename
+      );
+
+      if (!result.success) {
+        await downloadImageReliably(transformedUrl, filename);
+      }
+    } catch {
+      await downloadImageReliably(transformedUrl, `roots-postcard-${activePreset.regionId}.png`);
+    } finally {
+      setIsDownloading(false);
+    }
   };
 
   const handleSendPostcardSubmit = async (e: React.FormEvent) => {

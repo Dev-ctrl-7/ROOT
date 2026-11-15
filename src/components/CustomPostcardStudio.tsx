@@ -518,7 +518,7 @@ export function CustomPostcardStudio({ onOpenInspector }: CustomPostcardStudioPr
         }
       }, "image/png");
     } catch {
-      await downloadImageReliably(signedPostcardUrl || transformedUrl, `roots-postcard-${selectedState.id}.jpg`);
+      await downloadImageReliably(signedPostcardUrl || transformedUrl, `roots-postcard-${selectedState.id}.png`);
     } finally {
       setIsDownloading(false);
     }

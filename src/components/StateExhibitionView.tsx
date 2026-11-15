@@ -4,6 +4,7 @@ import { useState } from "react";
 import { StateData } from "@/lib/states-data";
 import { buildCloudinaryUrl, buildStatePostcardUrl } from "@/lib/cloudinary";
 import { downloadImageReliably } from "@/lib/download";
+import { downloadPostcardAsPng } from "@/lib/postcard-canvas";
 import { ImageWithFallback } from "./ImageWithFallback";
 import MotifIcon from "@/components/MotifIcon";
 import {
@@ -184,9 +185,32 @@ export function StateExhibitionView({ stateData, onOpenInspector }: StateExhibit
 
   const handleDownloadPostcard = async () => {
     setIsDownloading(true);
-    const filename = `roots-${stateData.id}-postcard.jpg`;
-    await downloadImageReliably(statePostcardUrl, filename);
-    setIsDownloading(false);
+    try {
+      const filename = `roots-${stateData.id}-postcard.png`;
+      const result = await downloadPostcardAsPng(
+        {
+          imageUrl: stateData.places.heroImage,
+          stateId: stateData.id,
+          stateName: stateData.name,
+          nativeStateName: stateData.nativeName,
+          recipient,
+          message,
+          sender,
+          filter: postcardFilter,
+          tintHex: theme.primary,
+        },
+        filename
+      );
+
+      // Graceful fallback to proxy download if canvas generation had issues
+      if (!result.success) {
+        await downloadImageReliably(statePostcardUrl, filename);
+      }
+    } catch {
+      await downloadImageReliably(statePostcardUrl, `roots-${stateData.id}-postcard.png`);
+    } finally {
+      setIsDownloading(false);
+    }
   };
 
   return (

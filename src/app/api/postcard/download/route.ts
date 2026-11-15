@@ -34,7 +34,7 @@ export async function GET(req: Request) {
       return NextResponse.json({ error: "Invalid URL provided" }, { status: 400 });
     }
 
-    const allowedHosts = ["res.cloudinary.com", "images.unsplash.com"];
+    const allowedHosts = ["res.cloudinary.com", "images.unsplash.com", "i.pinimg.com", "pinimg.com"];
     const hostAllowed = allowedHosts.some(
       (h) => parsedUrl.hostname === h || parsedUrl.hostname.endsWith(`.${h}`)
     );
