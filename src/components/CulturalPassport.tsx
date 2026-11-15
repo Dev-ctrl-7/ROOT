@@ -2,7 +2,8 @@
 
 import { useState, useEffect } from "react";
 import { ALL_INDIAN_STATES } from "@/lib/states-data";
-import { Award, CheckCircle, Sparkles, MapPin, Compass, RotateCcw } from "lucide-react";
+import { Award, RotateCcw } from "lucide-react";
+import { STATE_ICON_MAP } from "@/components/MotifIcon";
 import confetti from "canvas-confetti";
 
 const PASSPORT_STORAGE_KEY = "roots_cultural_passport_stamps_v2";
@@ -23,7 +24,7 @@ export function CulturalPassport({ onSelectState }: CulturalPassportProps) {
       if (saved) {
         setStampedStateIds(JSON.parse(saved));
       } else {
-        // Start completely clean with 0 default stamps
+        // Start clean
         setStampedStateIds([]);
         localStorage.setItem(PASSPORT_STORAGE_KEY, JSON.stringify([]));
       }
@@ -42,10 +43,10 @@ export function CulturalPassport({ onSelectState }: CulturalPassportProps) {
       next = [...stampedStateIds, stateId];
       // Celebrate new stamp
       confetti({
-        particleCount: 40,
-        spread: 60,
+        particleCount: 35,
+        spread: 55,
         origin: { y: 0.8 },
-        colors: ["#C59B27", "#5B0E1B", "#FAF8F5"],
+        colors: ["#C59B27", "#5B0E1B", "#FAF8F5", "#D4AF37"],
       });
     }
 
@@ -87,7 +88,7 @@ export function CulturalPassport({ onSelectState }: CulturalPassportProps) {
       </div>
 
       {/* Passport Credential Card */}
-      <div className="max-w-4xl mx-auto rounded-3xl bg-gradient-to-br from-[#1C1412] via-[#2A1D1A] to-[#1C1412] p-8 sm:p-12 text-[#FAF5EE] border-2 border-[#C59B27]/40 shadow-2xl relative overflow-hidden">
+      <div className="max-w-4xl mx-auto rounded-3xl bg-gradient-to-br from-[#1C1412] via-[#2A1D1A] to-[#1C1412] p-6 sm:p-10 lg:p-12 text-[#FAF5EE] border-2 border-[#C59B27]/40 shadow-2xl relative overflow-hidden">
         {/* Background Emblem */}
         <div className="absolute right-0 top-0 w-80 h-80 opacity-[0.06] pointer-events-none select-none">
           <svg viewBox="0 0 200 200" fill="currentColor">
@@ -127,16 +128,16 @@ export function CulturalPassport({ onSelectState }: CulturalPassportProps) {
           </div>
         </div>
 
-        {/* 36 Stamps Grid */}
+        {/* 36 Stamps Matrix Grid */}
         <div className="pt-8">
           <div className="flex items-center justify-between mb-4">
             <span className="text-xs font-mono uppercase tracking-widest text-[#D4AF37]">
-              Territorial Stamps ({stampedCount} Stamped)
+              Territorial Stamps ({stampedCount} Stamped &bull; Click to Flip)
             </span>
             {stampedCount > 0 && (
               <button
                 onClick={handleResetPassport}
-                className="text-[11px] font-mono text-[#E7DDCC]/60 hover:text-white flex items-center gap-1 transition-colors"
+                className="text-[11px] font-mono text-[#E7DDCC]/60 hover:text-white flex items-center gap-1 transition-colors cursor-pointer"
               >
                 <RotateCcw className="w-3 h-3" />
                 Reset Passport
@@ -144,42 +145,105 @@ export function CulturalPassport({ onSelectState }: CulturalPassportProps) {
             )}
           </div>
 
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 sm:gap-3.5">
             {ALL_INDIAN_STATES.map((state) => {
               const isStamped = stampedStateIds.includes(state.id);
+              const StateIcon = STATE_ICON_MAP[state.id] || Award;
+
+              // Format clean display name for unusually long territory titles
+              const isLongTitle = state.name.length > 20;
 
               return (
                 <div
                   key={state.id}
-                  onClick={() => toggleStamp(state.id)}
-                  className={`p-3 rounded-xl border text-center cursor-pointer transition-all duration-300 relative select-none flex flex-col items-center justify-between min-h-[92px] ${
-                    isStamped
-                      ? "bg-[#C59B27]/15 border-[#D4AF37] shadow-inner"
-                      : "bg-white/5 border-white/10 hover:border-[#C59B27]/40 hover:bg-white/10"
-                  }`}
+                  className="group relative h-[134px] w-full"
+                  style={{ perspective: "1000px" }}
                 >
-                  <span className="text-[9px] font-mono uppercase tracking-wider text-[#E7DDCC]/60 truncate w-full">
-                    {state.zone}
-                  </span>
-
-                  <div className="my-1">
-                    <span className="font-serif text-xs font-medium text-white block truncate">
-                      {state.name}
-                    </span>
-                    <span className="font-serif text-[10px] text-[#D4AF37] block opacity-85">
-                      {state.nativeName}
-                    </span>
-                  </div>
-
-                  <span
-                    className={`text-[9px] font-mono px-2 py-0.5 rounded-full uppercase tracking-wider ${
-                      isStamped
-                        ? "bg-[#D4AF37] text-[#1C1412] font-bold"
-                        : "text-[#E7DDCC]/40 border border-white/10"
-                    }`}
+                  <div
+                    onClick={() => toggleStamp(state.id)}
+                    className="relative w-full h-full rounded-2xl cursor-pointer select-none"
+                    style={{
+                      transformStyle: "preserve-3d",
+                      transform: isStamped ? "rotateY(180deg)" : "rotateY(0deg)",
+                      transition: "transform 0.5s cubic-bezier(0.4, 0, 0.2, 1)",
+                    }}
+                    title={`${state.name} — Click to ${isStamped ? "Unstamp" : "Stamp"}`}
                   >
-                    {isStamped ? "✓ Stamped" : "+ Stamp"}
-                  </span>
+                    {/* FRONT FACE (Unstamped) */}
+                    <div
+                      className="absolute inset-0 w-full h-full rounded-2xl border border-white/10 bg-white/[0.04] hover:bg-white/[0.08] hover:border-[#C59B27]/50 transition-all p-3 flex flex-col justify-between items-center text-center overflow-hidden shadow-xs"
+                      style={{
+                        backfaceVisibility: "hidden",
+                        WebkitBackfaceVisibility: "hidden",
+                      }}
+                    >
+                      <span className="text-[9px] font-mono uppercase tracking-wider text-[#E7DDCC]/60 truncate w-full">
+                        {state.zone}
+                      </span>
+
+                      <div className="my-auto w-full px-0.5">
+                        <span
+                          className={`font-serif font-medium text-white block ${
+                            isLongTitle
+                              ? "text-[10px] leading-tight line-clamp-2"
+                              : "text-xs leading-snug truncate"
+                          }`}
+                        >
+                          {state.name}
+                        </span>
+                        <span className="font-serif text-[10px] text-[#D4AF37] block truncate opacity-85 mt-0.5">
+                          {state.nativeName}
+                        </span>
+                      </div>
+
+                      <span className="text-[9px] font-mono px-2.5 py-0.5 rounded-full uppercase tracking-wider text-[#E7DDCC]/45 border border-white/10 bg-white/5 group-hover:border-[#C59B27]/40 group-hover:text-[#D4AF37] transition-colors">
+                        + Stamp
+                      </span>
+                    </div>
+
+                    {/* BACK FACE (Stamped — Consular Seal with Distinct Non-Repeating Icon) */}
+                    <div
+                      className="absolute inset-0 w-full h-full rounded-2xl border-2 border-[#D4AF37] bg-gradient-to-br from-[#261B15] via-[#332219] to-[#1C1410] p-2.5 flex flex-col items-center justify-between text-center overflow-hidden shadow-[0_0_15px_rgba(212,175,55,0.25)]"
+                      style={{
+                        backfaceVisibility: "hidden",
+                        WebkitBackfaceVisibility: "hidden",
+                        transform: "rotateY(180deg)",
+                      }}
+                    >
+                      {/* Decorative vintage postal stamp border */}
+                      <div className="absolute inset-1 border border-dashed border-[#D4AF37]/35 rounded-xl pointer-events-none" />
+
+                      {/* Header Micro-banner */}
+                      <div className="relative z-10 flex items-center justify-between w-full px-1 text-[8px] font-mono tracking-widest text-[#D4AF37]">
+                        <span>OFFICIAL</span>
+                        <span>2026</span>
+                      </div>
+
+                      {/* Center: Unique Cultural State Icon Seal */}
+                      <div className="relative z-10 my-auto flex flex-col items-center justify-center w-full px-0.5">
+                        <div className="w-8 h-8 rounded-full border border-[#D4AF37] bg-[#D4AF37]/15 flex items-center justify-center text-[#D4AF37] shadow-sm mb-1">
+                          <StateIcon className="w-4 h-4" />
+                        </div>
+                        <span
+                          className={`font-serif font-bold text-white block truncate w-full ${
+                            isLongTitle ? "text-[10px] leading-tight" : "text-[11px] leading-snug"
+                          }`}
+                        >
+                          {state.name}
+                        </span>
+                        <span className="font-serif text-[9px] text-[#D4AF37] block truncate w-full opacity-90">
+                          {state.nativeName}
+                        </span>
+                      </div>
+
+                      {/* Bottom Stamped Badge */}
+                      <div className="relative z-10 pb-0.5">
+                        <span className="text-[8px] font-mono px-2 py-0.5 rounded-full uppercase tracking-wider bg-[#D4AF37] text-[#1C1412] font-extrabold flex items-center gap-1 shadow-xs">
+                          <span>✓</span> STAMPED
+                        </span>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               );
             })}
