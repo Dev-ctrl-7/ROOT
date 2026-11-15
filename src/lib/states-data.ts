@@ -406,7 +406,7 @@ export const ALL_INDIAN_STATES: StateData[] = [
       naturalWonder: "Harike Wetland Bird Sanctuary",
       hiddenHeritage: "Qila Mubarak, Bathinda (One of the oldest forts in India, dating to 100 CE)",
       architecturalStyle: "Sikh architecture blending Rajput jharokhas with Mughal domes and copper-gold repoussé",
-      heroImage: "https://images.unsplash.com/photo-1588099768531-a72d4a198538?q=85&w=1200&auto=format&fit=crop",
+      heroImage: "https://res.cloudinary.com/tecwmb40/image/fetch/s--kKFjm-g4--/c_fill,f_auto,g_auto,h_750,q_auto,w_1200/https://i.pinimg.com/736x/b8/82/d1/b882d138d81e29b50cc561842895c9f1.jpg?_a=BAMAROWQ0",
       heroCaption: "Harmandir Sahib's gold facade glowing in the sacred water tank at twilight."
     },
     livingHeritage: {
