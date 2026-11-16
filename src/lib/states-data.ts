@@ -1378,8 +1378,8 @@ export const ALL_INDIAN_STATES: StateData[] = [
       iconicIngredients: ["Sattu (Roasted gram flour)", "Mustard Oil", "Panch Phoran", "Jaggery", "Kala Jeera"],
       foodStory:
         "Litti was the ancient battle food of Magadhan infantry and freedom fighters; cooked on dried cow dung coals, it could withstand tropical heat for days without spoiling.",
-      heroImage: "https://images.unsplash.com/photo-1626777552726-4a6b54c97e46?q=85&w=1200&auto=format&fit=crop",
-      heroCaption: "Ghee-drenched Litti with charred brinjal chokha and green chutney."
+      heroImage: "https://res.cloudinary.com/tecwmb40/image/fetch/s--e8dPvoi2--/c_fill,f_auto,g_auto,h_750,q_auto,w_1000/https://i.pinimg.com/736x/e6/60/c8/e660c808ebad1b9fb618dc531a725f95.jpg?_a=BAMAROWQ0",
+      heroCaption: "Authentic ghee-drenched Bihari Litti served with spicy baingan chokha and chutneys."
     },
     games: {
       name: "Kabaddi / Cheeta",
@@ -1398,24 +1398,24 @@ export const ALL_INDIAN_STATES: StateData[] = [
       heirloomJewelry: "Hansuli, Dholna & Nath of Mithila",
       craftTechnique: "Sujani: Kantha-like running stitch quilting old fabrics with narrative folk scenes.",
       historicalOrigins: "Bhagalpur has produced wild Tussar silk for over a thousand years.",
-      heroImage: "https://images.unsplash.com/photo-1610030469983-98e550d6193c?q=85&w=1200&auto=format&fit=crop",
-      heroCaption: "Bhagalpuri Tussar silk saree painted with Madhubani tree of life."
+      heroImage: "https://res.cloudinary.com/tecwmb40/image/fetch/s--KoHMKEvw--/c_fill,f_auto,g_auto,h_750,q_auto,w_1000/https://i.pinimg.com/736x/56/57/f4/5657f45f08f5f0eb2744432b8c8bdfce.jpg?_a=BAMAROWQ0",
+      heroCaption: "Traditional handloom Bhagalpuri Tussar silk saree with rich antique gold zari borders."
     },
     celebration: {
       majorFestival: "Chhath Puja (Ancient Vedic Sun Thanksgiving) & Sonepur Cattle Fair",
       danceForm: "Jhajhi dance and Bidesia folk theater",
       folkMusic: "Maithili folk songs and devotional songs of poet Vidyapati",
       celebrationRitual: "Standing chest-deep in river waters offering arghya to the setting and rising sun.",
-      heroImage: "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?q=85&w=1200&auto=format&fit=crop",
-      heroCaption: "Devotees offering prayers to the rising sun during Chhath Puja."
+      heroImage: "https://res.cloudinary.com/tecwmb40/image/fetch/s--UziBNZIu--/c_fill,f_auto,g_auto,h_750,q_auto,w_1000/https://i.pinimg.com/736x/03/ea/27/03ea2709b3f96e7c539accf92341ec7e.jpg?_a=BAMAROWQ0",
+      heroCaption: "Vrindavan and Gangetic devotees offering sacred evening arghya during Chhath Puja."
     },
     places: {
       iconicMonument: "Mahabodhi Temple, Bodh Gaya (UNESCO) & Nalanda University Ruins",
       naturalWonder: "Vikramshila Gangetic Dolphin Sanctuary",
       hiddenHeritage: "Barabar Caves (Oldest rock-cut caves in India, 3rd Century BCE)",
       architecturalStyle: "Ancient brick monastery architecture and Ashokan polished sandstone pillars",
-      heroImage: "https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?q=85&w=1200&auto=format&fit=crop",
-      heroCaption: "The sacred Bodhi Tree and stone spire of Mahabodhi Temple."
+      heroImage: "https://res.cloudinary.com/tecwmb40/image/fetch/s--f9SQGpL_--/c_fill,f_auto,g_auto,h_750,q_auto,w_1200/https://i.pinimg.com/736x/ed/c4/b8/edc4b8b280fe3b5f5643ff6adcc6af06.jpg?_a=BAMAROWQ0",
+      heroCaption: "The sacred stone spire of the Mahabodhi Temple and the holy Bodhi Tree at Bodh Gaya."
     },
     livingHeritage: {
       traditionalCraft: "Madhubani Painting (Mithila Art using twigs and fingers with natural dyes, GI) & Sikki Grass Craft",
