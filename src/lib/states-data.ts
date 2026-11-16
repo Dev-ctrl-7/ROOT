@@ -1462,8 +1462,8 @@ export const ALL_INDIAN_STATES: StateData[] = [
       iconicIngredients: ["Guchhi (Wild Himalayan morel mushrooms)", "Dried Pomegranate Seeds (Anardana)", "Walnuts", "Curd", "Mustard Oil"],
       foodStory:
         "Himachali Dham is cooked exclusively by hereditary Brahmin cooks (Botis) in brass cauldrons without onion, garlic, or tomatoes, using curd and spices.",
-      heroImage: "https://images.unsplash.com/photo-1626777552726-4a6b54c97e46?q=85&w=1200&auto=format&fit=crop",
-      heroCaption: "Steaming Siddu stuffed with spiced walnut paste and dipped in melted ghee."
+      heroImage: "https://res.cloudinary.com/tecwmb40/image/fetch/s--sAB6-wig--/c_fill,f_auto,g_auto,h_750,q_auto,w_1000/https://i.pinimg.com/736x/99/47/53/9947533ac5bbe9cb04b8052618feb37e.jpg?_a=BAMAROWQ0",
+      heroCaption: "Authentic mountain Himachali Dham feast served with Sepu Vadi, Madra, and regional dals."
     },
     games: {
       name: "Pithoo / Lagori",
@@ -1482,24 +1482,24 @@ export const ALL_INDIAN_STATES: StateData[] = [
       heirloomJewelry: "Chandrahar silver coin necklace, Nath of Kangra & Chak hair ornament",
       craftTechnique: "Chamba Rumal: Reversible needle embroidery (Dorukha) that looks identical on both front and back.",
       historicalOrigins: "Kullu shawls originated from traditional pastoral Gaddis weaving wool from sheep.",
-      heroImage: "https://images.unsplash.com/photo-1610030469983-98e550d6193c?q=85&w=1200&auto=format&fit=crop",
-      heroCaption: "Himachali Kullu woolen shawl featuring vivid geometric border motifs."
+      heroImage: "https://res.cloudinary.com/tecwmb40/image/fetch/s--M1ra3wZJ--/c_fill,f_auto,g_auto,h_750,q_auto,w_1000/https://i.pinimg.com/736x/6b/f9/eb/6bf9eb70760353f60103940ca971727f.jpg?_a=BAMAROWQ0",
+      heroCaption: "Handcrafted pure woolen Kullu shawl featuring traditional bright geometric border weaves."
     },
     celebration: {
       majorFestival: "Kullu Dussehra (Week-long congregation of 200 mountain deities) & Minjar Fair",
       danceForm: "Nati (Guinness World Record community circle dance) and Chham mask dance",
       folkMusic: "Ransingha (S-shaped curved brass trumpet), Shehnai and Dhol",
       celebrationRitual: "Carrying village deities on wooden palanquins (rathas) to pay homage to Lord Raghunath.",
-      heroImage: "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?q=85&w=1200&auto=format&fit=crop",
-      heroCaption: "Hundreds of villagers in colorful Himachali caps dancing the Nati."
+      heroImage: "https://res.cloudinary.com/tecwmb40/image/fetch/s--ewQ-WQJY--/c_fill,f_auto,g_auto,h_750,q_auto,w_1000/https://raw.githubusercontent.com/Dev-ctrl-7/ROOT/state-images/pinterest-cloudinary/public/images/states/himachal-pradesh/kullu-dussehra-procession.jpg?_a=BAMAROWQ0",
+      heroCaption: "Grand Kullu Dussehra congregation carrying mountain deities on ornate wooden palanquins."
     },
     places: {
       iconicMonument: "Kangra Fort (Oldest dated fort in India) & Ki Monastery, Spiti",
       naturalWonder: "Chandratal Lake (The Moon Lake) & Rohtang Pass",
       hiddenHeritage: "Masrur Rock-Cut Temples (8th-century monolithic sandstone temples facing snowy peaks)",
       architecturalStyle: "Kath-Kuni architecture: Interlocking deodar cedar logs and dry-stacked slate stones",
-      heroImage: "https://images.unsplash.com/photo-1432405972618-c60b0225b8f9?q=85&w=1200&auto=format&fit=crop",
-      heroCaption: "Ki Tibetan monastery perched high on a conical hill in Spiti Valley."
+      heroImage: "https://res.cloudinary.com/tecwmb40/image/fetch/s--Yf4wy6Vt--/c_fill,f_auto,g_auto,h_750,q_auto,w_1200/https://raw.githubusercontent.com/Dev-ctrl-7/ROOT/state-images/pinterest-cloudinary/public/images/states/himachal-pradesh/kangra-fort-sunset.jpg?_a=BAMAROWQ0",
+      heroCaption: "Ancient stone ramparts and majestic bastions of the historic hill fortress bathed in golden hour."
     },
     livingHeritage: {
       traditionalCraft: "Chamba Rumal Embroidery (GI) & Wood carving of Mandi",
