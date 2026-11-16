@@ -1042,8 +1042,8 @@ export const ALL_INDIAN_STATES: StateData[] = [
       iconicIngredients: ["Chhena (Fresh cottage cheese)", "Panch Phutana", "Mustard Paste", "Tamarind", "Ghee"],
       foodStory:
         "The Mahaprasad at the Puri Jagannath Temple is cooked in the world's largest kitchen where seven clay pots are stacked one over the other on a wood fire; miraculously, the top pot cooks first.",
-      heroImage: "https://images.unsplash.com/photo-1626777552726-4a6b54c97e46?q=85&w=1200&auto=format&fit=crop",
-      heroCaption: "Caramelized crust of warm authentic Chhena Poda."
+      heroImage: "https://res.cloudinary.com/tecwmb40/image/fetch/s--qHCZoInj--/c_fill,f_auto,g_auto,h_750,q_auto,w_1000/https://i.pinimg.com/736x/1a/f2/83/1af2831a93e963f3bb6088b5cd80a3ea.jpg?_a=BAMAROWQ0",
+      heroCaption: "Authentic Odia Dalma and Mahaprasad simmered with roasted cumin and crushed spices."
     },
     games: {
       name: "Ganjapa",
@@ -1062,16 +1062,16 @@ export const ALL_INDIAN_STATES: StateData[] = [
       heirloomJewelry: "Tarakasi (Cuttack silver filigree jewelry) & Kantei necklace",
       craftTechnique: "Bandhakala: Tying and dyeing warp and weft yarns with geometric seashell and temple motifs.",
       historicalOrigins: "Practiced for over 800 years in western Odisha handloom clusters.",
-      heroImage: "https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?q=85&w=1200&auto=format&fit=crop",
-      heroCaption: "Intricate Sambalpuri Ikat saree woven with geometric temple borders."
+      heroImage: "https://res.cloudinary.com/tecwmb40/image/fetch/s--f19MRJ2b--/c_fill,f_auto,g_auto,h_750,q_auto,w_1000/https://i.pinimg.com/736x/53/45/92/534592959d2e6e9957f074c5c13b5a57.jpg?_a=BAMAROWQ0",
+      heroCaption: "Traditional handwoven Sambalpuri Ikat bandha silk saree with iconic temple borders."
     },
     celebration: {
       majorFestival: "Rath Yatra of Puri (The Chariot Festival) & Konark Dance Festival",
       danceForm: "Odissi (Classical dance known for the Tribhanga three-bend posture)",
       folkMusic: "Odissi classical music with Mardala percussion and Odia Champu poetry",
       celebrationRitual: "Dragging the colossal wooden chariots of Lord Jagannath, Balabhadra, and Subhadra through sea of pilgrims.",
-      heroImage: "https://images.unsplash.com/photo-1609137144813-7d9921338f24?q=85&w=1200&auto=format&fit=crop",
-      heroCaption: "Odissi dancer in striking Tribhanga pose before ancient temple carvings."
+      heroImage: "https://res.cloudinary.com/tecwmb40/image/fetch/s---YhokFTj--/c_fill,f_auto,g_auto,h_750,q_auto,w_1000/https://i.pinimg.com/736x/ad/00/4b/ad004bdba2ea757614e269a6111de109.jpg?_a=BAMAROWQ0",
+      heroCaption: "Classical Odissi dancer in authentic Tribhanga posture adorned with traditional silver filigree jewelry."
     },
     places: {
       iconicMonument: "Konark Sun Temple (The 13th-century stone chariot of the Sun God)",
