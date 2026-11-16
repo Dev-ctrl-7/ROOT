@@ -1546,8 +1546,8 @@ export const ALL_INDIAN_STATES: StateData[] = [
       iconicIngredients: ["Kokum (Amsul)", "Coconut Vinegar", "Kashmiri Red Chillies", "Feni (Cashew liquor)", "Toddy"],
       foodStory:
         "The Portuguese brought chillies, potatoes, and vinegar to Goa in the 16th century, which fused with native Konkani coconut cooking to create one of the world's great fusion cuisines.",
-      heroImage: "https://images.unsplash.com/photo-1626777552726-4a6b54c97e46?q=85&w=1200&auto=format&fit=crop",
-      heroCaption: "Authentic multi-layered baked Goan Bebinca dessert."
+      heroImage: "https://res.cloudinary.com/tecwmb40/image/fetch/s--r3a4VmIW--/c_fill,f_auto,g_auto,h_750,q_auto,w_1000/https://raw.githubusercontent.com/Dev-ctrl-7/ROOT/state-images/pinterest-cloudinary/public/images/states/goa/goan-fish-curry.jpg?_a=BAMAROWQ0",
+      heroCaption: "Authentic coastal Goan fish curry and fried surmai served with prawn caldine and steamed rice."
     },
     games: {
       name: "Tablam",
@@ -1566,16 +1566,16 @@ export const ALL_INDIAN_STATES: StateData[] = [
       heirloomJewelry: "Kashtali coral necklace & Patli gold bangles",
       craftTechnique: "Pure combed cotton handloom dyed with native vegetable dyes, revived by designer Wendell Rodricks.",
       historicalOrigins: "Worn by the indigenous Kunbi tribal women who farmed the coastal hills.",
-      heroImage: "https://images.unsplash.com/photo-1610030469983-98e550d6193c?q=85&w=1200&auto=format&fit=crop",
-      heroCaption: "Traditional red-and-white checked Kunbi cotton saree."
+      heroImage: "https://res.cloudinary.com/tecwmb40/image/fetch/s--kOwWCV36--/c_fill,f_auto,g_auto,h_750,q_auto,w_1000/https://raw.githubusercontent.com/Dev-ctrl-7/ROOT/state-images/pinterest-cloudinary/public/images/states/goa/kunbi-handloom-saree.jpg?_a=BAMAROWQ0",
+      heroCaption: "Traditional handwoven Kunbi cotton checked saree featuring distinctive border weaves."
     },
     celebration: {
       majorFestival: "Goa Carnival (Intriguing float parades before Lent) & Shigmo (Spring folk festival)",
       danceForm: "Fugdi & Dekhnni (Graceful folk dance holding brass oil lamps)",
       folkMusic: "Mando (Romantic Konkani-Portuguese ballroom song) played with Ghumot drum",
       celebrationRitual: "King Momo proclaiming the commencement of carnival merrymaking across the state.",
-      heroImage: "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?q=85&w=1200&auto=format&fit=crop",
-      heroCaption: "Dancers in colorful carnival feathers and masks along Panaji streets."
+      heroImage: "https://res.cloudinary.com/tecwmb40/image/fetch/s--Z3kCDBtL--/c_fill,f_auto,g_auto,h_750,q_auto,w_1000/https://raw.githubusercontent.com/Dev-ctrl-7/ROOT/state-images/pinterest-cloudinary/public/images/states/goa/goa-carnival-parade.jpg?_a=BAMAROWQ0",
+      heroCaption: "Colorful King Momo carnival float parade and festive dancers along the streets of Panaji."
     },
     places: {
       iconicMonument: "Basilica of Bom Jesus (Holds the mortal remains of St. Francis Xavier, UNESCO)",
