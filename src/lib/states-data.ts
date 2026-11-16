@@ -1294,8 +1294,8 @@ export const ALL_INDIAN_STATES: StateData[] = [
       iconicIngredients: ["Corn (Bhutte)", "Sev of Ratlam", "Desi Ghee", "Poppy Seeds", "Fennel"],
       foodStory:
         "Indore's nocturnal street food market, Sarafa Bazaar, transforms from a jewelry market by day into an open-air culinary celebration past midnight.",
-      heroImage: "https://images.unsplash.com/photo-1626777552726-4a6b54c97e46?q=85&w=1200&auto=format&fit=crop",
-      heroCaption: "Golden Indori Poha tossed with mustard seeds, turmeric, and Ratlami sev."
+      heroImage: "https://res.cloudinary.com/tecwmb40/image/fetch/s--3tIFFhR4--/c_fill,f_auto,g_auto,h_750,q_auto,w_1000/https://i.pinimg.com/736x/f6/2f/a2/f62fa20e31c795a6fcca1d9248ac6429.jpg?_a=BAMAROWQ0",
+      heroCaption: "Authentic Indori Poha tossed with mustard seeds, turmeric, and crisp Ratlami sev."
     },
     games: {
       name: "Kho Kho",
@@ -1314,24 +1314,24 @@ export const ALL_INDIAN_STATES: StateData[] = [
       heirloomJewelry: "Hasli collar, Timaniya & Kada with lion-head terminals",
       craftTechnique: "Chanderi fabric is translucent and gossamer-fine, woven with delicate booties inspired by nature.",
       historicalOrigins: "Queen Ahilyabai Holkar of Indore personally designed and patronized the Maheshwari weave in the 18th century.",
-      heroImage: "https://images.unsplash.com/photo-1610030469983-98e550d6193c?q=85&w=1200&auto=format&fit=crop",
-      heroCaption: "Chanderi silk saree with golden peacock zari border against rose fabric."
+      heroImage: "https://res.cloudinary.com/tecwmb40/image/fetch/s--g0Ts5iVl--/c_fill,f_auto,g_auto,h_750,q_auto,w_1000/https://i.pinimg.com/736x/e6/75/a6/e675a6713174371a68c76f89ea3d471b.jpg?_a=BAMAROWQ0",
+      heroCaption: "Traditional handwoven Chanderi silk saree with intricate gold zari brocade motifs."
     },
     celebration: {
       majorFestival: "Khajuraho Dance Festival & Tansen Music Samaroh, Gwalior",
       danceForm: "Matki Dance (Balancing earthen pots on head) and Gond Karma dance",
       folkMusic: "Classical Gwalior Gharana Dhrupad singing",
       celebrationRitual: "Performing classical dances under the stars before the floodlit Western Group of Khajuraho temples.",
-      heroImage: "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?q=85&w=1200&auto=format&fit=crop",
-      heroCaption: "Classical dancers performing at the Khajuraho temple festival stage."
+      heroImage: "https://res.cloudinary.com/tecwmb40/image/fetch/s--Zh1WJVKK--/c_fill,f_auto,g_auto,h_750,q_auto,w_1000/https://i.pinimg.com/736x/00/bd/e4/00bde45eba0c98054427a6d92af4c615.jpg?_a=BAMAROWQ0",
+      heroCaption: "Traditional folk dancers performing the vibrant Matki dance of Malwa."
     },
     places: {
       iconicMonument: "Sanchi Stupa (3rd Century BCE, UNESCO) & Khajuraho Temples",
       naturalWonder: "Bhedaghat Marble Rocks on the Narmada River & Kanha Tiger Reserve",
       hiddenHeritage: "Bhimbetka Rock Shelters (30,000-year-old Stone Age cave paintings)",
       architecturalStyle: "Chandela Nagara spire architecture and Ashokan hemispherical stupas",
-      heroImage: "https://images.unsplash.com/photo-1598890777032-bde835ba27c2?q=85&w=1200&auto=format&fit=crop",
-      heroCaption: "The great hemispherical dome of Sanchi Stupa with carved torana gateway."
+      heroImage: "https://res.cloudinary.com/tecwmb40/image/fetch/s--UTiV32ee--/c_fill,f_auto,g_auto,h_750,q_auto,w_1200/https://i.pinimg.com/736x/86/cb/ca/86cbca69ef12b114b07cb1b2af21557c.jpg?_a=BAMAROWQ0",
+      heroCaption: "The great hemispherical dome of Sanchi Stupa with intricately carved Ashokan torana gateway."
     },
     livingHeritage: {
       traditionalCraft: "Bagh Print Hand-Block Printing (Natural vegetable dyes on cotton, GI) & Bell Metal Dhokra",
