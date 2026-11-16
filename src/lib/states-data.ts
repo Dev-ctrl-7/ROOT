@@ -1126,8 +1126,8 @@ export const ALL_INDIAN_STATES: StateData[] = [
       iconicIngredients: ["Gongura (Sorrel leaves)", "Guntur Red Chillies", "Tamarind", "Cold-pressed Sesame Oil", "Curry Leaves"],
       foodStory:
         "Pootharekulu, or 'Paper Sweet', is made exclusively by women in Atreyapuram village who stretch rice batter over inverted earthen pots into sheets as sheer as tissue paper.",
-      heroImage: "https://images.unsplash.com/photo-1626777552726-4a6b54c97e46?q=85&w=1200&auto=format&fit=crop",
-      heroCaption: "Paper-thin Pootharekulu roll layered with powdered sugar and ghee."
+      heroImage: "https://res.cloudinary.com/tecwmb40/image/fetch/s--1dNQlUKI--/c_fill,f_auto,g_auto,h_750,q_auto,w_1000/https://i.pinimg.com/736x/8d/2f/1d/8d2f1d9be99c37f03bc091be0de70789.jpg?_a=BAMAROWQ0",
+      heroCaption: "Authentic Andhra Gongura Mutton curry slow-cooked with sour sorrel leaves and fiery Guntur chillies."
     },
     games: {
       name: "Vamana Guntalu",
@@ -1146,23 +1146,23 @@ export const ALL_INDIAN_STATES: StateData[] = [
       heirloomJewelry: "Vaddanam (Gilded waist belt with Goddess Lakshmi), Kasu Mala & Buttalu earrings",
       craftTechnique: "Drawing epics using tamarind-twig charcoal and bamboo styluses with vegetable and mineral dyes.",
       historicalOrigins: "Patronized by the Vijayanagara rulers at temple temple corridors.",
-      heroImage: "https://images.unsplash.com/photo-1610030469983-98e550d6193c?q=85&w=1200&auto=format&fit=crop",
-      heroCaption: "Kalamkari textile hand-painted with mythological epics in natural indigo and madder."
+      heroImage: "https://res.cloudinary.com/tecwmb40/image/fetch/s--Ob-3ZAPw--/c_fill,f_auto,g_auto,h_750,q_auto,w_1000/https://i.pinimg.com/736x/60/4a/f4/604af4a30bd7696eabf2eff9d049bd27.jpg?_a=BAMAROWQ0",
+      heroCaption: "Traditional Telugu Langa Voni half-saree with rich zari border and heritage jewelry."
     },
     celebration: {
       majorFestival: "Tirumala Brahmotsavam & Ugadi (Telugu New Year)",
       danceForm: "Kuchipudi (Classical dance-drama featuring the Tarangam brass plate dance)",
       folkMusic: "Annamacharya and Tyagaraja devotional Kritis",
       celebrationRitual: "Dancing atop the rim of a brass plate while balancing a pot of water on the head in Kuchipudi.",
-      heroImage: "https://images.unsplash.com/photo-1609137144813-7d9921338f24?q=85&w=1200&auto=format&fit=crop",
-      heroCaption: "Kuchipudi dancer performing with elegance on a brass plate."
+      heroImage: "https://res.cloudinary.com/tecwmb40/image/fetch/s--m4Gt-UWS--/c_fill,f_auto,g_auto,h_750,q_auto,w_1000/https://i.pinimg.com/736x/c4/81/a5/c481a5eea3edc1b8041c6f3ae1d9c9c2.jpg?_a=BAMAROWQ0",
+      heroCaption: "Grand Tirumala Brahmotsavam procession with ceremonial decorated caparisoned elephants."
     },
     places: {
       iconicMonument: "Tirumala Venkateswara Temple & Lepakshi Hanging Pillar",
       naturalWonder: "Borra Caves (Million-year-old limestone stalactites in Ananthagiri Hills)",
       hiddenHeritage: "Gandikota (The Grand Canyon of India carved by the Penna River)",
       architecturalStyle: "Vijayanagara monoliths with hanging pillars and multi-pillared Kalyana Mandapams",
-      heroImage: "https://images.unsplash.com/photo-1600100397608-f010f481b876?q=85&w=1200&auto=format&fit=crop",
+      heroImage: "https://res.cloudinary.com/tecwmb40/image/fetch/s--T5AuPI2o--/c_fill,f_auto,g_auto,h_750,q_auto,w_1200/https://upload.wikimedia.org/wikipedia/commons/thumb/8/8c/Basavannah_statue_at_Lepakshi.JPG/1280px-Basavannah_statue_at_Lepakshi.JPG?_a=BAMAROWQ0",
       heroCaption: "Lepakshi Temple's carved monolithic Nandi bull facing the shrine."
     },
     livingHeritage: {
