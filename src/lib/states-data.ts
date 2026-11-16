@@ -1629,8 +1629,8 @@ export const ALL_INDIAN_STATES: StateData[] = [
       iconicIngredients: ["A2 Desi Cow Ghee", "Pearl Millet (Bajra)", "Green Gram", "Mustard Leaves", "Jaggery"],
       foodStory:
         "Known as 'The Land of Rotis and Ghee', Haryanvi cuisine avoids complex spice powders to showcase the pure, untainted sweetness of fresh dairy and stone-ground grains.",
-      heroImage: "https://images.unsplash.com/photo-1626777552726-4a6b54c97e46?q=85&w=1200&auto=format&fit=crop",
-      heroCaption: "Steaming Bajra roti topped with golden melting homemade churned butter."
+      heroImage: "https://res.cloudinary.com/tecwmb40/image/fetch/s--Vdstq_T9--/c_fill,f_auto,g_auto,h_750,q_auto,w_1000/https://i.pinimg.com/736x/30/5d/40/305d40f23b9d4404c98a1d8d7546d4af.jpg?_a=BAMAROWQ0",
+      heroCaption: "Steaming Bajra Khichdi with Hara Cholia served with fresh homemade white butter (Tiddi Makhan)."
     },
     games: {
       name: "Dangal / Akhada Kushti",
@@ -1649,16 +1649,16 @@ export const ALL_INDIAN_STATES: StateData[] = [
       heirloomJewelry: "Borla, Haar, and Hansli silver collar neckpiece",
       craftTechnique: "Darning-stitch floral embroidery on homespun khaddar cotton using unspun silk floss.",
       historicalOrigins: "Carried forward through centuries of pastoral celebrations and bridal trousseaus.",
-      heroImage: "https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?q=85&w=1200&auto=format&fit=crop",
-      heroCaption: "Intricate red and gold silk embroidery on heirloom bridal dupattas."
+      heroImage: "https://res.cloudinary.com/tecwmb40/image/fetch/s--2YAVj53p--/c_fill,f_auto,g_auto,h_750,q_auto,w_1000/https://i.pinimg.com/736x/0c/c8/96/0cc89661c6b0f56d200dda292a55477b.jpg?_a=BAMAROWQ0",
+      heroCaption: "Traditional handwoven Panipat Panja durrie with intricate geometric folk patterns."
     },
     celebration: {
       majorFestival: "Surajkund International Crafts Mela & Gita Mahotsav",
       danceForm: "Dhamal Dance (Ancient martial victory dance) & Khoria",
       folkMusic: "Ragini musical storytelling accompanied by Sarangi and Dholak",
       celebrationRitual: "Lighting 100,000 clay oil lamps across the sacred waters of Brahma Sarovar.",
-      heroImage: "https://images.unsplash.com/photo-1609137144813-7d9921338f24?q=85&w=1200&auto=format&fit=crop",
-      heroCaption: "Haryanvi folk artists playing traditional brass nagada in festival attire."
+      heroImage: "https://res.cloudinary.com/tecwmb40/image/fetch/s--IxZNob6H--/c_fill,f_auto,g_auto,h_750,q_auto,w_1000/https://i.pinimg.com/736x/8c/44/87/8c44876c5e4fca92e8eebb4dfe2d18b5.jpg?_a=BAMAROWQ0",
+      heroCaption: "Traditional brass craft and auspicious festive decor celebrated at Surajkund International Crafts Mela."
     },
     places: {
       iconicMonument: "Brahma Sarovar & Jyotisar (The Ancient Banyan Tree of the Gita discourse)",
