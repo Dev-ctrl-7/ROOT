@@ -1210,7 +1210,7 @@ export const ALL_INDIAN_STATES: StateData[] = [
       iconicIngredients: ["Shahi Jeera (Caraway)", "Potli Masala", "Apricots", "Rose Water", "Saffron"],
       foodStory:
         "The Nizams of Hyderabad brought master chefs from Persia, blending Mughlai richness with fiery Telugu spices to create one of the world's most sophisticated culinary styles.",
-      heroImage: "https://images.unsplash.com/photo-1626777552726-4a6b54c97e46?q=85&w=1200&auto=format&fit=crop",
+      heroImage: "https://res.cloudinary.com/tecwmb40/image/fetch/s--GtWELDQm--/c_fill,f_auto,g_auto,h_750,q_auto,w_1000/https://i.pinimg.com/736x/7b/95/93/7b95937d1a1f82b2f0bd72d284754be0.jpg?_a=BAMAROWQ0",
       heroCaption: "Authentic Hyderabadi Dum Biryani fragrant with saffron and fried mint."
     },
     games: {
@@ -1230,7 +1230,7 @@ export const ALL_INDIAN_STATES: StateData[] = [
       heirloomJewelry: "Hyderabadi Pearls & Jadau Choker with emerald drops",
       craftTechnique: "Telia Rumal: Yarns treated with castor oil and ash before double-ikat resist-dyeing.",
       historicalOrigins: "Pochampally was selected by UNWTO as one of the Best Tourism Villages in the world for craft.",
-      heroImage: "https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?q=85&w=1200&auto=format&fit=crop",
+      heroImage: "https://res.cloudinary.com/tecwmb40/image/fetch/s--P9oe0j3a--/c_fill,f_auto,g_auto,h_750,q_auto,w_1000/https://i.pinimg.com/736x/29/41/62/2941622b4f6dfdb07893cff85e165ddf.jpg?_a=BAMAROWQ0",
       heroCaption: "Pochampally Ikat silk saree with rhythmic geometric diamond patterns."
     },
     celebration: {
@@ -1238,7 +1238,7 @@ export const ALL_INDIAN_STATES: StateData[] = [
       danceForm: "Perini Shivatandavam (Ancient Kakatiya warrior dance revival)",
       folkMusic: "Oggu Katha ballads narrating tales of Lord Shiva and Mallanna",
       celebrationRitual: "Arranging seasonal wild flowers in concentric conical pyramids floating gently on lake waters for Bathukamma.",
-      heroImage: "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?q=85&w=1200&auto=format&fit=crop",
+      heroImage: "https://res.cloudinary.com/tecwmb40/image/fetch/s--ZvDFr_gP--/c_fill,f_auto,g_auto,h_750,q_auto,w_1000/https://i.pinimg.com/736x/71/97/f7/7197f73dd0ce8f63c1b47fad52d7d9a7.jpg?_a=BAMAROWQ0",
       heroCaption: "Conical Bathukamma flower arrangement decorated with marigolds and lotus."
     },
     places: {
@@ -1246,7 +1246,7 @@ export const ALL_INDIAN_STATES: StateData[] = [
       naturalWonder: "Bogatha Waterfalls & Laknavaram Lake",
       hiddenHeritage: "Ramappa Temple (UNESCO Heritage floating brick temple, 1213 CE)",
       architecturalStyle: "Indo-Islamic Qutb Shahi stucco domes and Kakatiya black basalt carvings",
-      heroImage: "https://images.unsplash.com/photo-1572445271230-a78b5944a659?q=85&w=1200&auto=format&fit=crop",
+      heroImage: "https://res.cloudinary.com/tecwmb40/image/fetch/s--fiCv-eJC--/c_fill,f_auto,g_auto,h_750,q_auto,w_1200/https://i.pinimg.com/736x/f6/08/50/f6085001bad661306e53d8a36bb77e13.jpg?_a=BAMAROWQ0",
       heroCaption: "The four grand minarets of Charminar illuminated at dusk."
     },
     livingHeritage: {
