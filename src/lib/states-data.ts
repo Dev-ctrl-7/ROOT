@@ -958,8 +958,8 @@ export const ALL_INDIAN_STATES: StateData[] = [
       iconicIngredients: ["Kewra Water", "Ittr (Attar of Kannauj)", "Rose Petals", "Saffron", "Chironji"],
       foodStory:
         "The Nawabs of Lucknow employed royal hakims and chefs who created the Galouti Kebab with 160 secret spices so tender it could melt without chewing.",
-      heroImage: "https://images.unsplash.com/photo-1626777552726-4a6b54c97e46?q=85&w=1200&auto=format&fit=crop",
-      heroCaption: "Authentic Awadhi Dum Biryani cooked under a sealed dough lid."
+      heroImage: "https://res.cloudinary.com/tecwmb40/image/fetch/s--f8_JI3QG--/c_fill,f_auto,g_auto,h_750,q_auto,w_1000/https://i.pinimg.com/736x/8c/4f/01/8c4f018f5be2e7fbfb7a71017244d9d6.jpg?_a=BAMAROWQ0",
+      heroCaption: "Authentic melt-in-mouth Galouti Kebabs prepared with royal Awadhi aromatic spices."
     },
     games: {
       name: "Pachisi",
@@ -978,16 +978,16 @@ export const ALL_INDIAN_STATES: StateData[] = [
       heirloomJewelry: "Kundan Jadau, Paizeb anklets & Gulabi Meenakari of Varanasi",
       craftTechnique: "Kadhwa technique where each floral motif is individually engraved and woven with gold thread.",
       historicalOrigins: "Varanasi has been the supreme silk weaving center of India since the Buddha's time.",
-      heroImage: "https://images.unsplash.com/photo-1610030469983-98e550d6193c?q=85&w=1200&auto=format&fit=crop",
-      heroCaption: "Varanasi silk brocade glowing with gold and silver zari patterns."
+      heroImage: "https://res.cloudinary.com/tecwmb40/image/fetch/s--xEyvKEXH--/c_fill,f_auto,g_auto,h_750,q_auto,w_1000/https://i.pinimg.com/736x/93/72/70/9372708220bc839ca937cfe6f2379984.jpg?_a=BAMAROWQ0",
+      heroCaption: "Exquisite crimson red Banarasi brocade silk saree with intricate pure gold zari weaving."
     },
     celebration: {
       majorFestival: "Dev Deepawali in Varanasi, Holi of Braj & Kumbh Mela",
       danceForm: "Kathak (Classical storytelling dance with rapid pirouettes and footwork)",
       folkMusic: "Thumri, Kajari, Dadra and classical Benares Gharana Shehnai",
       celebrationRitual: "Ganga Aarti at Dashashwamedh Ghat with towering multi-tiered brass oil lamps.",
-      heroImage: "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?q=85&w=1200&auto=format&fit=crop",
-      heroCaption: "Multi-tiered brass lamp gleaming during evening Ganga Aarti at Varanasi."
+      heroImage: "https://res.cloudinary.com/tecwmb40/image/fetch/s--i506rGOo--/c_fill,f_auto,g_auto,h_750,q_auto,w_1000/https://i.pinimg.com/736x/00/1c/72/001c72992f743b7deefaa65937deee6d.jpg?_a=BAMAROWQ0",
+      heroCaption: "Graceful Kathak dancer performing classical pirouettes and footwork of the Lucknow and Benares gharanas."
     },
     places: {
       iconicMonument: "The Taj Mahal, Agra (UNESCO World Wonder) & Kashi Vishwanath Temple",
