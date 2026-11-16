@@ -110,17 +110,25 @@ export function StateExhibitionView({ stateData, onOpenInspector }: StateExhibit
     quality: "auto",
   });
 
-  // Cloudinary Postcard URL
-  const statePostcardUrl = buildStatePostcardUrl({
-    imageUrl: stateData.places.heroImage,
-    stateName: stateData.name,
-    nativeStateName: stateData.nativeName,
-    recipient,
-    message,
-    sender,
+  // Clean transformed background photo for postcard canvas & on-screen preview (without burned text)
+  const statePostcardPhotoUrl = buildCloudinaryUrl({
+    sourceUrl: stateData.places.heroImage,
+    width: 1200,
+    height: 750,
+    crop: "fill",
+    gravity: "auto",
+    format: "auto",
+    quality: "auto",
     tintHex: postcardFilter === "monochromatic" ? theme.cloudinaryTint : undefined,
-    filter: postcardFilter,
+    effect:
+      postcardFilter === "sepia"
+        ? "sepia:80,vignette:25"
+        : postcardFilter === "golden"
+        ? "tint:50:C59B27,contrast:15"
+        : undefined,
   });
+
+  const statePostcardUrl = statePostcardPhotoUrl;
 
   const handleSendPostcardSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -891,9 +899,10 @@ export function StateExhibitionView({ stateData, onOpenInspector }: StateExhibit
                     disabled={isDownloading}
                     className="flex-1 py-2.5 px-4 rounded-xl text-xs uppercase tracking-wider font-semibold text-white shadow-md flex items-center justify-center gap-1.5 transition-transform hover:scale-[1.02] cursor-pointer disabled:opacity-50"
                     style={{ backgroundColor: theme.primary }}
+                    title="Print and download customized postcard as PNG"
                   >
                     <Download className="w-3.5 h-3.5" />
-                    {isDownloading ? "Preparing..." : "Download Postcard"}
+                    {isDownloading ? "Preparing PNG..." : "Print / Download Postcard (PNG)"}
                   </button>
                   <button
                     onClick={() => setIsEmailModalOpen(true)}
@@ -961,7 +970,7 @@ export function StateExhibitionView({ stateData, onOpenInspector }: StateExhibit
                   {/* Postcard text bottom */}
                   <div className="absolute bottom-4 left-6 right-6 z-10 space-y-1 text-white">
                     <span className="text-[9px] uppercase tracking-[0.25em] text-[#D4AF37] font-mono block">
-                      POSTCARD FROM {stateData.name.toUpperCase()}
+                      POSTCARD FROM {stateData.name.toUpperCase()}{stateData.nativeName ? ` • ${stateData.nativeName}` : ""}
                     </span>
                     <h4 className="font-serif text-xl sm:text-2xl font-bold">{recipient}</h4>
                     <p className="font-serif italic text-xs sm:text-sm text-[#EFE8DC] leading-relaxed max-w-xl">
