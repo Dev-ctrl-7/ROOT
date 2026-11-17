@@ -37,19 +37,6 @@ Cloudinary acts as the computational visual engine of ROOTS, performing media op
 
 ---
 
-## 🛠️ Official Cloudinary Hackathon Toolkits Implemented
-
-ROOTS incorporates all four official Cloudinary developer toolkits:
-
-| Toolkit | Package / Source | Implementation in ROOTS |
-|---|---|---|
-| **1. Next.js Starter Kit** | `next-cloudinary` (v7.1.0) | Powers `CldImage` responsive delivery, image transformations, and `CldVideoPlayer` video streaming in Next.js 16 App Router. |
-| **2. React AI Starter Kit** | `@cloudinary/react` & `@cloudinary/url-gen` | Powers the **Cloudinary AI Heritage Lab** with Generative AI restoration (`e_gen_restore`), Generative fill (`b_gen_fill`), and transformation pipelines. |
-| **3. Skills Pack** | `cloudinary-devs/skills` | Full 6-skill package installed in `.agents/skills/` (`cloudinary-next`, `cloudinary-react`, `cloudinary-docs`, `cloudinary-transformations`, `cloudinary-upload`, `cloudinary-video`). |
-| **4. AI Power Start Prompt** | Automated Stack Orchestrator | Multi-stage AI setup pipeline executing framework detection, SDK configuration, SHA-1 signed fetch endpoint, and delivery validation. |
-
----
-
 ## 🔒 Security & Enterprise Hardening
 
 1. **Server-Side Credential Protection**: `CLOUDINARY_API_SECRET` is strictly restricted to server-side Node.js execution and is never exposed in client bundles or public repositories.
@@ -81,47 +68,6 @@ ROOTS incorporates all four official Cloudinary developer toolkits:
 - Node.js 20+ (Node 24 LTS recommended)
 - npm or pnpm
 
-### Installation
-
-```bash
-# Clone the repository
-git clone https://github.com/Dev-ctrl-7/ROOT.git
-cd ROOT
-
-# Install dependencies
-npm install
-
-# Setup environment variables
-cp .env.example .env.local
-```
-
-### Environment Configuration (`.env.local`)
-
-```env
-# Cloudinary Configuration
-NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME=tecwmb40
-CLOUDINARY_CLOUD_NAME=tecwmb40
-CLOUDINARY_API_KEY=your_cloudinary_api_key
-CLOUDINARY_API_SECRET=your_cloudinary_api_secret
-
-# Email Delivery Configuration (Optional - Resend)
-RESEND_API_KEY=your_resend_api_key
-RESEND_FROM_EMAIL="ROOTS Postal Bureau <onboarding@resend.dev>"
-```
-
-### Running Locally
-
-```bash
-# Start development server
-npm run dev
-
-# Or build and test production bundle
-npm run build
-npm run start
-```
-Open [http://localhost:3000](http://localhost:3000) in your browser.
-
----
 
 ## 🧪 Quality Assurance & Build Verification
 
