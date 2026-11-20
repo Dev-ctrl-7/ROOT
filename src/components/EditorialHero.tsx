@@ -7,7 +7,11 @@ import Link from "next/link";
 import { buildCloudinaryUrl } from "@/lib/cloudinary";
 import { useLanguage } from "@/lib/i18n/context";
 
-export function EditorialHero() {
+interface EditorialHeroProps {
+  onReplayEntrance?: () => void;
+}
+
+export function EditorialHero({ onReplayEntrance }: EditorialHeroProps = {}) {
   const { t, rootGlyph } = useLanguage();
 
   const tajMahalHeroUrl = buildCloudinaryUrl({
@@ -55,9 +59,21 @@ export function EditorialHero() {
           <span className="w-2 h-2 rounded-full bg-[#C59B27] animate-pulse"></span>
           {t.hero.badge}
         </span>
-        <span className="hidden sm:inline text-[#6E6255] dark:text-[#A89886]">
-          A Digital Living Exhibition &bull; 2026
-        </span>
+        <div className="flex items-center gap-3">
+          {onReplayEntrance && (
+            <button
+              onClick={onReplayEntrance}
+              className="text-[10px] font-mono tracking-widest uppercase text-[#8C5320] dark:text-[#D4AF37] hover:underline flex items-center gap-1 cursor-pointer"
+              title="Re-open 30-Second Cinematic Museum Entrance"
+            >
+              <Sparkles className="w-3 h-3 text-[#C59B27]" />
+              <span>Cinematic Entrance</span>
+            </button>
+          )}
+          <span className="hidden sm:inline text-[#6E6255] dark:text-[#A89886]">
+            A Digital Living Exhibition &bull; 2026
+          </span>
+        </div>
       </div>
 
       {/* Master Editorial Stage */}
@@ -112,22 +128,29 @@ export function EditorialHero() {
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.8, delay: 0.7 }}
-          className="flex flex-col sm:flex-row items-center gap-4"
+          className="flex flex-col sm:flex-row items-center gap-3.5 flex-wrap justify-center"
         >
           <Link
-            href="/atlas"
-            className="group relative inline-flex items-center gap-3 px-8 py-3.5 rounded-full bg-gradient-to-r from-[#C59B27] via-[#D4AF37] to-[#C59B27] text-[#1C1814] font-sans font-semibold text-xs uppercase tracking-[0.22em] transition-all duration-300 hover:shadow-xl hover:shadow-[#C59B27]/30 hover:scale-[1.02] active:scale-[0.98]"
+            href="/journey"
+            className="group relative inline-flex items-center gap-2.5 px-8 py-3.5 rounded-full bg-gradient-to-r from-[#C59B27] via-[#D4AF37] to-[#C59B27] text-[#1C1814] font-sans font-semibold text-xs uppercase tracking-[0.22em] transition-all duration-300 hover:shadow-xl hover:shadow-[#C59B27]/40 hover:scale-[1.03] active:scale-[0.98]"
           >
-            <Compass className="w-4 h-4 text-[#5B0E1B]" />
-            <span>{t.hero.primaryCta}</span>
+            <Sparkles className="w-4 h-4 text-[#5B0E1B]" />
+            <span>A Journey Back Home</span>
             <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />
           </Link>
 
           <Link
-            href="/letter"
-            className="group relative inline-flex items-center gap-2 px-7 py-3.5 rounded-full bg-white dark:bg-[#1A1613] hover:bg-[#FAF5EE] dark:hover:bg-[#251F1A] text-[#5B0E1B] dark:text-[#E5C378] border border-[#C59B27]/40 font-sans font-semibold text-xs uppercase tracking-[0.2em] transition-all duration-300 hover:border-[#5B0E1B] shadow-xs hover:scale-[1.02]"
+            href="/atlas"
+            className="group relative inline-flex items-center gap-2.5 px-7 py-3.5 rounded-full bg-white dark:bg-[#1A1613] hover:bg-[#FAF5EE] dark:hover:bg-[#251F1A] text-[#1C1814] dark:text-[#F5EFEB] border border-[#C59B27]/40 font-sans font-semibold text-xs uppercase tracking-[0.2em] transition-all duration-300 hover:border-[#5B0E1B] shadow-xs hover:scale-[1.02]"
           >
-            <Sparkles className="w-3.5 h-3.5 text-[#C59B27] dark:text-[#D4AF37]" />
+            <Compass className="w-3.5 h-3.5 text-[#5B0E1B] dark:text-[#E5C378]" />
+            <span>{t.hero.primaryCta}</span>
+          </Link>
+
+          <Link
+            href="/letter"
+            className="group relative inline-flex items-center gap-2 px-6 py-3.5 rounded-full bg-white dark:bg-[#1A1613] hover:bg-[#FAF5EE] dark:hover:bg-[#251F1A] text-[#5B0E1B] dark:text-[#E5C378] border border-[#C59B27]/30 font-sans font-semibold text-xs uppercase tracking-[0.18em] transition-all duration-300 hover:border-[#C59B27] shadow-xs hover:scale-[1.02]"
+          >
             <span>{t.hero.secondaryCta}</span>
           </Link>
         </motion.div>

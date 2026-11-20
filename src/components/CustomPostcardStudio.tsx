@@ -112,6 +112,20 @@ export function CustomPostcardStudio({ onOpenInspector }: CustomPostcardStudioPr
   } | null>(null);
   const [isUploading, setIsUploading] = useState<boolean>(false);
 
+  // Sync state selection from URL search parameter (e.g. from /journey Keepsake Chapter)
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const stateParam = new URLSearchParams(window.location.search).get("state");
+      if (stateParam && ALL_INDIAN_STATES.some((s) => s.id === stateParam)) {
+        setSelectedStateId(stateParam);
+        const st = ALL_INDIAN_STATES.find((s) => s.id === stateParam);
+        if (st?.places?.heroImage) {
+          setSelectedPhotoUrl(st.places.heroImage);
+        }
+      }
+    }
+  }, []);
+
   // Sign Cloudinary fetch URL whenever photo or color grade filter changes
   useEffect(() => {
     let isMounted = true;

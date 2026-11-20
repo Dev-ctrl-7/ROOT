@@ -5,6 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { Navigation } from "@/components/Navigation";
 import { EditorialHero } from "@/components/EditorialHero";
+import { MuseumEntranceSequence } from "@/components/MuseumEntranceSequence";
 import { VoicesOfIndia } from "@/components/VoicesOfIndia";
 import { Footer } from "@/components/Footer";
 import { TransformationInspectorModal } from "@/components/TransformationInspectorModal";
@@ -22,6 +23,16 @@ import {
 } from "lucide-react";
 
 const MUSEUM_WINGS = [
+  {
+    href: "/journey",
+    title: "A Journey Back Home",
+    subtitle: "5-Chapter Signature Experience",
+    description: "An emotional guided passage across the land, taste, celebration, childhood memories, and personal keepsakes of your native soil.",
+    image: "https://res.cloudinary.com/tecwmb40/image/fetch/s--QCayZndP--/c_fill,f_auto,g_auto,h_500,q_auto,w_800/https://i.pinimg.com/736x/36/bc/3e/36bc3ea596a0c00f134e34d3b6e8f2d8.jpg?_a=BAMAROWQ0",
+    icon: Sparkles,
+    badge: "Signature Journey",
+    accent: "#C59B27",
+  },
   {
     href: "/atlas",
     title: "Cartographic Cultural Atlas",
@@ -106,14 +117,18 @@ const MUSEUM_WINGS = [
 
 export default function Home() {
   const [inspectorOpen, setInspectorOpen] = useState<boolean>(false);
+  const [entranceOpen, setEntranceOpen] = useState<boolean>(false);
 
   return (
     <main className="min-h-screen bg-[#FAF8F5] dark:bg-[#0C0A09] text-[#1C1814] dark:text-[#F5EFEB] selection:bg-[#C59B27] selection:text-[#FAF8F5] relative overflow-x-hidden transition-colors duration-300">
+      {/* Cinematic Museum Opening Experience */}
+      <MuseumEntranceSequence forceOpen={entranceOpen} onClose={() => setEntranceOpen(false)} />
+
       {/* Editorial Navigation Bar */}
       <Navigation onOpenInspector={() => setInspectorOpen(true)} />
 
       {/* 1. Grand Editorial Hero with Sandstone Arch & Taj Mahal */}
-      <EditorialHero />
+      <EditorialHero onReplayEntrance={() => setEntranceOpen(true)} />
 
       {/* 2. Organized Museum Wings Directory */}
       <section className="py-20 px-4 sm:px-8 lg:px-12 max-w-7xl mx-auto space-y-12">

@@ -42,6 +42,7 @@ export function Navigation({ onOpenInspector }: NavigationProps) {
   };
 
   const navLinks = [
+    { href: "/journey", label: "A Journey Back Home", icon: Sparkles },
     { href: "/atlas", label: t.nav.atlas, icon: Compass },
     { href: "/exhibition", label: t.nav.exhibition, icon: BookOpen },
     { href: "/time-machine", label: t.nav.timeMachine, icon: Clock },
