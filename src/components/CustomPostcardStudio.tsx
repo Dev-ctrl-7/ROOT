@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
+import { ImageWithFallback } from "@/components/ImageWithFallback";
 import { ALL_INDIAN_STATES } from "@/lib/states-data";
 import { buildPostcardCloudinaryUrl } from "@/lib/cloudinary";
 import { downloadImageReliably } from "@/lib/download";
@@ -71,13 +72,13 @@ const AESTHETIC_GALLERY = [
     id: "hampi-chariot",
     title: "Hampi Stone Chariot",
     region: "Karnataka",
-    url: "https://images.unsplash.com/photo-1600100397608-f010f443a948?q=85&w=1200&auto=format&fit=crop",
+    url: "https://raw.githubusercontent.com/Dev-ctrl-7/ROOT/state-images/pinterest-cloudinary/public/images/states/karnataka/hampi-stone-chariot.jpg",
   },
   {
     id: "golden-temple",
     title: "Harmandir Sahib",
     region: "Punjab",
-    url: "https://images.unsplash.com/photo-1588099768531-a72d4a198538?q=85&w=1200&auto=format&fit=crop",
+    url: "https://raw.githubusercontent.com/Dev-ctrl-7/ROOT/state-images/pinterest-cloudinary/public/images/states/punjab/harmandir-sahib.jpg",
   },
 ];
 
@@ -103,6 +104,8 @@ export function CustomPostcardStudio({ onOpenInspector }: CustomPostcardStudioPr
   const [pinterestSuccess, setPinterestSuccess] = useState<string>("");
   const [imageLoadError, setImageLoadError] = useState<boolean>(false);
   const [signedPostcardUrl, setSignedPostcardUrl] = useState<string>("");
+  const [downloadError, setDownloadError] = useState<string | null>(null);
+  const [fullPostcardUrl, setFullPostcardUrl] = useState<string>("");
   const [uploadNotice, setUploadNotice] = useState<{
     type: "success" | "info" | "warning";
     message: string;
@@ -379,155 +382,106 @@ export function CustomPostcardStudio({ onOpenInspector }: CustomPostcardStudioPr
 
   const handleDownloadPostcard = async () => {
     setIsDownloading(true);
+    setDownloadError(null);
     try {
-      // Generate authentic high-res composite postcard with borders, postmarks, and stamps
-      const canvas = document.createElement("canvas");
-      let w = 1200;
-      let h = 750;
-      if (aspectRatio === "square") {
-        w = 1000;
-        h = 1000;
-      } else if (aspectRatio === "story") {
-        w = 800;
-        h = 1200;
-      } else if (aspectRatio === "landscape") {
-        w = 1200;
-        h = 675;
-      }
-
-      canvas.width = w;
-      canvas.height = h;
-      const ctx = canvas.getContext("2d");
-      if (!ctx) throw new Error("Canvas context failed");
-
-      // Draw background image
-      const img = new (window as any).Image();
-      img.crossOrigin = "anonymous";
-      img.src = selectedPhotoUrl;
-
-      await new Promise((resolve) => {
-        img.onload = () => resolve(true);
-        img.onerror = () => resolve(false);
+      // 1. Generate authentic signed multi-layer Cloudinary URL server-side
+      const generateRes = await fetch("/api/postcard/generate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          imageUrl: selectedPhotoUrl,
+          recipient: recipientName,
+          message: letterMessage,
+          sender: senderName,
+          stateName: selectedState.name,
+          nativeName: selectedState.nativeName,
+          postmarkCity,
+          filter,
+          aspectRatio,
+        }),
       });
 
-      if (img.width > 0) {
-        // Draw image scaled to cover canvas
-        const scale = Math.max(w / img.width, h / img.height);
-        const nw = img.width * scale;
-        const nh = img.height * scale;
-        const nx = (w - nw) / 2;
-        const ny = (h - nh) / 2;
-        ctx.drawImage(img, nx, ny, nw, nh);
-      } else {
-        ctx.fillStyle = "#1A1412";
-        ctx.fillRect(0, 0, w, h);
+      if (!generateRes.ok) {
+        const errorData = await generateRes.json().catch(() => ({}));
+        throw new Error(errorData.error || `Server responded with HTTP ${generateRes.status}`);
       }
 
-      // Apply filter tint layer if applicable
-      if (filter === "heritage_sepia") {
-        ctx.fillStyle = "rgba(122, 88, 53, 0.45)";
-        ctx.fillRect(0, 0, w, h);
-      } else if (filter === "monsoon_teal") {
-        ctx.fillStyle = "rgba(10, 70, 66, 0.4)";
-        ctx.fillRect(0, 0, w, h);
-      } else if (filter === "desert_gold") {
-        ctx.fillStyle = "rgba(197, 155, 39, 0.35)";
-        ctx.fillRect(0, 0, w, h);
-      } else if (filter === "burgundy_inferno") {
-        ctx.fillStyle = "rgba(91, 14, 27, 0.45)";
-        ctx.fillRect(0, 0, w, h);
+      const generateData = await generateRes.json();
+      if (!generateData.success || !generateData.url) {
+        throw new Error(generateData.error || "Failed to generate Cloudinary signed postcard URL");
       }
 
-      // Draw dark gradient scrim at bottom
-      const gradient = ctx.createLinearGradient(0, h * 0.4, 0, h);
-      gradient.addColorStop(0, "rgba(0,0,0,0)");
-      gradient.addColorStop(1, "rgba(15,10,8,0.92)");
-      ctx.fillStyle = gradient;
-      ctx.fillRect(0, h * 0.35, w, h * 0.65);
+      const signedUrl = generateData.url;
+      setFullPostcardUrl(signedUrl);
+      const filename = `roots-postcard-${selectedState.id}.jpg`;
 
-      // Gold border
-      ctx.strokeStyle = "#D4AF37";
-      ctx.lineWidth = 4;
-      ctx.strokeRect(16, 16, w - 32, h - 32);
-
-      // Header text
-      ctx.font = "bold 16px 'Courier New', monospace";
-      ctx.fillStyle = "#E5C378";
-      ctx.fillText(`POSTCARD FROM ${selectedState.name.toUpperCase()} • ${selectedState.nativeName}`, 36, 44);
-      ctx.textAlign = "right";
-      ctx.fillText(`DISPATCH: ${postmarkCity}`, w - 36, 44);
-
-      // Recipient
-      ctx.textAlign = "left";
-      ctx.font = "bold 26px 'Georgia', serif";
-      ctx.fillStyle = "#FAF7F0";
-      ctx.fillText(recipientName, 44, h - 140);
-
-      // Message
-      ctx.font = "italic 18px 'Arial', sans-serif";
-      ctx.fillStyle = "#EFE8DC";
-      const words = letterMessage.split(" ");
-      let line = "";
-      let lineY = h - 100;
-      for (const word of words) {
-        const testLine = line + word + " ";
-        if (ctx.measureText(testLine).width > w - 280) {
-          ctx.fillText(line, 44, lineY);
-          line = word + " ";
-          lineY += 24;
-          if (lineY > h - 45) break;
-        } else {
-          line = testLine;
-        }
+      // 2. Fetch binary via server download proxy
+      const downloadEndpoint = `/api/postcard/download?url=${encodeURIComponent(signedUrl)}&filename=${encodeURIComponent(filename)}`;
+      const downloadRes = await fetch(downloadEndpoint);
+      if (!downloadRes.ok) {
+        throw new Error(`Media download proxy returned error ${downloadRes.status}`);
       }
-      ctx.fillText(line, 44, lineY);
 
-      // Sender
-      ctx.font = "bold 16px 'Georgia', serif";
-      ctx.fillStyle = "#D4AF37";
-      ctx.fillText(`— ${senderName}`, 44, h - 36);
+      const blob = await downloadRes.blob();
+      const blobUrl = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = blobUrl;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(blobUrl);
 
-      // Stamp badge (Right bottom)
-      ctx.fillStyle = "rgba(91, 14, 27, 0.9)";
-      ctx.fillRect(w - 180, h - 140, 140, 95);
-      ctx.strokeStyle = "#D4AF37";
-      ctx.lineWidth = 2;
-      ctx.strokeRect(w - 180, h - 140, 140, 95);
-      ctx.fillStyle = "#FAF8F5";
-      ctx.font = "bold 11px 'Courier New', monospace";
-      ctx.textAlign = "center";
-      ctx.fillText("INDIA POST", w - 110, h - 118);
-      ctx.font = "bold 13px 'Georgia', serif";
-      ctx.fillStyle = "#E5C378";
-      ctx.fillText(selectedState.name.substring(0, 12), w - 110, h - 94);
-      ctx.font = "10px 'Courier New', monospace";
-      ctx.fillStyle = "#D4AF37";
-      ctx.fillText("₹ 5.00 HERITAGE", w - 110, h - 68);
-
-      // Trigger download
-      canvas.toBlob((blob) => {
-        if (blob) {
-          const dlUrl = URL.createObjectURL(blob);
-          const a = document.createElement("a");
-          a.href = dlUrl;
-          a.download = `roots-postcard-${selectedState.id}.png`;
-          document.body.appendChild(a);
-          a.click();
-          document.body.removeChild(a);
-          URL.revokeObjectURL(dlUrl);
-        }
-      }, "image/png");
-    } catch {
-      await downloadImageReliably(signedPostcardUrl || transformedUrl, `roots-postcard-${selectedState.id}.png`);
+      confetti({
+        particleCount: 60,
+        spread: 60,
+        origin: { y: 0.65 },
+        colors: ["#C59B27", "#5B0E1B", "#FAF8F5", "#D4AF37"],
+      });
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : String(err);
+      console.error("Cloudinary Postcard generation error:", msg);
+      setDownloadError(`Cloudinary Generation Failed: ${msg}. Please verify your parameters or try again.`);
     } finally {
       setIsDownloading(false);
     }
   };
 
-  const handleCopyPostcardUrl = () => {
-    navigator.clipboard.writeText(signedPostcardUrl || transformedUrl);
-    setCopiedLink(true);
-    setTimeout(() => setCopiedLink(false), 2000);
+  const handleCopyPostcardUrl = async () => {
+    try {
+      let urlToCopy = fullPostcardUrl || signedPostcardUrl;
+      if (!urlToCopy) {
+        const generateRes = await fetch("/api/postcard/generate", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            imageUrl: selectedPhotoUrl,
+            recipient: recipientName,
+            message: letterMessage,
+            sender: senderName,
+            stateName: selectedState.name,
+            nativeName: selectedState.nativeName,
+            postmarkCity,
+            filter,
+            aspectRatio,
+          }),
+        });
+        const data = await generateRes.json();
+        if (data.success && data.url) {
+          urlToCopy = data.url;
+          setFullPostcardUrl(urlToCopy);
+        }
+      }
+      if (urlToCopy) {
+        await navigator.clipboard.writeText(urlToCopy);
+        setCopiedLink(true);
+        setTimeout(() => setCopiedLink(false), 2000);
+      }
+    } catch {
+      navigator.clipboard.writeText(signedPostcardUrl || selectedPhotoUrl);
+      setCopiedLink(true);
+      setTimeout(() => setCopiedLink(false), 2000);
+    }
   };
 
   return (
@@ -706,7 +660,7 @@ export function CustomPostcardStudio({ onOpenInspector }: CustomPostcardStudioPr
                     }`}
                     title={`${img.title} (${img.region})`}
                   >
-                    <Image src={img.url} alt={img.title} fill className="object-cover group-hover:scale-105 transition-transform duration-300" />
+                    <ImageWithFallback src={img.url} alt={img.title} fill className="object-cover group-hover:scale-105 transition-transform duration-300" />
                     <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 to-transparent p-1 text-[9px] font-sans text-white truncate text-left">
                       {img.region}
                     </div>
@@ -1075,6 +1029,13 @@ export function CustomPostcardStudio({ onOpenInspector }: CustomPostcardStudioPr
                 <span className="hidden sm:inline">Inspect API</span>
               </button>
             </div>
+
+            {downloadError && (
+              <div className="p-3 rounded-xl bg-red-50 dark:bg-red-950/40 border border-red-300 dark:border-red-800 text-xs text-red-800 dark:text-red-200 flex items-start gap-2">
+                <AlertTriangle className="w-4 h-4 text-red-600 shrink-0 mt-0.5" />
+                <span className="leading-relaxed">{downloadError}</span>
+              </div>
+            )}
           </div>
 
           {/* Postal Mail Dispatch Station (Fills the right column perfectly!) */}

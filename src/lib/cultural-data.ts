@@ -83,7 +83,7 @@ export const REGIONS: RegionChapter[] = [
     location: "Sivaganga & Pudukkottai Districts",
     geoCoordinates: "10.0712° N, 78.7844° E",
     heroPublicId: "roots/chettinad_mansion",
-    heroFallback: "https://images.unsplash.com/photo-1590050752117-238cb0fb12b1?q=80&w=1600&auto=format&fit=crop",
+    heroFallback: "https://images.unsplash.com/photo-1582510003544-4d00b7f74220?q=80&w=1600&auto=format&fit=crop",
     heroQuote: "Houses built like ships destined to anchor empires, where Burma teak meets Italian marble and rainwater sings across open courtyards.",
     quoteAuthor: "Oral Heritage of the Nattukottai Nagarathars",
     overview:
@@ -156,7 +156,7 @@ export const REGIONS: RegionChapter[] = [
     location: "Cauvery Delta Rice Bowl",
     geoCoordinates: "10.7870° N, 79.1378° E",
     heroPublicId: "roots/thanjavur_big_temple",
-    heroFallback: "https://images.unsplash.com/photo-1600100397608-f010f481b876?q=80&w=1600&auto=format&fit=crop",
+    heroFallback: "https://images.unsplash.com/photo-1621847468516-1ed5d0df56fe?q=85&w=1600&auto=format&fit=crop",
     heroQuote: "Here granite was taught to breathe, and molten bronze learned to hold the infinite dance of the cosmos.",
     quoteAuthor: "Inscriptions of Rajaraja Chola I, 1010 CE",
     overview:
@@ -352,7 +352,7 @@ export const ARCHIVE_COMPARISONS: ArchiveLensComparison[] = [
     imageThenPublicId: "roots/archive_hampi_1856",
     imageThenFallback: "/archives/hampi_1856_alexander_greenlaw.jpg",
     imageNowPublicId: "roots/archive_hampi_now",
-    imageNowFallback: "https://images.unsplash.com/photo-1600100397608-f010f443a948?q=80&w=1200&auto=format&fit=crop",
+    imageNowFallback: "https://raw.githubusercontent.com/Dev-ctrl-7/ROOT/state-images/pinterest-cloudinary/public/images/states/karnataka/hampi-stone-chariot.jpg",
     significance: "Monolithic granite processional chariot with revolving stone wheels from the 16th-century Vijayanagara Empire.",
     isVisualInterpretation: false,
   },

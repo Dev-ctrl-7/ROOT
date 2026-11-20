@@ -2841,7 +2841,7 @@ export const ALL_INDIAN_STATES: StateData[] = [
       naturalWonder: "Promenade Beach (A 1.5-km scenic seaside coastal walkway lined with historic statues)",
       hiddenHeritage: "White Town (French Quarter with quiet cobblestone lanes, louvered wooden shutters, and arched courtyards)",
       architecturalStyle: "French colonial architecture: Ochre lime facades, porticoes, and inner garden courtyards",
-      heroImage: "https://images.unsplash.com/photo-1590050752117-238cb0fb12b1?q=85&w=1200&auto=format&fit=crop",
+      heroImage: "https://images.unsplash.com/photo-1569157087866-f4a8e9250605?q=85&w=1200&auto=format&fit=crop",
       heroCaption: "Mustard-yellow French colonial mansion with arched windows framed by pink bougainvillea."
     },
     livingHeritage: {

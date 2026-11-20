@@ -1,8 +1,16 @@
 import { NextResponse } from "next/server";
 import crypto from "crypto";
+import { v2 as cloudinary } from "cloudinary";
 import { checkRateLimit } from "@/lib/rate-limit";
 
 export const runtime = "nodejs";
+
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME || process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME || "tecwmb40",
+  api_key: process.env.CLOUDINARY_API_KEY || "227998285158289",
+  api_secret: process.env.CLOUDINARY_API_SECRET || "RjfDvdz_GHYq-4wVgEQEL-TBi7I",
+  secure: true,
+});
 
 // Host allowlist for remote image fetching
 const ALLOWED_HOSTS = new Set([
@@ -11,6 +19,7 @@ const ALLOWED_HOSTS = new Set([
   "commons.wikimedia.org",
   "res.cloudinary.com",
   "i.pinimg.com",
+  "raw.githubusercontent.com",
 ]);
 
 // Private/internal IP prefixes to block (SSRF protection)
@@ -148,28 +157,43 @@ function generateSignedFetchUrl(
   sourceUrl: string,
   apiSecret?: string
 ): { url: string; signed: boolean } {
+  // Strip query parameters (?q=...&w=...) to ensure Cloudinary HMAC signature matches pristine asset
+  const cleanSourceUrl = sourceUrl.split("?")[0];
+
   if (!apiSecret) {
     return {
-      url: `https://res.cloudinary.com/${cloudName}/image/fetch/${transformation}/${encodeURIComponent(sourceUrl)}`,
+      url: `https://res.cloudinary.com/${cloudName}/image/fetch/${transformation}/${encodeURIComponent(cleanSourceUrl)}`,
       signed: false,
     };
   }
 
-  // Cloudinary URL signature algorithm for fetch:
-  // sha1(transformation + "/" + sourceUrl + apiSecret) -> base64 -> first 8 chars -> replace / with _ and + with -
-  const toSign = `${transformation}/${sourceUrl}${apiSecret}`;
-  const hash = crypto
-    .createHash("sha1")
-    .update(toSign)
-    .digest("base64")
-    .slice(0, 8)
-    .replace(/\//g, "_")
-    .replace(/\+/g, "-");
+  try {
+    const signedUrl = cloudinary.url(cleanSourceUrl, {
+      type: "fetch",
+      sign_url: true,
+      raw_transformation: transformation,
+    });
+    return {
+      url: signedUrl,
+      signed: true,
+    };
+  } catch (err) {
+    console.error("Cloudinary SDK signing fallback:", err);
+    // Cloudinary URL signature algorithm fallback for fetch:
+    const toSign = `${transformation}/${cleanSourceUrl}${apiSecret}`;
+    const hash = crypto
+      .createHash("sha1")
+      .update(toSign)
+      .digest("base64")
+      .slice(0, 8)
+      .replace(/\//g, "_")
+      .replace(/\+/g, "-");
 
-  return {
-    url: `https://res.cloudinary.com/${cloudName}/image/fetch/s--${hash}--/${transformation}/${sourceUrl}`,
-    signed: true,
-  };
+    return {
+      url: `https://res.cloudinary.com/${cloudName}/image/fetch/s--${hash}--/${transformation}/${cleanSourceUrl}`,
+      signed: true,
+    };
+  }
 }
 
 export async function GET(req: Request) {

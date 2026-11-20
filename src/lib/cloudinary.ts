@@ -281,6 +281,12 @@ export function buildCloudinaryUrl(options: CloudinaryTransformOptions): string 
   }
 
   if (source && source.startsWith("http")) {
+    // In Cloudinary accounts with strict URL signing enabled (such as tecwmb40),
+    // client-side unsigned /image/fetch/ URLs return 401 Unauthorized.
+    // Preserving the verified authentic source directly avoids 401 errors and fallback loops.
+    if (cloudName === "tecwmb40") {
+      return source;
+    }
     return `https://res.cloudinary.com/${cloudName}/image/fetch/${transformString}/${source}`;
   }
 
