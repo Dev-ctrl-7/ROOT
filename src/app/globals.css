@@ -257,3 +257,121 @@ html.dark .champagne-card:hover {
     box-sizing: border-box !important;
   }
 }
+
+/* =========================================================================
+   CINEMATIC MUSEUM ENTRANCE (Gallery Grade Sequence)
+   ========================================================================= */
+
+/* Hide by default on subsequent visits to prevent flashing */
+html:not([data-show-entrance="true"]) #roots-museum-entrance {
+  display: none !important;
+}
+
+#roots-museum-entrance {
+  contain: paint layout;
+  will-change: opacity;
+}
+
+/* Master Fade-out transition at 3.8s - 5.4s */
+@keyframes museumEntranceFadeOut {
+  0% {
+    opacity: 1;
+    pointer-events: auto;
+  }
+  70% { /* 0.0s to 3.8s stays fully visible */
+    opacity: 1;
+    pointer-events: auto;
+  }
+  98% { /* 3.8s to 5.3s smooth crossfade */
+    opacity: 0;
+    pointer-events: none;
+  }
+  100% { /* 5.4s completely hidden */
+    opacity: 0;
+    pointer-events: none;
+    visibility: hidden;
+  }
+}
+
+@keyframes museumGlowReveal {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -8%) scale(0.94);
+  }
+  100% {
+    opacity: 1;
+    transform: translate(-50%, 0%) scale(1);
+  }
+}
+
+@keyframes museumWordmarkReveal {
+  0% {
+    opacity: 0;
+    transform: translateY(10px);
+    letter-spacing: 0.14em;
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+    letter-spacing: 0.22em;
+  }
+}
+
+@keyframes museumQuoteReveal {
+  0% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes museumLineExpand {
+  0% {
+    transform: scaleX(0);
+    opacity: 0;
+  }
+  100% {
+    transform: scaleX(1);
+    opacity: 0.7;
+  }
+}
+
+@keyframes museumTimelineFill {
+  0% {
+    transform: scaleX(0);
+  }
+  100% {
+    transform: scaleX(1);
+  }
+}
+
+.animate-entrance-master {
+  animation: museumEntranceFadeOut 5.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-museum-glow {
+  animation: museumGlowReveal 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.1s forwards;
+}
+
+.animate-museum-wordmark {
+  opacity: 0;
+  animation: museumWordmarkReveal 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.8s forwards;
+}
+
+.animate-museum-line {
+  opacity: 0;
+  animation: museumLineExpand 0.9s cubic-bezier(0.16, 1, 0.3, 1) 1.9s forwards;
+}
+
+.animate-museum-quote {
+  opacity: 0;
+  animation: museumQuoteReveal 1.2s cubic-bezier(0.16, 1, 0.3, 1) 2.1s forwards;
+}
+
+.animate-museum-timeline {
+  animation: museumTimelineFill 3.8s linear 0s forwards;
+  transform-origin: left center;
+}

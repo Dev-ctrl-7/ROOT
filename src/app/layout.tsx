@@ -54,6 +54,13 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning className={`${cormorant.variable} ${jakarta.variable} scroll-smooth`}>
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{if(!sessionStorage.getItem('roots_entrance_seen')){document.documentElement.dataset.showEntrance='true';}}catch(e){}})();`,
+          }}
+        />
+      </head>
       <body className="min-h-screen bg-[#FAF8F5] text-[#2C241E] dark:bg-[#0C0A09] dark:text-[#F5EFEB] antialiased selection:bg-[#C59B27] selection:text-white flex flex-col font-sans transition-colors duration-300">
         <ThemeProvider>
           <SidebarProvider>
