@@ -133,15 +133,15 @@ const CULTURAL_SUBJECTS: CulturalSubject[] = [
     notes: "Pietra dura marble inlay mausoleum reflecting in the Yamuna riverfront.",
   },
   {
-    id: "thanjavur",
-    title: "Brihadisvara Monolith Vimana",
-    monumentEpoch: "1010 CE • Great Living Chola Temples (UNESCO)",
+    id: "konark",
+    title: "Konark Sun Temple Jagamohan",
+    monumentEpoch: "1250 CE • Eastern Ganga Dynasty (UNESCO)",
     provenanceType: "Contemporary Architectural Documentation",
     documentationDate: "Contemporary Conservation Survey (2020s)",
-    attribution: "UNESCO World Heritage Site / Unsplash Open License",
-    url: "https://images.unsplash.com/photo-1621847468516-1ed5d0df56fe?q=85&w=1200&auto=format&fit=crop",
-    publicId: "roots/thanjavur_vimana",
-    notes: "216-foot monolithic granite tower engineered with an 80-tonne single granite capstone.",
+    attribution: "UNESCO World Heritage Site / Wikimedia Commons (CC-BY-SA 4.0)",
+    url: "https://upload.wikimedia.org/wikipedia/commons/6/6b/Exterior_of_The_Sun_temple%2C_Konark%2C_Odisha%2C_India.jpg",
+    publicId: "roots/konark_jagamohan",
+    notes: "128-foot tiered pyramidal assembly hall of the monumental Surya chariot temple.",
   },
 ];
 
